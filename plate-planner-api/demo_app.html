@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ Plate Planner - Recipe Suggestion Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .ingredient-input-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-add {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-search {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.2rem;
+            padding: 15px;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-search:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-remove {
+            background: #ff4757;
+            color: white;
+            padding: 8px 15px;
+        }
+
+        .btn-remove:hover {
+            background: #ff3838;
+        }
+
+        .ingredients-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            min-height: 50px;
+        }
+
+        .ingredient-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+        }
+
+        .ingredient-tag span {
+            font-weight: 500;
+        }
+
+        .ingredient-tag button {
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .recipe-card {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .recipe-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-rank {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .recipe-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .recipe-ingredients {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .recipe-ingredient {
+            background: white;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .recipe-scores {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .score {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .score-label {
+            color: #666;
+        }
+
+        .score-value {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .error {
+            background: #ff4757;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-message {
+            background: #2ed573;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background: #2ed573;
+            box-shadow: 0 0 10px #2ed573;
+        }
+
+        .status-offline {
+            background: #ff4757;
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .ingredient-input-wrapper {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Plate Planner</h1>
+            <p>Smart Recipe Suggestions from Your Ingredients</p>
+        </div>
+
+        <div class="api-status" id="apiStatus">
+            <span class="status-indicator" id="statusIndicator"></span>
+            <span id="statusText">Checking API...</span>
+        </div>
+
+        <div class="card">
+            <div class="input-section">
+                <label>📝 Add Your Ingredients</label>
+                <div class="ingredient-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="ingredientInput" 
+                        placeholder="e.g., chicken, tomato, garlic"
+                        onkeypress="handleKeyPress(event)"
+                    >
+                    <button class="btn-add" onclick="addIngredient()">+ Add</button>
+                </div>
+                
+                <div class="ingredients-list" id="ingredientsList">
+                    <!-- Ingredients will be added here -->
+                </div>
+            </div>
+
+            <button class="btn-search" onclick="searchRecipes()" id="searchButton">
+                🔍 Find Recipes
+            </button>
+
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+        let ingredients = [];
+
+        // Check API status on load
+        window.addEventListener('load', checkAPIStatus);
+
+        async function checkAPIStatus() {
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/`);
+                const data = await response.json();
+                
+                if (data.message === "Plate Planner API is running.") {
+                    statusIndicator.className = 'status-indicator status-online';
+                    statusText.textContent = 'API Online ✓';
+                }
+            } catch (error) {
+                statusIndicator.className = 'status-indicator status-offline';
+                statusText.textContent = 'API Offline - Please start Docker';
+                console.error('API connection failed:', error);
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addIngredient();
+            }
+        }
+
+        function addIngredient() {
+            const input = document.getElementById('ingredientInput');
+            const ingredient = input.value.trim().toLowerCase();
+
+            if (ingredient && !ingredients.includes(ingredient)) {
+                ingredients.push(ingredient);
+                updateIngredientsList();
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        function removeIngredient(ingredient) {
+            ingredients = ingredients.filter(i => i !== ingredient);
+            updateIngredientsList();
+        }
+
+        function updateIngredientsList() {
+            const list = document.getElementById('ingredientsList');
+            
+            if (ingredients.length === 0) {
+                list.innerHTML = '<div style="color: #999; padding: 10px;">No ingredients added yet. Start typing above!</div>';
+                return;
+            }
+
+            list.innerHTML = ingredients.map(ing => `
+                <div class="ingredient-tag">
+                    <span>${ing}</span>
+                    <button onclick="removeIngredient('${ing}')">×</button>
+                </div>
+            `).join('');
+        }
+
+        async function searchRecipes() {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const searchButton = document.getElementById('searchButton');
+
+            if (ingredients.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="error">
+                        ⚠️ Please add at least one ingredient!
+                    </div>
+                `;
+                return;
+            }
+
+            // Show loading
+            searchButton.disabled = true;
+            searchButton.textContent = '🔄 Searching...';
+            resultsContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Finding the best recipes for you...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/suggest_recipes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ingredients: ingredients,
+                        top_n: 5,
+                        rerank_weight: 0.6
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const recipes = await response.json();
+                displayResults(recipes);
+
+            } catch (error) {
+                resultsContainer.innerHTML = `
+                    <div class="error">
+                        ❌ Error: ${error.message}
+                        <br><br>
+                        Make sure the API is running at ${API_BASE_URL}
+                        <br>
+                        Run: <code>docker-compose up -d</code>
+                    </div>
+                `;
+                console.error('Search failed:', error);
+            } finally {
+                searchButton.disabled = false;
+                searchButton.textContent = '🔍 Find Recipes';
+            }
+        }
+
+        function displayResults(recipes) {
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            if (recipes.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3>No recipes found</h3>
+                        <p>Try different ingredients or add more!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            resultsContainer.innerHTML = `
+                <div class="results">
+                    <h2 style="margin-bottom: 20px; color: #333;">
+                        🎉 Found ${recipes.length} Recipe${recipes.length > 1 ? 's' : ''}
+                    </h2>
+                    ${recipes.map(recipe => `
+                        <div class="recipe-card">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <span class="recipe-rank">${recipe.rank}</span>
+                                <span class="recipe-title">${recipe.title}</span>
+                            </div>
+                            
+                            <div class="recipe-ingredients">
+                                ${recipe.ingredients.map(ing => `
+                                    <span class="recipe-ingredient">🥕 ${ing}</span>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="recipe-scores">
+                                <div class="score">
+                                    <span class="score-label">Match:</span>
+                                    <span class="score-value">${(recipe.combined_score * 100).toFixed(1)}%</span>
+                                </div>
+                                <div class="score">
+                                    <span class="score-label">Semantic:</span>
+                                    <span class="score-value">${(recipe.semantic_score * 100).toFixed(1)}%</span>
+                                </div>
+                                <div class="score">
+                                    <span class="score-label">Overlap:</span>
+                                    <span class="score-value">${(recipe.overlap_score * 100).toFixed(1)}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Initialize
+        updateIngredientsList();
+    </script>
+</body>
+</html>
+
+

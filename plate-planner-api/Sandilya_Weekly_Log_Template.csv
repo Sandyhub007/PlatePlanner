@@ -1,0 +1,5 @@
+Week #,Date Range,Role,Workstream,Goals (This Week),Tasks Performed (Detail),Artifacts / Links,Hours,Risks / Blockers,Next Week Plan,Notes
+1,"YYYY-MM-DD to YYYY-MM-DD",ML Research Lead,Recipe Suggestion,"Select model; define reranking","Compared MiniLM vs mpnet; implemented dedupe + overlap","PR#12; notebooks/exp1.ipynb",10,"Dataset noise","Build FAISS index",
+2,"YYYY-MM-DD to YYYY-MM-DD",ML Research Lead,Recipe Suggestion,"Generate corpus embeddings","Encoded 10k recipes; created FAISS index","data/processed/*.npy; models/*.faiss",12,"Memory constraints","Tune rerank_weight",
+3,"YYYY-MM-DD to YYYY-MM-DD",ML Research Lead,Recipe Suggestion,"Performance validation","Benchmarked p95 latency; validated overlap filter","benchmarks/*.log",11,"Edge cases","E2E API tests",
+...,,,,,,,,,

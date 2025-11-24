@@ -1,0 +1,1303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Light'}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Light'; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1"># Recipe Generation Flow Architecture</p>
+<p class="p1">## Plate Planner API - Technical Documentation</p>
+<p class="p2"><br></p>
+<p class="p1">**Author:** Sandilya Chimalamarri <span class="Apple-converted-space"> </span></p>
+<p class="p1">**Date:** November 20, 2025 <span class="Apple-converted-space"> </span></p>
+<p class="p1">**Version:** 1.0 <span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## Table of Contents</p>
+<p class="p2"><br></p>
+<p class="p1">1. [System Overview](#1-system-overview)</p>
+<p class="p1">2. [Architecture Components](#2-architecture-components)</p>
+<p class="p1">3. [Recipe Generation Flow](#3-recipe-generation-flow)</p>
+<p class="p1">4. [Technology Stack](#4-technology-stack)</p>
+<p class="p1">5. [Code Implementation](#5-code-implementation)</p>
+<p class="p1">6. [Neo4j vs FAISS: Role Clarification](#6-neo4j-vs-faiss-role-clarification)</p>
+<p class="p1">7. [API Endpoints](#7-api-endpoints)</p>
+<p class="p1">8. [Example Requests and Responses](#8-example-requests-and-responses)</p>
+<p class="p1">9. [Performance Characteristics](#9-performance-characteristics)</p>
+<p class="p1">10. [Design Rationale](#10-design-rationale)</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 1. System Overview</p>
+<p class="p2"><br></p>
+<p class="p1">### 1.1 Purpose</p>
+<p class="p2"><br></p>
+<p class="p1">The Plate Planner API provides intelligent recipe recommendations based on user-provided ingredients. The system employs a **hybrid architecture** combining:</p>
+<p class="p2"><br></p>
+<p class="p1">- **FAISS (Facebook AI Similarity Search)** for semantic recipe retrieval at scale</p>
+<p class="p1">- **Neo4j Graph Database** for relationship-based operations (substitutions, details)</p>
+<p class="p1">- **SentenceTransformers** for encoding semantic meaning</p>
+<p class="p1">- **Word2Vec** for ingredient similarity modeling</p>
+<p class="p2"><br></p>
+<p class="p1">### 1.2 Key Features</p>
+<p class="p2"><br></p>
+<p class="p1">| Feature | Technology | Purpose |</p>
+<p class="p1">|---------|------------|---------|</p>
+<p class="p1">| Recipe Search from Ingredients | FAISS + SentenceTransformer | Fast semantic similarity search (2.2M recipes) |</p>
+<p class="p1">| Ingredient Substitution | Neo4j + Word2Vec | Context-aware substitution recommendations |</p>
+<p class="p1">| Recipe Detail Retrieval | Neo4j Graph Traversal | Fetch ingredients, directions, metadata |</p>
+<p class="p1">| Ingredient Similarity | Neo4j SIMILAR_TO edges | Find related ingredients |</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 2. Architecture Components</p>
+<p class="p2"><br></p>
+<p class="p1">### 2.1 High-Level Architecture</p>
+<p class="p2"><br></p>
+<p class="p1">```</p>
+<p class="p1">┌─────────────────────────────────────────────────────────────────┐</p>
+<p class="p1">│<span class="Apple-converted-space">                        </span>MOBILE APPLICATION<span class="Apple-converted-space">                        </span>│</p>
+<p class="p1">│ <span class="Apple-converted-space">                  </span>(iOS / Android / Web Client)<span class="Apple-converted-space">                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>User Actions: <span class="Apple-converted-space">                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>• Upload pantry list: ["chicken", "tomato", "garlic"] <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>• Click "Generate Recipes" button <span class="Apple-converted-space">                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>• View recipe details<span class="Apple-converted-space">                                          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>• Request ingredient substitutions <span class="Apple-converted-space">                            </span>│</p>
+<p class="p1">└────────────────────────────┬────────────────────────────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│ REST API (JSON over HTTP)</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1">┌────────────────────────────▼────────────────────────────────────┐</p>
+<p class="p1">│<span class="Apple-converted-space">                      </span>FASTAPI BACKEND <span class="Apple-converted-space">                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                    </span>(src/api/app.py) <span class="Apple-converted-space">                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>Endpoints:<span class="Apple-converted-space">                                                      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>• POST /suggest_recipes<span class="Apple-converted-space">        </span>→ Recipe generation<span class="Apple-converted-space">            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>• GET<span class="Apple-converted-space">  </span>/substitute <span class="Apple-converted-space">            </span>→ Ingredient substitution<span class="Apple-converted-space">      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>• GET<span class="Apple-converted-space">  </span>/recipes/{title}<span class="Apple-converted-space">        </span>→ Recipe details <span class="Apple-converted-space">              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>• GET<span class="Apple-converted-space">  </span>/ <span class="Apple-converted-space">                      </span>→ Health check <span class="Apple-converted-space">                </span>│</p>
+<p class="p1">└────────────────────────────┬────────────────────────────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>┌────────┴────────┐</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>│ <span class="Apple-converted-space">                </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>┌───────────▼──────┐<span class="Apple-converted-space">    </span>┌────▼──────────────┐</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>RECIPE ENGINE <span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>NEO4J SERVICE<span class="Apple-converted-space">    </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>(FAISS-based) <span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>(Graph Queries)<span class="Apple-converted-space">  </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>└───────────┬──────┘<span class="Apple-converted-space">    </span>└────┬──────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>│ <span class="Apple-converted-space">                </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>┌───────────▼──────────────────▼──────────────┐</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│ <span class="Apple-converted-space">        </span>DATA LAYER &amp; ML MODELS <span class="Apple-converted-space">              </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">                                              </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>┌──────────────┐<span class="Apple-converted-space">  </span>┌─────────────────────┐ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>FAISS<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>SentenceTransformer│ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│ Vector Index │<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>(all-MiniLM-L6) <span class="Apple-converted-space">  </span>│ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│ 50K-2.2M <span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>384-dim vectors <span class="Apple-converted-space">  </span>│ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>recipes <span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">                    </span>│ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>└──────────────┘<span class="Apple-converted-space">  </span>└─────────────────────┘ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">                                              </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>┌──────────────┐<span class="Apple-converted-space">  </span>┌─────────────────────┐ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>Neo4j<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">    </span>Word2Vec Model <span class="Apple-converted-space">  </span>│ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│ Graph DB <span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>100-dim vectors <span class="Apple-converted-space">  </span>│ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│ 100K recipes │<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>Ingredient <span class="Apple-converted-space">        </span>│ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">              </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>similarity <span class="Apple-converted-space">        </span>│ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>└──────────────┘<span class="Apple-converted-space">  </span>└─────────────────────┘ │</p>
+<p class="p1"><span class="Apple-converted-space">        </span>└──────────────────────────────────────────────┘</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 2.2 Component Responsibilities</p>
+<p class="p2"><br></p>
+<p class="p1">#### **FAISS Index**</p>
+<p class="p1">- **Purpose:** Ultra-fast approximate nearest neighbor search</p>
+<p class="p1">- **Data:** 50,000 - 2.2M recipe embeddings (384-dimensional vectors)</p>
+<p class="p1">- **Search Time:** 5-10ms for top-k retrieval</p>
+<p class="p1">- **Use Case:** Primary recipe search engine</p>
+<p class="p2"><br></p>
+<p class="p1">#### **SentenceTransformer**</p>
+<p class="p1">- **Model:** `all-MiniLM-L6-v2` (22M parameters)</p>
+<p class="p1">- **Input:** Text strings (e.g., "chicken, tomato, garlic")</p>
+<p class="p1">- **Output:** 384-dimensional semantic embeddings</p>
+<p class="p1">- **Use Case:** Convert ingredients to searchable vectors</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Neo4j Graph Database**</p>
+<p class="p1">- **Nodes:** Ingredients (100K unique), Recipes (100K)</p>
+<p class="p1">- **Relationships:** HAS_INGREDIENT, SUBSTITUTES_WITH, SIMILAR_TO</p>
+<p class="p1">- **Use Case:** Relationship queries, substitutions, recipe details</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Word2Vec Model**</p>
+<p class="p1">- **Training Data:** 100K recipe ingredient sequences</p>
+<p class="p1">- **Vector Size:** 100 dimensions</p>
+<p class="p1">- **Use Case:** Ingredient similarity for SIMILAR_TO edges</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 3. Recipe Generation Flow</p>
+<p class="p2"><br></p>
+<p class="p1">### 3.1 Complete User Journey</p>
+<p class="p2"><br></p>
+<p class="p1">```</p>
+<p class="p1">┌─────────────────────────────────────────────────────────────────┐</p>
+<p class="p1">│ STEP 1: USER INPUT<span class="Apple-converted-space">                                              </span>│</p>
+<p class="p1">│ Mobile App Interface<span class="Apple-converted-space">                                            </span>│</p>
+<p class="p1">├─────────────────────────────────────────────────────────────────┤</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>User uploads pantry list: <span class="Apple-converted-space">                                      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>┌───────────────────────────────────────────────────┐ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│ 🥕 Pantry Ingredients: <span class="Apple-converted-space">                            </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>• chicken <span class="Apple-converted-space">                                        </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>• tomato<span class="Apple-converted-space">                                          </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>• garlic<span class="Apple-converted-space">                                          </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>• rice<span class="Apple-converted-space">                                            </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">                                                    </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>[Generate Recipes 🍳]<span class="Apple-converted-space">                            </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>└───────────────────────────────────────────────────┘ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>User clicks: "Generate Recipes"<span class="Apple-converted-space">                                </span>│</p>
+<p class="p1">└────────────────────────────┬────────────────────────────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│ HTTP POST Request</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1">┌────────────────────────────▼────────────────────────────────────┐</p>
+<p class="p1">│ STEP 2: API REQUEST <span class="Apple-converted-space">                                            </span>│</p>
+<p class="p1">│ REST API Call <span class="Apple-converted-space">                                                  </span>│</p>
+<p class="p1">├─────────────────────────────────────────────────────────────────┤</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>POST http://localhost:8000/suggest_recipes <span class="Apple-converted-space">                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>Request Body (JSON):<span class="Apple-converted-space">                                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>{ <span class="Apple-converted-space">                                                              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>"ingredients": ["chicken", "tomato", "garlic", "rice"], <span class="Apple-converted-space">    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>"top_n": 5,<span class="Apple-converted-space">                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>"rerank_weight": 0.6 <span class="Apple-converted-space">                                        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>} <span class="Apple-converted-space">                                                              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>Headers:<span class="Apple-converted-space">                                                        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>Content-Type: application/json <span class="Apple-converted-space">                                </span>│</p>
+<p class="p1">└────────────────────────────┬────────────────────────────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│ FastAPI receives request</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1">┌────────────────────────────▼────────────────────────────────────┐</p>
+<p class="p1">│ STEP 3: FASTAPI ENDPOINT HANDLER<span class="Apple-converted-space">                                </span>│</p>
+<p class="p1">│ src/api/app.py<span class="Apple-converted-space">                                                  </span>│</p>
+<p class="p1">├─────────────────────────────────────────────────────────────────┤</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>@app.post("/suggest_recipes")<span class="Apple-converted-space">                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>async def suggest_recipes_endpoint(request: RecipeRequest):<span class="Apple-converted-space">    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>try:<span class="Apple-converted-space">                                                        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>results = await asyncio.to_thread( <span class="Apple-converted-space">                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>suggest_recipes,<span class="Apple-converted-space">          </span># ← Core function<span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>request.ingredients,<span class="Apple-converted-space">                                </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>request.top_n,<span class="Apple-converted-space">                                      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>request.rerank_weight,<span class="Apple-converted-space">                              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>) <span class="Apple-converted-space">                                                      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>except Exception: <span class="Apple-converted-space">                                          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>raise HTTPException(500, "Recipe generation failed") <span class="Apple-converted-space">  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>return results<span class="Apple-converted-space">                                              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>NOTE: Uses asyncio.to_thread() for non-blocking execution<span class="Apple-converted-space">      </span>│</p>
+<p class="p1">└────────────────────────────┬────────────────────────────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│ Calls suggest_recipes()</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1">┌────────────────────────────▼────────────────────────────────────┐</p>
+<p class="p1">│ STEP 4: RECIPE SUGGESTION ENGINE<span class="Apple-converted-space">                                </span>│</p>
+<p class="p1">│ src/utils/recipesuggestionmodel.py <span class="Apple-converted-space">                            </span>│</p>
+<p class="p1">├─────────────────────────────────────────────────────────────────┤</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>def suggest_recipes(ingredients, top_n=5, rerank_weight=0.6):<span class="Apple-converted-space">  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span># PHASE A: Text → Vector Embedding <span class="Apple-converted-space">                        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>┌──────────────────────────────────────────────┐<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ Input: ["chicken", "tomato", "garlic", "rice"]│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">        </span>↓<span class="Apple-converted-space">                                      </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ Join:<span class="Apple-converted-space">  </span>"chicken, tomato, garlic, rice" <span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">        </span>↓<span class="Apple-converted-space">                                      </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ SentenceTransformer.encode() <span class="Apple-converted-space">                </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">        </span>↓<span class="Apple-converted-space">                                      </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ Output: [0.123, -0.456, 0.789, ..., 0.234]<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ <span class="Apple-converted-space">        </span>(384 dimensions)<span class="Apple-converted-space">                      </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>└──────────────────────────────────────────────┘<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>query_vec = model.encode([" ".join(ingredients)])<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>faiss.normalize_L2(query_vec)<span class="Apple-converted-space">  </span># Cosine similarity <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span># PHASE B: FAISS Vector Search <span class="Apple-converted-space">                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>┌──────────────────────────────────────────────┐<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ FAISS Index Search<span class="Apple-converted-space">                            </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ (50,000 recipe vectors) <span class="Apple-converted-space">                      </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ <span class="Apple-converted-space">                                              </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ Query: User's 384-dim vector <span class="Apple-converted-space">                </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ Algorithm: Inner Product (cosine similarity) │<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ Retrieve: Top 50 candidates<span class="Apple-converted-space">                  </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ Time: ~5-10 milliseconds <span class="Apple-converted-space">                    </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>└──────────────────────────────────────────────┘<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>distances, indices = index.search(query_vec, k=50) <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span># PHASE C: Re-ranking by Ingredient Overlap<span class="Apple-converted-space">                </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>┌──────────────────────────────────────────────┐<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ For each of 50 candidate recipes:<span class="Apple-converted-space">            </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ <span class="Apple-converted-space">                                              </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ 1. Parse recipe ingredients list<span class="Apple-converted-space">              </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ 2. Calculate overlap with user ingredients<span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">    </span>overlap_set = user_set ∩ recipe_set <span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ <span class="Apple-converted-space">                                              </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ 3. Filter: Skip if overlap &lt; 2 ingredients<span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ <span class="Apple-converted-space">                                              </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ 4. Compute scores:<span class="Apple-converted-space">                            </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">    </span>• semantic_score = FAISS distance<span class="Apple-converted-space">          </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">    </span>• overlap_score = |overlap| / |user_set|<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ <span class="Apple-converted-space">                                              </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│ 5. Combine scores:<span class="Apple-converted-space">                            </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">    </span>combined = (1-w)*semantic + w*overlap<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>│<span class="Apple-converted-space">    </span>where w = rerank_weight (default: 0.6)<span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>└──────────────────────────────────────────────┘<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>input_set = set(ingredients)<span class="Apple-converted-space">                                </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>results = []<span class="Apple-converted-space">                                                </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>for dist, idx in zip(distances[0], indices[0]):<span class="Apple-converted-space">            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>recipe = metadata_df.iloc[idx]<span class="Apple-converted-space">                          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>recipe_ings = parse_ingredients(recipe["NER"])<span class="Apple-converted-space">          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>overlap_set = input_set &amp; set(recipe_ings) <span class="Apple-converted-space">            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>if len(overlap_set) &lt; 2: <span class="Apple-converted-space">                              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>continue<span class="Apple-converted-space">  </span># Skip recipes with minimal overlap <span class="Apple-converted-space">      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>semantic_score = dist <span class="Apple-converted-space">                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>overlap_score = len(overlap_set) / len(input_set)<span class="Apple-converted-space">      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>combined_score = (1-rerank_weight)*semantic_score +<span class="Apple-converted-space">    </span>│</p>
+<p class="p1">│ <span class="Apple-converted-space">                          </span>rerank_weight*overlap_score<span class="Apple-converted-space">            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>results.append({<span class="Apple-converted-space">                                        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>"title": recipe["title"], <span class="Apple-converted-space">                          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>"ingredients": list(overlap_set), <span class="Apple-converted-space">                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>"semantic_score": semantic_score, <span class="Apple-converted-space">                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>"overlap_score": overlap_score, <span class="Apple-converted-space">                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">              </span>"combined_score": combined_score<span class="Apple-converted-space">                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">          </span>})<span class="Apple-converted-space">                                                      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span># PHASE D: Sort and Return Top N <span class="Apple-converted-space">                          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>results.sort(key=lambda x: x["combined_score"], reverse=True) │</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>return results[:top_n]<span class="Apple-converted-space">                                      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">└────────────────────────────┬────────────────────────────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│ Returns JSON results</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1">┌────────────────────────────▼────────────────────────────────────┐</p>
+<p class="p1">│ STEP 5: API RESPONSE<span class="Apple-converted-space">                                            </span>│</p>
+<p class="p1">│ JSON Response to Mobile App <span class="Apple-converted-space">                                    </span>│</p>
+<p class="p1">├─────────────────────────────────────────────────────────────────┤</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>HTTP 200 OK <span class="Apple-converted-space">                                                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>Response Body:<span class="Apple-converted-space">                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>[ <span class="Apple-converted-space">                                                              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>{ <span class="Apple-converted-space">                                                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"title": "Garlic Chicken with Tomato Rice", <span class="Apple-converted-space">              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"ingredients": ["chicken", "tomato", "garlic", "rice"],<span class="Apple-converted-space">    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"semantic_score": 0.89,<span class="Apple-converted-space">                                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"overlap_score": 1.0,<span class="Apple-converted-space">                                      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"combined_score": 0.956, <span class="Apple-converted-space">                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"rank": 1<span class="Apple-converted-space">                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>},<span class="Apple-converted-space">                                                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>{ <span class="Apple-converted-space">                                                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"title": "Spanish Chicken and Rice", <span class="Apple-converted-space">                      </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"ingredients": ["chicken", "rice", "tomato"],<span class="Apple-converted-space">              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"semantic_score": 0.85,<span class="Apple-converted-space">                                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"overlap_score": 0.75, <span class="Apple-converted-space">                                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"combined_score": 0.79,<span class="Apple-converted-space">                                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"rank": 2<span class="Apple-converted-space">                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>},<span class="Apple-converted-space">                                                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>{ <span class="Apple-converted-space">                                                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"title": "Tomato Garlic Chicken Breast",<span class="Apple-converted-space">                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"ingredients": ["chicken", "tomato", "garlic"],<span class="Apple-converted-space">            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"semantic_score": 0.82,<span class="Apple-converted-space">                                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"overlap_score": 0.75, <span class="Apple-converted-space">                                    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"combined_score": 0.778, <span class="Apple-converted-space">                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">      </span>"rank": 3<span class="Apple-converted-space">                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>},<span class="Apple-converted-space">                                                            </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">    </span>... <span class="Apple-converted-space">                                                          </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>] <span class="Apple-converted-space">                                                              </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">└────────────────────────────┬────────────────────────────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│ Renders UI</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>│</p>
+<p class="p1">┌────────────────────────────▼────────────────────────────────────┐</p>
+<p class="p1">│ STEP 6: USER INTERFACE DISPLAY<span class="Apple-converted-space">                                  </span>│</p>
+<p class="p1">│ Mobile App Renders Results<span class="Apple-converted-space">                                      </span>│</p>
+<p class="p1">├─────────────────────────────────────────────────────────────────┤</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>┌───────────────────────────────────────────────────┐ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│ 🍽️ Recommended Recipes<span class="Apple-converted-space">                            </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">                                                    </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>1. ⭐ Garlic Chicken with Tomato Rice <span class="Apple-converted-space">          </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">    </span>Match: 95.6% | All ingredients available <span class="Apple-converted-space">    </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">    </span>[View Recipe] <span class="Apple-converted-space">                                </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">                                                    </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>2. 🌟 Spanish Chicken and Rice<span class="Apple-converted-space">                  </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">    </span>Match: 79.0% | 3/4 ingredients available <span class="Apple-converted-space">    </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">    </span>[View Recipe] <span class="Apple-converted-space">                                </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">                                                    </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>3. 🌟 Tomato Garlic Chicken Breast<span class="Apple-converted-space">              </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">    </span>Match: 77.8% | 3/4 ingredients available <span class="Apple-converted-space">    </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">    </span>[View Recipe] <span class="Apple-converted-space">                                </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">                                                    </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>...<span class="Apple-converted-space">                                              </span>│ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>└───────────────────────────────────────────────────┘ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">                                                                  </span>│</p>
+<p class="p1">└─────────────────────────────────────────────────────────────────┘</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 3.2 Detailed Algorithmic Flow</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Step 4A: Text Embedding**</p>
+<p class="p2"><br></p>
+<p class="p1">```python</p>
+<p class="p1"># Input ingredients</p>
+<p class="p1">ingredients = ["chicken", "tomato", "garlic", "rice"]</p>
+<p class="p2"><br></p>
+<p class="p1"># Concatenate into single text string</p>
+<p class="p1">query_text = " ".join(ingredients)</p>
+<p class="p1"># → "chicken tomato garlic rice"</p>
+<p class="p2"><br></p>
+<p class="p1"># Encode using SentenceTransformer</p>
+<p class="p1">model = SentenceTransformer("all-MiniLM-L6-v2")</p>
+<p class="p1">query_vector = model.encode([query_text])</p>
+<p class="p1"># → numpy array of shape (1, 384)</p>
+<p class="p1"># → [[0.123, -0.456, 0.789, ..., 0.234]]</p>
+<p class="p2"><br></p>
+<p class="p1"># Normalize for cosine similarity</p>
+<p class="p1">faiss.normalize_L2(query_vector)</p>
+<p class="p1"># → L2 norm = 1.0, enables inner product = cosine similarity</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Step 4B: FAISS Search**</p>
+<p class="p2"><br></p>
+<p class="p1">```python</p>
+<p class="p1"># FAISS index contains 50,000 pre-computed recipe embeddings</p>
+<p class="p1"># Each recipe was encoded as: title + ingredients + directions</p>
+<p class="p2"><br></p>
+<p class="p1"># Search for top 50 most similar recipes</p>
+<p class="p1">k = 50</p>
+<p class="p1">distances, indices = index.search(query_vector, k)</p>
+<p class="p2"><br></p>
+<p class="p1"># distances: numpy array of shape (1, 50)</p>
+<p class="p1"># <span class="Apple-converted-space">  </span>→ Cosine similarity scores in range [-1, 1]</p>
+<p class="p1"># <span class="Apple-converted-space">  </span>→ Higher values = more similar</p>
+<p class="p2"><br></p>
+<p class="p1"># indices: numpy array of shape (1, 50)</p>
+<p class="p1"># <span class="Apple-converted-space">  </span>→ Row indices into recipe metadata dataframe</p>
+<p class="p1"># <span class="Apple-converted-space">  </span>→ Maps to specific recipes</p>
+<p class="p2"><br></p>
+<p class="p1"># Example output:</p>
+<p class="p1"># distances[0] = [0.89, 0.85, 0.82, 0.78, ...]</p>
+<p class="p1"># indices[0] <span class="Apple-converted-space">  </span>= [1247, 8931, 3456, 9012, ...]</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Step 4C: Overlap Re-ranking**</p>
+<p class="p2"><br></p>
+<p class="p1">```python</p>
+<p class="p1"># Convert user ingredients to set for fast lookup</p>
+<p class="p1">input_set = {"chicken", "tomato", "garlic", "rice"}</p>
+<p class="p2"><br></p>
+<p class="p1">results = []</p>
+<p class="p1">for dist, idx in zip(distances[0], indices[0]):</p>
+<p class="p1"><span class="Apple-converted-space">    </span># Load recipe from metadata</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe = metadata_df.iloc[idx]</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe_ingredients = ["chicken", "tomato", "garlic", "rice", "onion", "pepper"]</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Calculate overlap</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe_set = set(recipe_ingredients)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>overlap_set = input_set &amp; recipe_set</p>
+<p class="p1"><span class="Apple-converted-space">    </span># overlap_set = {"chicken", "tomato", "garlic", "rice"}</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Filter low-overlap recipes</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if len(overlap_set) &lt; 2:</p>
+<p class="p1"><span class="Apple-converted-space">        </span>continue<span class="Apple-converted-space">  </span># Skip this recipe</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Calculate scores</p>
+<p class="p1"><span class="Apple-converted-space">    </span>semantic_score = dist<span class="Apple-converted-space">  </span># From FAISS (e.g., 0.89)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>overlap_score = len(overlap_set) / len(input_set)</p>
+<p class="p1"><span class="Apple-converted-space">    </span># overlap_score = 4/4 = 1.0</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Weighted combination</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rerank_weight = 0.6</p>
+<p class="p1"><span class="Apple-converted-space">    </span>combined_score = (1 - rerank_weight) * semantic_score + \</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>rerank_weight * overlap_score</p>
+<p class="p1"><span class="Apple-converted-space">    </span># combined_score = 0.4 * 0.89 + 0.6 * 1.0 = 0.956</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>results.append({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"title": recipe["title"],</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"ingredients": list(overlap_set),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"semantic_score": semantic_score,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"overlap_score": overlap_score,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"combined_score": combined_score</p>
+<p class="p1"><span class="Apple-converted-space">    </span>})</p>
+<p class="p2"><br></p>
+<p class="p1"># Sort by combined score</p>
+<p class="p1">results.sort(key=lambda x: x["combined_score"], reverse=True)</p>
+<p class="p2"><br></p>
+<p class="p1"># Return top N</p>
+<p class="p1">return results[:5]</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 4. Technology Stack</p>
+<p class="p2"><br></p>
+<p class="p1">### 4.1 Machine Learning Models</p>
+<p class="p2"><br></p>
+<p class="p1">| Component | Version/Model | Parameters | Purpose |</p>
+<p class="p1">|-----------|--------------|------------|---------|</p>
+<p class="p1">| **SentenceTransformer** | `all-MiniLM-L6-v2` | 22M | Semantic text encoding |</p>
+<p class="p1">| **Word2Vec** | Gensim (CBOW) | 100-dim embeddings | Ingredient similarity |</p>
+<p class="p1">| **FAISS** | IndexFlatIP | N/A | Fast vector search |</p>
+<p class="p1">| **spaCy** | `en_core_web_sm` | CNN pipeline | Ingredient normalization |</p>
+<p class="p2"><br></p>
+<p class="p1">### 4.2 Backend Technologies</p>
+<p class="p2"><br></p>
+<p class="p1">| Technology | Purpose |</p>
+<p class="p1">|------------|---------|</p>
+<p class="p1">| **FastAPI** | REST API framework |</p>
+<p class="p1">| **Neo4j** | Graph database (relationships) |</p>
+<p class="p1">| **Docker Compose** | Service orchestration |</p>
+<p class="p1">| **Uvicorn** | ASGI server |</p>
+<p class="p1">| **Pydantic** | Request/response validation |</p>
+<p class="p2"><br></p>
+<p class="p1">### 4.3 Data Storage</p>
+<p class="p2"><br></p>
+<p class="p1">| Storage Type | Technology | Data |</p>
+<p class="p1">|--------------|------------|------|</p>
+<p class="p1">| **Vector Index** | FAISS `.faiss` file | 50K-2.2M recipe embeddings |</p>
+<p class="p1">| **Metadata** | CSV (`recipe_metadata.csv`) | Recipe titles, ingredients, directions |</p>
+<p class="p1">| **Graph** | Neo4j | 100K recipes, ingredients, relationships |</p>
+<p class="p1">| **ML Models** | Gensim `.model` files | Word2Vec ingredient embeddings |</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 5. Code Implementation</p>
+<p class="p2"><br></p>
+<p class="p1">### 5.1 FastAPI Endpoint</p>
+<p class="p2"><br></p>
+<p class="p1">**File:** `src/api/app.py`</p>
+<p class="p2"><br></p>
+<p class="p1">```python</p>
+<p class="p1">from fastapi import FastAPI, HTTPException, status</p>
+<p class="p1">from pydantic import BaseModel, Field</p>
+<p class="p1">from typing import List</p>
+<p class="p1">import asyncio</p>
+<p class="p2"><br></p>
+<p class="p1">from src.utils.recipesuggestionmodel import suggest_recipes</p>
+<p class="p2"><br></p>
+<p class="p1">app = FastAPI(title="Plate Planner Backend")</p>
+<p class="p2"><br></p>
+<p class="p1"># Request schema</p>
+<p class="p1">class RecipeRequest(BaseModel):</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ingredients: List[str] = Field(</p>
+<p class="p1"><span class="Apple-converted-space">        </span>...,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>description="List of ingredients",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>example=["chicken", "tomato", "garlic"]</p>
+<p class="p1"><span class="Apple-converted-space">    </span>)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>top_n: int = Field(5, description="Number of recipes to return")</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rerank_weight: float = Field(0.6, description="Overlap weight (0-1)")</p>
+<p class="p2"><br></p>
+<p class="p1"># Response schema</p>
+<p class="p1">class RecipeResult(BaseModel):</p>
+<p class="p1"><span class="Apple-converted-space">    </span>title: str</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ingredients: List[str]</p>
+<p class="p1"><span class="Apple-converted-space">    </span>semantic_score: float</p>
+<p class="p1"><span class="Apple-converted-space">    </span>overlap_score: float</p>
+<p class="p1"><span class="Apple-converted-space">    </span>combined_score: float</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rank: int</p>
+<p class="p2"><br></p>
+<p class="p1"># Endpoint</p>
+<p class="p1">@app.post("/suggest_recipes", response_model=List[RecipeResult])</p>
+<p class="p1">async def suggest_recipes_endpoint(request: RecipeRequest):</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"""</p>
+<p class="p1"><span class="Apple-converted-space">    </span>Generate recipe recommendations based on user ingredients.</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>Uses FAISS for semantic search + overlap re-ranking.</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"""</p>
+<p class="p1"><span class="Apple-converted-space">    </span>try:</p>
+<p class="p1"><span class="Apple-converted-space">        </span># Run CPU-intensive task in thread pool</p>
+<p class="p1"><span class="Apple-converted-space">        </span>results = await asyncio.to_thread(</p>
+<p class="p1"><span class="Apple-converted-space">            </span>suggest_recipes,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>request.ingredients,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>request.top_n,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>request.rerank_weight,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>except Exception as e:</p>
+<p class="p1"><span class="Apple-converted-space">        </span>raise HTTPException(</p>
+<p class="p1"><span class="Apple-converted-space">            </span>status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>detail=f"Recipe generation failed: {str(e)}"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>)</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>return results</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 5.2 Recipe Suggestion Engine</p>
+<p class="p2"><br></p>
+<p class="p1">**File:** `src/utils/recipesuggestionmodel.py`</p>
+<p class="p2"><br></p>
+<p class="p1">```python</p>
+<p class="p1">import faiss</p>
+<p class="p1">import numpy as np</p>
+<p class="p1">import pandas as pd</p>
+<p class="p1">from sentence_transformers import SentenceTransformer</p>
+<p class="p1">from src.config.paths import DataPaths</p>
+<p class="p1">from ast import literal_eval</p>
+<p class="p2"><br></p>
+<p class="p1"># Configuration</p>
+<p class="p1">MODEL_NAME = "all-MiniLM-L6-v2"</p>
+<p class="p1">paths = DataPaths()</p>
+<p class="p2"><br></p>
+<p class="p1"># Load model and data at module import (once)</p>
+<p class="p1">print("🔄 Loading SentenceTransformer model...")</p>
+<p class="p1">model = SentenceTransformer(MODEL_NAME)</p>
+<p class="p2"><br></p>
+<p class="p1">print("📥 Loading recipe metadata...")</p>
+<p class="p1">metadata_df = pd.read_csv(paths.recipe_metadata)</p>
+<p class="p2"><br></p>
+<p class="p1">print("🧮 Loading recipe embeddings...")</p>
+<p class="p1">recipe_embeddings = np.load(paths.recipe_embeddings).astype("float32")</p>
+<p class="p1">faiss.normalize_L2(recipe_embeddings)</p>
+<p class="p2"><br></p>
+<p class="p1">print("🔍 Loading FAISS index...")</p>
+<p class="p1">index = faiss.read_index(str(paths.recipe_faiss_index))</p>
+<p class="p2"><br></p>
+<p class="p1">print(f"✅ Loaded: {len(metadata_df)} recipes, {index.ntotal} vectors")</p>
+<p class="p2"><br></p>
+<p class="p1">def suggest_recipes(</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ingredients: list[str],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>top_n: int = 5,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rerank_weight: float = 0.6,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>raw_k: int = 50,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>min_overlap: int = 2</p>
+<p class="p1">) -&gt; list[dict]:</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"""</p>
+<p class="p1"><span class="Apple-converted-space">    </span>Suggest recipes based on semantic similarity + ingredient overlap.</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>Args:</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ingredients: User's available ingredients</p>
+<p class="p1"><span class="Apple-converted-space">        </span>top_n: Number of recipes to return</p>
+<p class="p1"><span class="Apple-converted-space">        </span>rerank_weight: Balance between overlap (1.0) and semantic (0.0)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>raw_k: Number of candidates to retrieve from FAISS</p>
+<p class="p1"><span class="Apple-converted-space">        </span>min_overlap: Minimum ingredient overlap required</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>Returns:</p>
+<p class="p1"><span class="Apple-converted-space">        </span>List of recipe dictionaries with scores</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"""</p>
+<p class="p1"><span class="Apple-converted-space">    </span># STEP 1: Encode user ingredients</p>
+<p class="p1"><span class="Apple-converted-space">    </span>query_text = " ".join(ingredients)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>query_vec = model.encode([query_text])</p>
+<p class="p1"><span class="Apple-converted-space">    </span>faiss.normalize_L2(query_vec)</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># STEP 2: FAISS search</p>
+<p class="p1"><span class="Apple-converted-space">    </span>distances, indices = index.search(query_vec, raw_k)</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># STEP 3: Re-rank by ingredient overlap</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input_set = set(ingredients)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>results = []</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>for dist_i, idx in enumerate(indices[0]):</p>
+<p class="p1"><span class="Apple-converted-space">        </span># Load recipe metadata</p>
+<p class="p1"><span class="Apple-converted-space">        </span>row = metadata_df.iloc[idx]</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span># Parse ingredient list (stored as string)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>try:</p>
+<p class="p1"><span class="Apple-converted-space">            </span>recipe_ings = literal_eval(row["NER"])</p>
+<p class="p1"><span class="Apple-converted-space">        </span>except (ValueError, SyntaxError):</p>
+<p class="p1"><span class="Apple-converted-space">            </span>continue</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span># Deduplicate ingredients</p>
+<p class="p1"><span class="Apple-converted-space">        </span>seen = set()</p>
+<p class="p1"><span class="Apple-converted-space">        </span>unique_ings = []</p>
+<p class="p1"><span class="Apple-converted-space">        </span>for ing in recipe_ings:</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if ing not in seen:</p>
+<p class="p1"><span class="Apple-converted-space">                </span>unique_ings.append(ing)</p>
+<p class="p1"><span class="Apple-converted-space">                </span>seen.add(ing)</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span># Calculate overlap</p>
+<p class="p1"><span class="Apple-converted-space">        </span>overlap_set = input_set &amp; set(unique_ings)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if len(overlap_set) &lt; min_overlap:</p>
+<p class="p1"><span class="Apple-converted-space">            </span>continue<span class="Apple-converted-space">  </span># Skip low-overlap recipes</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span># Compute scores</p>
+<p class="p1"><span class="Apple-converted-space">        </span>semantic_score = float(distances[0][dist_i])</p>
+<p class="p1"><span class="Apple-converted-space">        </span>semantic_score = max(0.0, min(1.0, semantic_score))</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>overlap_score = len(overlap_set) / max(len(ingredients), 1)</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>combined_score = ((1 - rerank_weight) * semantic_score +</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>rerank_weight * overlap_score)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>combined_score = max(0.0, min(1.0, combined_score))</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>results.append({</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"title": row["title"],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"ingredients": [i for i in unique_ings if i in overlap_set],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"semantic_score": semantic_score,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"overlap_score": overlap_score,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"combined_score": combined_score,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>})</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># STEP 4: Sort and rank</p>
+<p class="p1"><span class="Apple-converted-space">    </span>results = sorted(results, key=lambda x: x["combined_score"], reverse=True)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>for rank, r in enumerate(results[:top_n], start=1):</p>
+<p class="p1"><span class="Apple-converted-space">        </span>r["rank"] = rank</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>return results[:top_n]</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 5.3 Configuration Management</p>
+<p class="p2"><br></p>
+<p class="p1">**File:** `src/config/paths.py`</p>
+<p class="p2"><br></p>
+<p class="p1">```python</p>
+<p class="p1">from dataclasses import dataclass</p>
+<p class="p1">from pathlib import Path</p>
+<p class="p2"><br></p>
+<p class="p1">@dataclass(frozen=True)</p>
+<p class="p1">class DataPaths:</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"""Centralized path management for all data files."""</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>project_root: Path = Path(__file__).resolve().parents[2]</p>
+<p class="p1"><span class="Apple-converted-space">    </span>data_root: Path = project_root / "src" / "data"</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Subdirectories</p>
+<p class="p1"><span class="Apple-converted-space">    </span>models: Path = data_root / "models"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>processed: Path = data_root / "processed"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>raw: Path = data_root / "raw"</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Recipe suggestion files</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe_metadata: Path = processed / "recipe_suggestion" / "recipe_metadata.csv"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe_embeddings: Path = processed / "recipe_suggestion" / "recipe_embeddings.npy"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe_faiss_index: Path = models / "recipe_suggestion" / "recipe_index.faiss"</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Ingredient substitution files</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ingredient_w2v: Path = models / "ingredient_substitution" / "ingredient_w2v.model"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>substitution_edges: Path = processed / "ingredient_substitution" / "substitution_edges_with_context_cleaned.csv"</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Raw datasets</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe_nlg: Path = raw / "RecipeNLG_dataset.csv"</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span># Neo4j graph data</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ingredients: Path = processed / "ingredients.csv"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipes: Path = processed / "recipes.csv"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe_ingredients: Path = processed / "recipe_ingredients.csv"</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 6. Neo4j vs FAISS: Role Clarification</p>
+<p class="p2"><br></p>
+<p class="p1">### 6.1 Common Misconception</p>
+<p class="p2"><br></p>
+<p class="p1">❌ **INCORRECT:** Neo4j's `HAS_INGREDIENT` relationships are used to generate recipe recommendations when user uploads pantry list.</p>
+<p class="p2"><br></p>
+<p class="p1">✅ **CORRECT:** FAISS vector search is used for recipe generation. Neo4j is used for substitutions and recipe details.</p>
+<p class="p2"><br></p>
+<p class="p1">### 6.2 Role Comparison</p>
+<p class="p2"><br></p>
+<p class="p1">| Operation | Technology Used | Query Type | Response Time |</p>
+<p class="p1">|-----------|-----------------|------------|---------------|</p>
+<p class="p1">| **"Find recipes from ingredients"** | FAISS + SentenceTransformer | Vector similarity search | 5-10ms |</p>
+<p class="p1">| **"Substitute butter with what?"** | Neo4j + Word2Vec | Graph traversal (`SUBSTITUTES_WITH`) | 10-50ms |</p>
+<p class="p1">| **"Show full recipe details"** | Neo4j | Graph traversal (`HAS_INGREDIENT`) | 5-20ms |</p>
+<p class="p1">| **"What's similar to tomato?"** | Neo4j | Graph traversal (`SIMILAR_TO`) | 5-20ms |</p>
+<p class="p2"><br></p>
+<p class="p1">### 6.3 Why This Hybrid Architecture?</p>
+<p class="p2"><br></p>
+<p class="p1">#### **FAISS: Speed at Scale**</p>
+<p class="p2"><br></p>
+<p class="p1">**Advantages:**</p>
+<p class="p1">- ✅ Search 2.2M recipes in &lt; 10ms</p>
+<p class="p1">- ✅ Semantic understanding (finds "creamy pasta" even without exact words)</p>
+<p class="p1">- ✅ Scales to billions of vectors</p>
+<p class="p1">- ✅ GPU-accelerated (optional)</p>
+<p class="p2"><br></p>
+<p class="p1">**Limitations:**</p>
+<p class="p1">- ❌ Cannot handle complex relationships</p>
+<p class="p1">- ❌ No context-aware logic</p>
+<p class="p1">- ❌ Only finds similar vectors, not relationships</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Neo4j: Relationship Intelligence**</p>
+<p class="p2"><br></p>
+<p class="p1">**Advantages:**</p>
+<p class="p1">- ✅ Complex multi-hop graph queries</p>
+<p class="p1">- ✅ Context-aware substitutions (butter in baking vs. cooking)</p>
+<p class="p1">- ✅ Ingredient co-occurrence patterns</p>
+<p class="p1">- ✅ Explainable recommendations</p>
+<p class="p2"><br></p>
+<p class="p1">**Limitations:**</p>
+<p class="p1">- ❌ Slow for searching millions of nodes</p>
+<p class="p1">- ❌ Not optimized for semantic similarity</p>
+<p class="p1">- ❌ Typically limited to ~100K nodes for responsive queries</p>
+<p class="p2"><br></p>
+<p class="p1">### 6.4 When Each Technology is Used</p>
+<p class="p2"><br></p>
+<p class="p1">```</p>
+<p class="p1">┌─────────────────────────────────────────────────────────────┐</p>
+<p class="p1">│<span class="Apple-converted-space">                    </span>USER INTERACTION<span class="Apple-converted-space">                          </span>│</p>
+<p class="p1">└────────────────────────┬────────────────────────────────────┘</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>┌────────────────┼────────────────┐</p>
+<p class="p1"><span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">                </span>│<span class="Apple-converted-space">                </span>│</p>
+<p class="p1"><span class="Apple-converted-space">        </span>▼<span class="Apple-converted-space">                </span>▼<span class="Apple-converted-space">                </span>▼</p>
+<p class="p1">┌──────────────┐<span class="Apple-converted-space">  </span>┌──────────────┐<span class="Apple-converted-space">  </span>┌──────────────┐</p>
+<p class="p1">│ "Find<span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│ "Substitute<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>│ "Show me <span class="Apple-converted-space">    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>recipes <span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>butter" <span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>full<span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>from<span class="Apple-converted-space">        </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">              </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>recipe" <span class="Apple-converted-space">    </span>│</p>
+<p class="p1">│<span class="Apple-converted-space">  </span>ingredients"│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">              </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">              </span>│</p>
+<p class="p1">└──────┬───────┘<span class="Apple-converted-space">  </span>└──────┬───────┘<span class="Apple-converted-space">  </span>└──────┬───────┘</p>
+<p class="p1"><span class="Apple-converted-space">       </span>│ <span class="Apple-converted-space">                </span>│ <span class="Apple-converted-space">                </span>│</p>
+<p class="p1"><span class="Apple-converted-space">       </span>│ <span class="Apple-converted-space">                </span>│ <span class="Apple-converted-space">                </span>│</p>
+<p class="p1"><span class="Apple-converted-space">   </span>┌───▼───┐ <span class="Apple-converted-space">        </span>┌───▼───┐ <span class="Apple-converted-space">        </span>┌───▼───┐</p>
+<p class="p1"><span class="Apple-converted-space">   </span>│ FAISS │ <span class="Apple-converted-space">        </span>│ Neo4j │ <span class="Apple-converted-space">        </span>│ Neo4j │</p>
+<p class="p1"><span class="Apple-converted-space">   </span>│Search │ <span class="Apple-converted-space">        </span>│ Graph │ <span class="Apple-converted-space">        </span>│ Graph │</p>
+<p class="p1"><span class="Apple-converted-space">   </span>└───────┘ <span class="Apple-converted-space">        </span>└───────┘ <span class="Apple-converted-space">        </span>└───────┘</p>
+<p class="p1"><span class="Apple-converted-space">       </span>│ <span class="Apple-converted-space">                </span>│ <span class="Apple-converted-space">                </span>│</p>
+<p class="p1"><span class="Apple-converted-space">       </span>│ <span class="Apple-converted-space">                </span>│ <span class="Apple-converted-space">                </span>│</p>
+<p class="p1"><span class="Apple-converted-space">       </span>▼ <span class="Apple-converted-space">                </span>▼ <span class="Apple-converted-space">                </span>▼</p>
+<p class="p1">┌──────────────┐<span class="Apple-converted-space">  </span>┌──────────────┐<span class="Apple-converted-space">  </span>┌──────────────┐</p>
+<p class="p1">│ Semantic <span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>│ SUBSTITUTES_ │<span class="Apple-converted-space">  </span>│ HAS_ <span class="Apple-converted-space">        </span>│</p>
+<p class="p1">│ similarity <span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>│ WITH edges <span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">  </span>│ INGREDIENT <span class="Apple-converted-space">  </span>│</p>
+<p class="p1">│ + overlap<span class="Apple-converted-space">    </span>│<span class="Apple-converted-space">  </span>│<span class="Apple-converted-space">              </span>│<span class="Apple-converted-space">  </span>│ edges<span class="Apple-converted-space">        </span>│</p>
+<p class="p1">└──────────────┘<span class="Apple-converted-space">  </span>└──────────────┘<span class="Apple-converted-space">  </span>└──────────────┘</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 6.5 Neo4j Graph Structure (For Reference)</p>
+<p class="p2"><br></p>
+<p class="p1">While Neo4j is **NOT** used for primary recipe search, it stores valuable relationship data:</p>
+<p class="p2"><br></p>
+<p class="p1">```cypher</p>
+<p class="p1">// Example: Recipe with ingredients (stored in Neo4j)</p>
+<p class="p1">(r:Recipe {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>recipe_id: 1247,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>title: "Garlic Chicken with Tomato Rice"</p>
+<p class="p1">})-[:HAS_INGREDIENT]-&gt;(i1:Ingredient {name: "chicken"})</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>-[:HAS_INGREDIENT]-&gt;(i2:Ingredient {name: "tomato"})</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>-[:HAS_INGREDIENT]-&gt;(i3:Ingredient {name: "garlic"})</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>-[:HAS_INGREDIENT]-&gt;(i4:Ingredient {name: "rice"})</p>
+<p class="p2"><br></p>
+<p class="p1">// Ingredient substitution relationships</p>
+<p class="p1">(butter:Ingredient {name: "butter"})</p>
+<p class="p1"><span class="Apple-converted-space">    </span>-[:SUBSTITUTES_WITH {score: 0.92, context: "baking"}]-&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>(margarine:Ingredient {name: "margarine"})</p>
+<p class="p2"><br></p>
+<p class="p1">// Ingredient similarity (from Word2Vec)</p>
+<p class="p1">(tomato:Ingredient {name: "tomato"})</p>
+<p class="p1"><span class="Apple-converted-space">    </span>-[:SIMILAR_TO {score: 0.78}]-&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>(pepper:Ingredient {name: "red bell pepper"})</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Example Neo4j Queries (NOT Used for Recipe Search)**</p>
+<p class="p2"><br></p>
+<p class="p1">**Query 1: Get Recipe Details**</p>
+<p class="p1">```cypher</p>
+<p class="p1">MATCH (r:Recipe {title: "Garlic Chicken with Tomato Rice"})</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-[:HAS_INGREDIENT]-&gt;(i:Ingredient)</p>
+<p class="p1">RETURN r.title, collect(i.name) AS ingredients</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">**Query 2: Find Substitutes**</p>
+<p class="p1">```cypher</p>
+<p class="p1">MATCH (i:Ingredient {name: "butter"})</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-[s:SUBSTITUTES_WITH]-&gt;(sub:Ingredient)</p>
+<p class="p1">WHERE s.context = "baking"</p>
+<p class="p1">RETURN sub.name, s.score</p>
+<p class="p1">ORDER BY s.score DESC</p>
+<p class="p1">LIMIT 5</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">**Query 3: Ingredient Co-occurrence**</p>
+<p class="p1">```cypher</p>
+<p class="p1">MATCH (i1:Ingredient {name: "chicken"})</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;-[:HAS_INGREDIENT]-(r:Recipe)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-[:HAS_INGREDIENT]-&gt;(i2:Ingredient)</p>
+<p class="p1">WHERE i1 &lt;&gt; i2</p>
+<p class="p1">RETURN i2.name, count(*) AS frequency</p>
+<p class="p1">ORDER BY frequency DESC</p>
+<p class="p1">LIMIT 10</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 7. API Endpoints</p>
+<p class="p2"><br></p>
+<p class="p1">### 7.1 Recipe Suggestion</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Endpoint**</p>
+<p class="p1">```</p>
+<p class="p1">POST /suggest_recipes</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Request Schema**</p>
+<p class="p1">```json</p>
+<p class="p1">{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"ingredients": ["chicken", "tomato", "garlic", "rice"],</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"top_n": 5,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"rerank_weight": 0.6</p>
+<p class="p1">}</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Response Schema**</p>
+<p class="p1">```json</p>
+<p class="p1">[</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"title": "Garlic Chicken with Tomato Rice",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"ingredients": ["chicken", "tomato", "garlic", "rice"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"semantic_score": 0.89,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"overlap_score": 1.0,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"combined_score": 0.956,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"rank": 1</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>...</p>
+<p class="p1">]</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Parameters**</p>
+<p class="p2"><br></p>
+<p class="p1">| Parameter | Type | Default | Description |</p>
+<p class="p1">|-----------|------|---------|-------------|</p>
+<p class="p1">| `ingredients` | list[str] | Required | User's available ingredients |</p>
+<p class="p1">| `top_n` | int | 5 | Number of recipes to return |</p>
+<p class="p1">| `rerank_weight` | float | 0.6 | Balance: 1.0 = all overlap, 0.0 = all semantic |</p>
+<p class="p2"><br></p>
+<p class="p1">### 7.2 Ingredient Substitution</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Endpoint**</p>
+<p class="p1">```</p>
+<p class="p1">GET /substitute?ingredient=butter&amp;context=baking&amp;hybrid=true&amp;top_k=5</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Response Schema**</p>
+<p class="p1">```json</p>
+<p class="p1">{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"ingredient": "butter",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"context": "baking",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"hybrid": true,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"substitutes": [</p>
+<p class="p1"><span class="Apple-converted-space">    </span>{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"name": "margarine",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"score": 0.92,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"context": "baking",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"source": "direct"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>},</p>
+<p class="p1"><span class="Apple-converted-space">    </span>...</p>
+<p class="p1"><span class="Apple-converted-space">  </span>]</p>
+<p class="p1">}</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 7.3 Recipe Details</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Endpoint**</p>
+<p class="p1">```</p>
+<p class="p1">GET /recipes/{recipe_title}</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Response Schema**</p>
+<p class="p1">```json</p>
+<p class="p1">{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"title": "Garlic Chicken with Tomato Rice",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"directions": [</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Heat oil in a large pan over medium heat",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Add chicken and cook until browned",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>...</p>
+<p class="p1"><span class="Apple-converted-space">  </span>],</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"link": "https://example.com/recipe",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"source": "RecipeNLG",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"ingredients": ["chicken", "tomato", "garlic", "rice", "oil", "salt"]</p>
+<p class="p1">}</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 8. Example Requests and Responses</p>
+<p class="p2"><br></p>
+<p class="p1">### 8.1 Scenario: User Has 4 Ingredients</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Request**</p>
+<p class="p1">```bash</p>
+<p class="p1">curl -X POST "http://localhost:8000/suggest_recipes" \</p>
+<p class="p1"><span class="Apple-converted-space">  </span>-H "Content-Type: application/json" \</p>
+<p class="p1"><span class="Apple-converted-space">  </span>-d '{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"ingredients": ["chicken", "tomato", "garlic", "rice"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"top_n": 3,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"rerank_weight": 0.6</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}'</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Response**</p>
+<p class="p1">```json</p>
+<p class="p1">[</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"title": "Garlic Chicken with Tomato Rice",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"ingredients": ["chicken", "tomato", "garlic", "rice"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"semantic_score": 0.89,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"overlap_score": 1.0,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"combined_score": 0.956,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"rank": 1</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"title": "Spanish Chicken and Rice",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"ingredients": ["chicken", "rice", "tomato"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"semantic_score": 0.85,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"overlap_score": 0.75,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"combined_score": 0.79,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"rank": 2</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"title": "Tomato Garlic Chicken Breast",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"ingredients": ["chicken", "tomato", "garlic"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"semantic_score": 0.82,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"overlap_score": 0.75,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"combined_score": 0.778,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"rank": 3</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">]</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 8.2 Scenario: User Needs Substitution</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Request**</p>
+<p class="p1">```bash</p>
+<p class="p1">curl "http://localhost:8000/substitute?ingredient=butter&amp;context=baking&amp;hybrid=true&amp;top_k=5"</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Response**</p>
+<p class="p1">```json</p>
+<p class="p1">{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"ingredient": "butter",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"context": "baking",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"hybrid": true,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"substitutes": [</p>
+<p class="p1"><span class="Apple-converted-space">    </span>{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"name": "margarine",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"score": 0.92,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"context": "baking",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"source": "direct"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>},</p>
+<p class="p1"><span class="Apple-converted-space">    </span>{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"name": "coconut oil",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"score": 0.85,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"context": "baking",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"source": "direct"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>},</p>
+<p class="p1"><span class="Apple-converted-space">    </span>{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"name": "applesauce",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"score": 0.78,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"context": "baking",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"source": "cooccurrence"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>},</p>
+<p class="p1"><span class="Apple-converted-space">    </span>{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"name": "greek yogurt",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"score": 0.72,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"context": "baking",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"source": "cooccurrence"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>},</p>
+<p class="p1"><span class="Apple-converted-space">    </span>{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"name": "vegetable oil",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"score": 0.68,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"context": null,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"source": "hybrid"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>]</p>
+<p class="p1">}</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 8.3 Scenario: User Wants Recipe Details</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Request**</p>
+<p class="p1">```bash</p>
+<p class="p1">curl "http://localhost:8000/recipes/Garlic%20Chicken%20with%20Tomato%20Rice"</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Response**</p>
+<p class="p1">```json</p>
+<p class="p1">{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"title": "Garlic Chicken with Tomato Rice",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"directions": [</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Heat 2 tbsp oil in a large skillet over medium-high heat",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Season chicken with salt and pepper, then add to pan",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Cook chicken until golden brown, about 5 minutes per side",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Remove chicken and set aside",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Add garlic to pan and sauté for 1 minute",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Add rice and stir to coat with oil",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Add tomatoes and chicken broth",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Return chicken to pan, cover, and simmer for 20 minutes",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"Fluff rice with fork and serve"</p>
+<p class="p1"><span class="Apple-converted-space">  </span>],</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"link": "https://www.recipenlg.com/recipe/12345",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"source": "RecipeNLG",</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"ingredients": [</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"chicken breast",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"tomato",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"garlic",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"rice",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"olive oil",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"salt",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"pepper",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"chicken broth"</p>
+<p class="p1"><span class="Apple-converted-space">  </span>]</p>
+<p class="p1">}</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 9. Performance Characteristics</p>
+<p class="p2"><br></p>
+<p class="p1">### 9.1 Latency Breakdown</p>
+<p class="p2"><br></p>
+<p class="p1">| Phase | Operation | Time | Technology |</p>
+<p class="p1">|-------|-----------|------|------------|</p>
+<p class="p1">| **1. Text Encoding** | SentenceTransformer.encode() | 5-15ms | CPU |</p>
+<p class="p1">| **2. FAISS Search** | index.search() for top 50 | 5-10ms | CPU |</p>
+<p class="p1">| **3. Overlap Re-ranking** | Set intersection + scoring | 2-5ms | Python |</p>
+<p class="p1">| **4. Sorting &amp; Filtering** | Sort by combined_score | &lt; 1ms | Python |</p>
+<p class="p1">| **Total (API)** | End-to-end request → response | **15-35ms** | FastAPI |</p>
+<p class="p2"><br></p>
+<p class="p1">### 9.2 Throughput</p>
+<p class="p2"><br></p>
+<p class="p1">| Metric | Value | Notes |</p>
+<p class="p1">|--------|-------|-------|</p>
+<p class="p1">| **Concurrent Requests** | 50-100 req/s | Single FastAPI instance |</p>
+<p class="p1">| **FAISS Index Size** | 50K recipes: ~75 MB&lt;br&gt;2.2M recipes: ~3.3 GB | Float32 embeddings |</p>
+<p class="p1">| **Memory Usage** | ~500 MB (50K)&lt;br&gt;~4 GB (2.2M) | Model + index + metadata |</p>
+<p class="p1">| **Startup Time** | ~5-10 seconds | Load model + FAISS index |</p>
+<p class="p2"><br></p>
+<p class="p1">### 9.3 Scalability</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Current Scale (50K Recipes)**</p>
+<p class="p1">- ✅ FAISS search: &lt; 10ms</p>
+<p class="p1">- ✅ Memory: ~500 MB</p>
+<p class="p1">- ✅ Single server handles 100+ req/s</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Target Scale (2.2M Recipes)**</p>
+<p class="p1">- ⚠️ FAISS search: 10-20ms (still acceptable)</p>
+<p class="p1">- ⚠️ Memory: ~4 GB (requires larger instance)</p>
+<p class="p1">- ✅ Can serve 50+ req/s per instance</p>
+<p class="p1">- 💡 **Recommendation:** Use `IndexIVFFlat` (clustered index) for &gt; 1M vectors</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Future Scale (10M+ Recipes)**</p>
+<p class="p1">- 💡 Use FAISS GPU index (`IndexFlatIP` on CUDA)</p>
+<p class="p1">- 💡 Distributed FAISS with index sharding</p>
+<p class="p1">- 💡 Redis caching for frequent queries</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## 10. Design Rationale</p>
+<p class="p2"><br></p>
+<p class="p1">### 10.1 Why FAISS for Recipe Search?</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Problem:**</p>
+<p class="p1">User has 4 ingredients → Need to search 2.2M recipes in real-time (&lt; 50ms)</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Alternatives Considered:**</p>
+<p class="p2"><br></p>
+<p class="p1">| Approach | Pros | Cons | Decision |</p>
+<p class="p1">|----------|------|------|----------|</p>
+<p class="p1">| **Neo4j Graph Traversal** | Relationship-aware | Too slow for millions of nodes | ❌ Rejected |</p>
+<p class="p1">| **Elasticsearch** | Full-text search | No semantic understanding | ❌ Rejected |</p>
+<p class="p1">| **SQL with Full-Text** | Simple to implement | No semantic, no scale | ❌ Rejected |</p>
+<p class="p1">| **FAISS Vector Search** | Ultra-fast, semantic | Requires embeddings | ✅ **Selected** |</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Key Advantages of FAISS:**</p>
+<p class="p1">1. **Speed:** 5-10ms for 50K-2.2M recipes</p>
+<p class="p1">2. **Semantic:** Understands meaning, not just keywords</p>
+<p class="p1">3. **Scalability:** Proven at billion-scale (Facebook)</p>
+<p class="p1">4. **Flexibility:** Multiple index types (flat, IVF, HNSW)</p>
+<p class="p2"><br></p>
+<p class="p1">### 10.2 Why Hybrid Scoring?</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Problem:**</p>
+<p class="p1">Pure semantic search returns recipes that are "similar" but may not match user's actual ingredients.</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Solution:**</p>
+<p class="p1">Combine semantic similarity with ingredient overlap:</p>
+<p class="p2"><br></p>
+<p class="p1">```</p>
+<p class="p1">combined_score = (1 - w) * semantic_score + w * overlap_score</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">Where `w = 0.6` (60% overlap, 40% semantic)</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Example:**</p>
+<p class="p2"><br></p>
+<p class="p1">| Recipe | Semantic | Overlap | Combined (w=0.6) | Rank |</p>
+<p class="p1">|--------|----------|---------|------------------|------|</p>
+<p class="p1">| A | 0.95 | 0.50 | 0.68 | 2 |</p>
+<p class="p1">| B | 0.80 | 1.00 | 0.92 | **1** ← Winner |</p>
+<p class="p2"><br></p>
+<p class="p1">**Recipe B wins** because user has ALL ingredients (overlap=1.0), even though semantic score is lower.</p>
+<p class="p2"><br></p>
+<p class="p1">### 10.3 Why Neo4j for Substitutions?</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Problem:**</p>
+<p class="p1">"Butter" can be substituted with "margarine" in baking, but "olive oil" in cooking.</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Why Graph Database:**</p>
+<p class="p1">- ✅ Context-aware relationships</p>
+<p class="p1">- ✅ Multi-hop traversal (e.g., if A→B and B→C, then A→C)</p>
+<p class="p1">- ✅ Explainable paths</p>
+<p class="p1">- ✅ Co-occurrence patterns</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Example Neo4j Query:**</p>
+<p class="p1">```cypher</p>
+<p class="p1">// Context-aware substitution</p>
+<p class="p1">MATCH (butter:Ingredient {name: 'butter'})</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-[s:SUBSTITUTES_WITH]-&gt;(sub)</p>
+<p class="p1">WHERE s.context = 'baking'</p>
+<p class="p1">RETURN sub.name, s.score</p>
+<p class="p1">ORDER BY s.score DESC</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">### 10.4 Why SentenceTransformers?</p>
+<p class="p2"><br></p>
+<p class="p1">#### **Alternatives:**</p>
+<p class="p2"><br></p>
+<p class="p1">| Model | Pros | Cons | Decision |</p>
+<p class="p1">|-------|------|------|----------|</p>
+<p class="p1">| **TF-IDF** | Fast, simple | No semantic understanding | ❌ |</p>
+<p class="p1">| **Word2Vec** | Semantic | Word-level, not sentence-level | ❌ |</p>
+<p class="p1">| **BERT (base)** | High quality | Slow inference (110M params) | ❌ |</p>
+<p class="p1">| **all-MiniLM-L6-v2** | Fast, good quality | Slightly lower accuracy | ✅ |</p>
+<p class="p2"><br></p>
+<p class="p1">#### **all-MiniLM-L6-v2 Stats:**</p>
+<p class="p1">- **Size:** 22M parameters (5x smaller than BERT)</p>
+<p class="p1">- **Speed:** 5-15ms per encoding</p>
+<p class="p1">- **Quality:** 95% of BERT performance</p>
+<p class="p1">- **Training:** Distilled from larger models</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## Appendix A: File Structure</p>
+<p class="p2"><br></p>
+<p class="p1">```</p>
+<p class="p1">plate-planner-api/</p>
+<p class="p1">├── src/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>├── api/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── app.py<span class="Apple-converted-space">                    </span># FastAPI endpoints</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>├── config/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>├── config.py <span class="Apple-converted-space">                </span># Environment variables</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── paths.py<span class="Apple-converted-space">                  </span># Path management</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>├── data/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>├── models/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>├── recipe_suggestion/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── recipe_index.faiss <span class="Apple-converted-space">      </span># FAISS index</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── ingredient_substitution/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">      </span>└── ingredient_w2v.model <span class="Apple-converted-space">    </span># Word2Vec</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>├── processed/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>├── recipe_suggestion/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>├── recipe_metadata.csv<span class="Apple-converted-space">      </span># Recipe data</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── recipe_embeddings.npy<span class="Apple-converted-space">    </span># 384-dim vectors</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>├── ingredients.csv<span class="Apple-converted-space">              </span># For Neo4j</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>├── recipes.csv<span class="Apple-converted-space">                  </span># For Neo4j</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── recipe_ingredients.csv <span class="Apple-converted-space">      </span># For Neo4j</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── raw/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">      </span>└── RecipeNLG_dataset.csv<span class="Apple-converted-space">        </span># Source data</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>├── services/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── neo4j_service.py<span class="Apple-converted-space">          </span># Neo4j graph queries</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>├── utils/</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>│ <span class="Apple-converted-space">  </span>└── recipesuggestionmodel.py<span class="Apple-converted-space">  </span># FAISS search logic</p>
+<p class="p1">│ <span class="Apple-converted-space">  </span>└── database/</p>
+<p class="p1">│ <span class="Apple-converted-space">      </span>├── bootstrap_graph.py<span class="Apple-converted-space">        </span># Neo4j setup</p>
+<p class="p1">│ <span class="Apple-converted-space">      </span>└── load_into_neo4j.py<span class="Apple-converted-space">        </span># Data loading</p>
+<p class="p1">├── docker-compose.yml</p>
+<p class="p1">├── Dockerfile</p>
+<p class="p1">└── README.md</p>
+<p class="p1">```</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## Appendix B: Glossary</p>
+<p class="p2"><br></p>
+<p class="p1">| Term | Definition |</p>
+<p class="p1">|------|------------|</p>
+<p class="p1">| **FAISS** | Facebook AI Similarity Search - library for efficient vector search |</p>
+<p class="p1">| **Embedding** | Dense vector representation of text (e.g., 384-dim) |</p>
+<p class="p1">| **Semantic Similarity** | Meaning-based similarity (not just keyword matching) |</p>
+<p class="p1">| **Cosine Similarity** | Measure of angle between two vectors (range: -1 to 1) |</p>
+<p class="p1">| **Inner Product** | Dot product of vectors (FAISS uses this for cosine similarity) |</p>
+<p class="p1">| **Re-ranking** | Adjusting search results based on additional criteria |</p>
+<p class="p1">| **Overlap Score** | Fraction of user ingredients present in recipe |</p>
+<p class="p1">| **Graph Traversal** | Following edges in Neo4j to find related nodes |</p>
+<p class="p1">| **Context-Aware** | Using situational information (e.g., "baking" vs "cooking") |</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## Appendix C: Future Enhancements</p>
+<p class="p2"><br></p>
+<p class="p1">### C.1 Planned Improvements</p>
+<p class="p2"><br></p>
+<p class="p1">1. **GPU-Accelerated FAISS**</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Use `IndexFlatIP` on CUDA</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- 10-100x faster search</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Enable real-time search of 10M+ recipes</p>
+<p class="p2"><br></p>
+<p class="p1">2. **Multi-Modal Search**</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- CLIP model for image+text</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- User uploads photo of dish → find similar recipes</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- "Show me recipes that look like this"</p>
+<p class="p2"><br></p>
+<p class="p1">3. **Personalization**</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- User preference learning</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Collaborative filtering</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- "Users like you also enjoyed..."</p>
+<p class="p2"><br></p>
+<p class="p1">4. **Natural Language Queries**</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- GPT-4 integration</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- "I want a healthy dinner with chicken"</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Extract intent + ingredients + constraints</p>
+<p class="p2"><br></p>
+<p class="p1">### C.2 Research Directions</p>
+<p class="p2"><br></p>
+<p class="p1">1. **Graph Neural Networks (GNNs)**</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Replace Word2Vec with GNN embeddings</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Learn from graph structure</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Multi-hop relationship modeling</p>
+<p class="p2"><br></p>
+<p class="p1">2. **Reinforcement Learning**</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Multi-armed bandit for recipe ranking</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Learn from user feedback (clicks, saves, cooks)</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Optimize for engagement</p>
+<p class="p2"><br></p>
+<p class="p1">3. **Federated Learning**</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Train on user data without centralization</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Privacy-preserving personalization</p>
+<p class="p1"><span class="Apple-converted-space">   </span>- Collaborative model improvement</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">## Contact &amp; Contribution</p>
+<p class="p2"><br></p>
+<p class="p1">**Project Repository:** [https://github.com/irangareddy/plate-planner-api](https://github.com/irangareddy/plate-planner-api) <span class="Apple-converted-space"> </span></p>
+<p class="p1">**Documentation:** See `README.md` and `Chapter6_7_Evaluation_and_System_Methodology.md` <span class="Apple-converted-space"> </span></p>
+<p class="p1">**Issues:** GitHub Issues <span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1">**Authors:**</p>
+<p class="p1">- Sandilya Chimalamarri (Recipe Suggestion Subsystem)</p>
+<p class="p1">- Sai Priyanka Bonkuri (Ingredient Substitution Subsystem)</p>
+<p class="p1">- Pavan Charith Devarapalli (Data Preprocessing &amp; Model Training)</p>
+<p class="p1">- Sai Dheeraj Gollu (Graph Database &amp; API Integration)</p>
+<p class="p2"><br></p>
+<p class="p1">---</p>
+<p class="p2"><br></p>
+<p class="p1">**Document Version:** 1.0 <span class="Apple-converted-space"> </span></p>
+<p class="p1">**Last Updated:** November 20, 2025 <span class="Apple-converted-space"> </span></p>
+<p class="p1">**Status:** Production-Ready</p>
+<p class="p2"><br></p>
+</body>
+</html>

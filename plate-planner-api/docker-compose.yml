@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  neo4j:
+    image: neo4j:5.13
+    container_name: neo4j
+    ports:
+      - "7474:7474"  # Neo4j browser
+      - "7687:7687"  # Bolt protocol
+    environment:
+      - NEO4J_AUTH=neo4j/12345678
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    networks:
+      - plateplanner-net
+
+  postgres:
+    image: postgres:15
+    container_name: plate-planner-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=plateplanner
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - plateplanner-net
+
+  api:
+    build: .
+    container_name: plate-planner-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - neo4j
+      - postgres
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=12345678
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/plateplanner
+      - SECRET_KEY=supersecretkeychangeinproduction
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+    volumes:
+      - .:/app                       # Optional: hot-reload source
+      - ./src/data:/app/src/data     # 🔥 Required: mount entire data module
+    networks:
+      - plateplanner-net
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+  postgres_data:
+
+networks:
+  plateplanner-net:

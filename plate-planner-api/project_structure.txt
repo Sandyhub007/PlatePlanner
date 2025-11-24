@@ -1,0 +1,55 @@
+src/data
+├── models
+│    ├── ingredient_substitution
+│    │    ├── action_w2v.model
+│    │    ├── faiss_context.index
+│    │    └── ingredient_w2v.model
+│    └── recipe_suggestion
+│        └── recipe_index.faiss
+├── processed
+│    ├── ingredient_substitution
+│    │    ├── cleaned_ner.csv
+│    │    ├── cleaned_ner_actions.csv
+│    │    ├── context_metadata.csv
+│    │    ├── context_vectors.npy
+│    │    ├── eval_queries.csv
+│    │    ├── substitution_edges.csv
+│    │    ├── substitution_edges_cleaned.csv
+│    │    ├── substitution_edges_with_context.csv
+│    │    └── substitution_edges_with_context_cleaned.csv
+│    ├── ingredients.csv
+│    ├── recipe_ingredients.csv
+│    ├── recipe_suggestion
+│    │    ├── recipe_embeddings.npy
+│    │    └── recipe_metadata.csv
+│    └── recipes.csv
+├── raw
+│    ├── RecipeNLG_dataset.csv
+│    ├── recipe_dataset_100k.csv
+│    ├── recipe_dataset_10k.csv
+│    ├── recipe_dataset_200k.csv
+│    └── recipe_dataset_50k.csv
+├── results
+│    ├── exploration
+│    │    ├── dataset_understanding.txt
+│    │    └── graph_exploration_summary.txt
+│    └── substitution
+│        ├── hit_at_5k_eval_20250504_230030.txt
+│        ├── hit_at_5k_eval_20250504_230614.txt
+│        ├── hit_at_5k_eval_20250504_230920.txt
+│        ├── hit_at_5k_eval_20250504_231033.txt
+│        ├── hit_at_5k_eval_20250504_231816.txt
+│        ├── hit_at_5k_eval_20250505_101510.txt
+│        ├── ingredients_no_substitutes.txt
+│        ├── random_substitution_test_results.txt
+│        ├── substitution_domain_review.json
+│        ├── substitution_domain_review_with_scores.json
+│        ├── substitution_eval_report.txt
+│        ├── substitution_hybrid_results.json
+│        └── substitution_target_diagnostics.txt
+└── support
+    ├── dataset_understanding.txt
+    ├── db_snapshot.txt
+    └── ingredients_list.csv
+
+12 directories, 41 files

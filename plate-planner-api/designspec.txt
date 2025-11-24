@@ -1,0 +1,81 @@
+<Project Name>
+Project Name
+
+<Design Spec Title>
+Desing Specification
+Version 0.1
+
+
+<Author Name>
+(<email-address>)
+
+
+
+
+
+
+
+Version History
+Introduction
+References
+Requirements
+Functional Overview
+Configuration/ External Interfaces
+Debug
+Logging
+Counters
+Implementation
+Testing
+General Approach
+Unit Tests
+Appendix
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version History
+Version
+Changes
+
+
+
+Introduction
+A brief introduction about the functionality which is described in this document
+References
+References to other documents (architecture, figures, URLs, …)
+Requirements
+List the requirements for this feature. 
+Functional Overview
+Implementation overview of the functionality. 
+Configuration/ External Interfaces
+	•	List any external configuration required,
+	•	List dependencies 
+Debug
+Describe logs, counters and other debugging information that is useful for testing
+Logging
+Counters
+Implementation
+	•	Optionally include a brief write-up of a design proposal, integration points if any, interfaces.
+	•	Identify sub-tasks that will be a logical break up in terms of coding effort
+Testing
+General Approach
+List out details on any specific items required for testing. This includes for system testing where it is important to explain a general approach to how to exercise this functionality from a system test perspective.
+Unit Tests
+List of unit tests that were done as a part of this functionality
+Appendix
+Attach any additional information, configuration examples, …

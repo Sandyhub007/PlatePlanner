@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>Sandilya Chimalamarri</Author>
+  <LastAuthor>Sandilya Chimalamarri</LastAuthor>
+  <Company>Plate Planner</Company>
+  <Version>16.00</Version>
+ </DocumentProperties>
+ <Styles>
+  <Style ss:ID="Header">
+   <Font ss:Bold="1"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+  </Style>
+  <Style ss:ID="Text">
+   <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+  </Style>
+  <Style ss:ID="Centered">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Weekly Log">
+  <Table ss:ExpandedColumnCount="11" ss:DefaultRowHeight="18">
+   <Column ss:AutoFitWidth="0" ss:Width="50"/>
+   <Column ss:AutoFitWidth="0" ss:Width="100"/>
+   <Column ss:AutoFitWidth="0" ss:Width="110"/>
+   <Column ss:AutoFitWidth="0" ss:Width="110"/>
+   <Column ss:AutoFitWidth="0" ss:Width="180"/>
+   <Column ss:AutoFitWidth="0" ss:Width="250"/>
+   <Column ss:AutoFitWidth="0" ss:Width="200"/>
+   <Column ss:AutoFitWidth="0" ss:Width="60"/>
+   <Column ss:AutoFitWidth="0" ss:Width="160"/>
+   <Column ss:AutoFitWidth="0" ss:Width="180"/>
+   <Column ss:AutoFitWidth="0" ss:Width="180"/>
+   <Row ss:AutoFitHeight="0" ss:Height="28">
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Week #</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Date Range</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Role</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Workstream</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Goals (This Week)</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Tasks Performed (Detail)</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Artifacts / Links</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Hours</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Risks / Blockers</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Next Week Plan</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Notes</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="Centered"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">YYYY-MM-DD to YYYY-MM-DD</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">ML Research Lead</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">Recipe Suggestion</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Select model, define reranking</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Compared MiniLM vs mpnet, implemented dedupe + overlap</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., PR#12, notebooks/exp1.ipynb</Data></Cell>
+    <Cell ss:StyleID="Centered"><Data ss:Type="Number">10</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Dataset noise</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Build FAISS index</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">—</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="Centered"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">YYYY-MM-DD to YYYY-MM-DD</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">ML Research Lead</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">Recipe Suggestion</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Generate corpus embeddings</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Encoded 10k recipes; created FAISS index</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., data/processed/*.npy, models/*.faiss</Data></Cell>
+    <Cell ss:StyleID="Centered"><Data ss:Type="Number">12</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Memory constraints</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Tune rerank_weight</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">—</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="Centered"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">YYYY-MM-DD to YYYY-MM-DD</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">ML Research Lead</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">Recipe Suggestion</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Performance validation</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Benchmarked p95 latency; validated overlap filter</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., benchmark logs</Data></Cell>
+    <Cell ss:StyleID="Centered"><Data ss:Type="Number">11</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., Edge cases</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">e.g., E2E API tests</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String">—</Data></Cell>
+   </Row>
+   <!-- Add more blank rows for future weeks -->
+   <Row>
+    <Cell ss:StyleID="Centered"><Data ss:Type="String">...</Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="Text"><Data ss:Type="String"></Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <FreezePanes/>
+   <FrozenNoSplit/>
+   <SplitHorizontal>1</SplitHorizontal>
+   <TopRowBottomPane>1</TopRowBottomPane>
+   <ActivePane>2</ActivePane>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>
