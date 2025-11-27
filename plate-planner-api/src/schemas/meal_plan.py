@@ -1,7 +1,9 @@
 from typing import List, Optional
 from uuid import UUID
 from datetime import date, datetime
-from pydantic import BaseModel, Field
+from enum import Enum
+from pydantic import BaseModel, ConfigDict, Field
+
 
 class MealPlanItemBase(BaseModel):
     day_of_week: int
@@ -16,16 +18,17 @@ class MealPlanItemBase(BaseModel):
     estimated_cost: Optional[float] = None
     prep_time_minutes: Optional[int] = None
 
+
 class MealPlanItemCreate(MealPlanItemBase):
     pass
 
+
 class MealPlanItem(MealPlanItemBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     plan_id: UUID
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 class MealPlanBase(BaseModel):
     week_start_date: date
@@ -54,13 +57,75 @@ class MealPlanCreate(BaseModel):
     week_start_date: date
     preferences_override: Optional[MealPlanPreferencesOverride] = None
 
+
+class MealPlanItemSwap(BaseModel):
+    new_recipe_id: str
+
+
+class MealPlanRegenerateRequest(BaseModel):
+    day_of_week: Optional[int] = Field(None, ge=0, le=6)
+    preferences_override: Optional[MealPlanPreferencesOverride] = None
+
+
+class RecipeAlternative(BaseModel):
+    recipe_id: str
+    title: str
+    calories: int
+    protein: int
+    carbs: int
+    fat: int
+    estimated_cost: float
+    prep_time_minutes: int
+
+
+class ValidationSeverity(str, Enum):
+    error = "error"
+    warning = "warning"
+
+
+class MealPlanValidationIssue(BaseModel):
+    code: str
+    severity: ValidationSeverity
+    message: str
+
+
+class MealPlanValidationResult(BaseModel):
+    plan_id: UUID
+    is_valid: bool
+    issues: List[MealPlanValidationIssue] = Field(default_factory=list)
+
+
+class MealNutritionTotals(BaseModel):
+    calories: int
+    protein: int
+    carbs: int
+    fat: int
+
+
+class MealPlanDaySummary(BaseModel):
+    day_index: int
+    date: date
+    total: MealNutritionTotals
+    meals: List[MealPlanItem] = Field(default_factory=list)
+    total_prep_time_minutes: int
+
+
+class MealPlanSummary(BaseModel):
+    plan_id: UUID
+    week_start_date: date
+    week_end_date: date
+    total: MealNutritionTotals
+    daily: List[MealPlanDaySummary] = Field(default_factory=list)
+    total_estimated_cost: float
+    average_prep_time_minutes: float
+
+
 class MealPlan(MealPlanBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     user_id: UUID
     created_at: datetime
     updated_at: datetime
     items: List[MealPlanItem] = Field(default_factory=list)
-
-    class Config:
-        from_attributes = True
 

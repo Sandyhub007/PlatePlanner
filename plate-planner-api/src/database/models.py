@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Boolean, Column, String, Integer, Float, ForeignKey, DateTime, ARRAY, Text, Date
+from sqlalchemy import Boolean, Column, String, Integer, Float, ForeignKey, DateTime, ARRAY, Text, Date, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -20,6 +20,7 @@ class User(Base):
 
     preferences = relationship("UserPreferences", back_populates="user", uselist=False, cascade="all, delete-orphan")
     meal_plans = relationship("MealPlan", back_populates="user", cascade="all, delete-orphan")
+    shopping_lists = relationship("ShoppingList", back_populates="user", cascade="all, delete-orphan")
 
 class UserPreferences(Base):
     __tablename__ = "user_preferences"
@@ -61,11 +62,17 @@ class MealPlan(Base):
     total_carbs = Column(Integer, default=0)
     total_fat = Column(Integer, default=0)
     total_estimated_cost = Column(Float, default=0.0)
+    is_valid = Column(Boolean, default=True)
+    validation_issues = Column(JSON, default=list)
+    last_validated_at = Column(DateTime, nullable=True)
+    summary_snapshot = Column(JSON, default=dict)
+    summary_generated_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("User", back_populates="meal_plans")
     items = relationship("MealPlanItem", back_populates="meal_plan", cascade="all, delete-orphan")
+    shopping_lists = relationship("ShoppingList", back_populates="meal_plan", cascade="all, delete-orphan")
 
 class MealPlanItem(Base):
     __tablename__ = "meal_plan_items"
@@ -89,3 +96,62 @@ class MealPlanItem(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     meal_plan = relationship("MealPlan", back_populates="items")
+
+
+# ===== Phase 3: Shopping List Models =====
+
+class ShoppingList(Base):
+    """Shopping list generated from meal plans or created manually."""
+    __tablename__ = "shopping_lists"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
+    plan_id = Column(UUID(as_uuid=True), ForeignKey("meal_plans.id"), nullable=True, index=True)
+    
+    name = Column(String(255), default="Shopping List")
+    status = Column(String(50), default="active", index=True)  # active, completed, archived
+    
+    total_estimated_cost = Column(Float, default=0.0)
+    total_items = Column(Integer, default=0)
+    purchased_items = Column(Integer, default=0)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
+    
+    # Relationships
+    user = relationship("User", back_populates="shopping_lists")
+    meal_plan = relationship("MealPlan", back_populates="shopping_lists")
+    items = relationship("ShoppingListItem", back_populates="shopping_list", cascade="all, delete-orphan")
+
+
+class ShoppingListItem(Base):
+    """Individual item in a shopping list."""
+    __tablename__ = "shopping_list_items"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    list_id = Column(UUID(as_uuid=True), ForeignKey("shopping_lists.id"), nullable=False, index=True)
+    
+    ingredient_name = Column(String(255), nullable=False)
+    normalized_name = Column(String(255), index=True)  # for fuzzy matching
+    
+    quantity = Column(Float, nullable=True)
+    unit = Column(String(50), nullable=True)
+    
+    category = Column(String(100), default="Other", index=True)
+    
+    estimated_price = Column(Float, nullable=True)
+    store_prices = Column(JSON, nullable=True)  # {"walmart": 3.99, "kroger": 4.29}
+    
+    is_purchased = Column(Boolean, default=False, index=True)
+    is_manual = Column(Boolean, default=False)  # user-added vs auto-generated
+    
+    recipe_references = Column(ARRAY(String), default=[])  # array of recipe titles
+    
+    notes = Column(Text, nullable=True)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    shopping_list = relationship("ShoppingList", back_populates="items")
