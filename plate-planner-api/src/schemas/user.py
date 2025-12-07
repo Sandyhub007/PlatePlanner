@@ -1,16 +1,19 @@
 from typing import List, Optional
 from uuid import UUID
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
 
 # --- Shared Properties ---
 class UserBase(BaseModel):
     email: EmailStr
     full_name: Optional[str] = None
 
+
 # --- User Registration ---
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8)
+
 
 # --- User Preferences ---
 class UserPreferencesBase(BaseModel):
@@ -25,31 +28,33 @@ class UserPreferencesBase(BaseModel):
     budget_per_week: Optional[float] = None
     people_count: int = 1
 
+
 class UserPreferencesCreate(UserPreferencesBase):
     pass
+
 
 class UserPreferencesUpdate(UserPreferencesBase):
     pass
 
+
 class UserPreferences(UserPreferencesBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     user_id: UUID
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
 
 # --- User Response ---
 class User(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     is_active: bool
     is_premium: bool
     created_at: datetime
     preferences: Optional[UserPreferences] = None
-
-    class Config:
-        from_attributes = True
 
 # --- Token ---
 class Token(BaseModel):

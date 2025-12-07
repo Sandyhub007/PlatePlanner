@@ -64,3 +64,33 @@ def get_random_recipes(limit: int = 50):
 
     with driver.session() as session:
         return session.execute_read(_fetch_random, limit)
+
+
+def get_recipe_ingredients_by_id(recipe_id: str):
+    """Fetch ingredients for a recipe by recipe_id from Neo4j."""
+    def _fetch_ingredients(tx, recipe_id):
+        try:
+            # Try to parse as int first (common case)
+            recipe_id_int = int(recipe_id)
+            result = tx.run("""
+                MATCH (r:Recipe {recipe_id: $recipe_id})
+                OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient)
+                RETURN collect(i.name) AS ingredients
+            """, recipe_id=recipe_id_int)
+        except ValueError:
+            # If not an int, try as string match on title
+            result = tx.run("""
+                MATCH (r:Recipe)
+                WHERE r.recipe_id = $recipe_id OR toLower(r.title) = toLower($recipe_id)
+                OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient)
+                RETURN collect(i.name) AS ingredients
+            """, recipe_id=recipe_id)
+        
+        record = result.single()
+        if record and record.get("ingredients"):
+            # Filter out None values
+            return [ing for ing in record["ingredients"] if ing]
+        return []
+
+    with driver.session() as session:
+        return session.execute_read(_fetch_ingredients, recipe_id)

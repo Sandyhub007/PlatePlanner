@@ -4,8 +4,9 @@ import csv
 import random
 from ast import literal_eval
 from collections import defaultdict, deque
+from copy import deepcopy
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from functools import lru_cache
 from typing import Dict, Iterable, List, Optional, Sequence
 
@@ -23,6 +24,7 @@ DEFAULT_CALORIE_TARGET = 2000
 DEFAULT_SERVINGS = 1
 CANDIDATE_POOL_TARGET = 420
 MIN_CANDIDATE_POOL = 90
+CALORIE_TOLERANCE = 0.05
 
 PROTEIN_KEYWORDS = {
     "chicken",
@@ -152,6 +154,171 @@ class GeneratedPlan:
     total_carbs: int
     total_fat: int
     total_cost: float
+
+
+def _load_user_with_preferences(db: Session, user_id: str) -> Optional[models.User]:
+    return (
+        db.query(models.User)
+        .options(selectinload(models.User.preferences))
+        .filter(models.User.id == user_id)
+        .first()
+    )
+
+
+def _per_meal_budget(profile: PreferenceProfile) -> Optional[float]:
+    if not profile.budget_per_week:
+        return None
+    meals_per_week = 7 * len(MEAL_SPLITS)
+    if meals_per_week == 0:
+        return None
+    return profile.budget_per_week / meals_per_week
+
+
+def _slot_for_item(profile: PreferenceProfile, item: models.MealPlanItem) -> MealSlot:
+    ratio = MEAL_SPLITS.get(item.meal_type, 1 / max(len(MEAL_SPLITS), 1))
+    calorie_target = profile.calorie_target or DEFAULT_CALORIE_TARGET
+    return MealSlot(
+        day_index=item.day_of_week,
+        meal_type=item.meal_type,
+        calorie_target=max(250, int(calorie_target * ratio)),
+        per_meal_budget=_per_meal_budget(profile),
+        max_prep_time=profile.cooking_time_max,
+    )
+
+
+def _recalculate_plan_totals(plan: models.MealPlan) -> None:
+    plan.total_calories = sum(item.calories or 0 for item in plan.items)
+    plan.total_protein = sum(item.protein or 0 for item in plan.items)
+    plan.total_carbs = sum(item.carbs or 0 for item in plan.items)
+    plan.total_fat = sum(item.fat or 0 for item in plan.items)
+    plan.total_estimated_cost = round(sum(item.estimated_cost or 0.0 for item in plan.items), 2)
+
+
+def _aggregate_nutrition_totals(items: List[models.MealPlanItem]) -> Dict[str, int]:
+    return {
+        "calories": sum(item.calories or 0 for item in items),
+        "protein": sum(item.protein or 0 for item in items),
+        "carbs": sum(item.carbs or 0 for item in items),
+        "fat": sum(item.fat or 0 for item in items),
+    }
+
+
+def _build_summary_payload(
+    plan: models.MealPlan,
+    *,
+    include_meals: bool = True,
+    serialize_dates: bool = False,
+    include_plan_id: bool = True,
+) -> dict:
+    start_date = plan.week_start_date or date.today()
+    end_date = plan.week_end_date or (start_date + timedelta(days=6))
+    total_days = max(1, (end_date - start_date).days + 1)
+
+    def _date_value(value: date) -> date | str:
+        return value.isoformat() if serialize_dates else value
+
+    daily: List[dict] = []
+    total = {"calories": 0, "protein": 0, "carbs": 0, "fat": 0}
+    total_prep = 0
+    total_meals = 0
+
+    for day in range(total_days):
+        day_items = [item for item in plan.items if item.day_of_week == day]
+        day_totals = _aggregate_nutrition_totals(day_items)
+        day_prep = sum(item.prep_time_minutes or 0 for item in day_items)
+        for key in total:
+            total[key] += day_totals[key]
+        total_prep += day_prep
+        total_meals += len(day_items)
+        day_entry = {
+            "day_index": day,
+            "date": _date_value(start_date + timedelta(days=day)),
+            "total": day_totals,
+            "total_prep_time_minutes": day_prep,
+        }
+        if include_meals:
+            day_entry["meals"] = day_items
+        daily.append(day_entry)
+
+    average_prep = total_prep / total_meals if total_meals else 0.0
+
+    summary = {
+        "week_start_date": _date_value(start_date),
+        "week_end_date": _date_value(end_date),
+        "total": total,
+        "daily": daily,
+        "total_estimated_cost": plan.total_estimated_cost,
+        "average_prep_time_minutes": round(average_prep, 2),
+    }
+    if include_plan_id:
+        summary["plan_id"] = plan.id if not serialize_dates else str(plan.id)
+    return summary
+
+
+
+def _ensure_summary_snapshot(plan: models.MealPlan, refresh: bool = False) -> dict:
+    if refresh or not plan.summary_snapshot:
+        plan.summary_snapshot = _build_summary_payload(
+            plan,
+            include_meals=False,
+            serialize_dates=True,
+            include_plan_id=False,
+        )
+        plan.summary_generated_at = datetime.utcnow()
+    return plan.summary_snapshot or {}
+
+
+def _hydrate_summary_response(plan: models.MealPlan, snapshot: dict) -> dict:
+    data = deepcopy(snapshot) if snapshot else {}
+    data.setdefault("week_start_date", plan.week_start_date or date.today())
+    data.setdefault("week_end_date", plan.week_end_date or (plan.week_start_date or date.today()) + timedelta(days=6))
+    data.setdefault("daily", [])
+    data.setdefault("total", {"calories": 0, "protein": 0, "carbs": 0, "fat": 0})
+    data.setdefault("total_estimated_cost", plan.total_estimated_cost)
+    data.setdefault("average_prep_time_minutes", 0.0)
+
+    def _coerce_date(value):
+        if isinstance(value, str):
+            return date.fromisoformat(value)
+        return value
+
+    data["week_start_date"] = _coerce_date(data.get("week_start_date"))
+    data["week_end_date"] = _coerce_date(data.get("week_end_date"))
+
+    meals_by_day: Dict[int, List[models.MealPlanItem]] = defaultdict(list)
+    for item in plan.items:
+        meals_by_day[item.day_of_week].append(item)
+
+    for day_entry in data.get("daily", []):
+        day_index = day_entry.get("day_index", 0)
+        day_entry["date"] = _coerce_date(day_entry.get("date"))
+        day_entry["meals"] = meals_by_day.get(day_index, [])
+
+    data["plan_id"] = plan.id
+    return data
+
+
+def _refresh_plan_state(
+    db: Session,
+    plan: models.MealPlan,
+    profile: PreferenceProfile,
+    *,
+    refresh_summary: bool = True,
+) -> None:
+    """Refresh validation and summary state for a meal plan."""
+    issues = _run_validation_checks(plan, profile)
+    plan.is_valid = not any(issue["severity"] == "error" for issue in issues)
+    plan.validation_issues = issues
+    plan.last_validated_at = datetime.utcnow()
+    if refresh_summary:
+        plan.summary_snapshot = _build_summary_payload(
+            plan,
+            include_meals=False,
+            serialize_dates=True,
+            include_plan_id=False,
+        )
+        plan.summary_generated_at = datetime.utcnow()
+    db.add(plan)
 
 
 def _normalize_value(value: Optional[str]) -> str:
@@ -331,6 +498,12 @@ def _load_recipe_library() -> tuple[List[RecipeRecord], Dict[str, RecipeRecord]]
     record_list = list(records.values())
     record_list.sort(key=lambda rec: rec.title)
     return record_list, records
+
+
+@lru_cache(maxsize=1)
+def _recipe_id_lookup() -> Dict[str, RecipeRecord]:
+    record_list, _ = _load_recipe_library()
+    return {record.recipe_id: record for record in record_list}
 
 
 class MealPlanEngine:
@@ -530,12 +703,7 @@ def generate_meal_plan(
     preferences_override: Optional[MealPlanPreferencesOverride] = None,
 ) -> models.MealPlan:
     week_start = _coerce_week_start(week_start_date)
-    user = (
-        db.query(models.User)
-        .options(selectinload(models.User.preferences))
-        .filter(models.User.id == user_id)
-        .first()
-    )
+    user = _load_user_with_preferences(db, user_id)
     if not user:
         raise ValueError("User not found")
 
@@ -575,6 +743,7 @@ def generate_meal_plan(
             )
         )
 
+    _refresh_plan_state(db, meal_plan, profile)
     db.commit()
     return get_meal_plan(db, meal_plan.id)
 
@@ -596,3 +765,332 @@ def get_user_meal_plans(db: Session, user_id: str) -> List[models.MealPlan]:
         .order_by(models.MealPlan.week_start_date.desc())
         .all()
     )
+
+
+def list_meal_plan_alternatives(
+    db: Session,
+    user_id: str,
+    plan_id: str,
+    item_id: str,
+    limit: int = 5,
+    preferences_override: Optional[MealPlanPreferencesOverride] = None,
+) -> List[dict]:
+    plan = get_meal_plan(db, plan_id)
+    if not plan:
+        raise ValueError("Meal plan not found")
+    if str(plan.user_id) != str(user_id):
+        raise ValueError("Not authorized to view this meal plan")
+    target_item = next((item for item in plan.items if str(item.id) == str(item_id)), None)
+    if not target_item:
+        raise ValueError("Meal plan item not found")
+
+    user = _load_user_with_preferences(db, user_id)
+    if not user:
+        raise ValueError("User not found")
+    profile = _build_preference_profile(user.preferences, preferences_override)
+    slot = _slot_for_item(profile, target_item)
+    candidate_pool = _ENGINE._build_candidate_pool(profile)
+
+    used_ids = {item.recipe_id for item in plan.items}
+    alternatives: List[tuple[float, RecipeRecord]] = []
+    for record in candidate_pool:
+        if record.recipe_id in used_ids or record.recipe_id == target_item.recipe_id:
+            continue
+        if slot.max_prep_time and record.prep_time_minutes > slot.max_prep_time:
+            continue
+        if slot.per_meal_budget and record.estimated_cost > slot.per_meal_budget * 1.4:
+            continue
+        score = abs(record.nutrition.calories - slot.calorie_target)
+        alternatives.append((score, record))
+        if len(alternatives) >= limit * 8:
+            break
+
+    alternatives.sort(key=lambda pair: pair[0])
+    top = [record for _, record in alternatives[:limit]]
+    return [
+        {
+            "recipe_id": record.recipe_id,
+            "title": record.title,
+            "calories": record.nutrition.calories,
+            "protein": record.nutrition.protein,
+            "carbs": record.nutrition.carbs,
+            "fat": record.nutrition.fat,
+            "estimated_cost": record.estimated_cost,
+            "prep_time_minutes": record.prep_time_minutes,
+        }
+        for record in top
+    ]
+
+
+def swap_meal_plan_item(
+    db: Session,
+    user_id: str,
+    plan_id: str,
+    item_id: str,
+    new_recipe_id: str,
+) -> models.MealPlan:
+    plan = get_meal_plan(db, plan_id)
+    if not plan:
+        raise ValueError("Meal plan not found")
+    if str(plan.user_id) != str(user_id):
+        raise ValueError("Not authorized to modify this meal plan")
+    target_item = next((item for item in plan.items if str(item.id) == str(item_id)), None)
+    if not target_item:
+        raise ValueError("Meal plan item not found")
+
+    recipe = _recipe_id_lookup().get(str(new_recipe_id))
+    if not recipe:
+        raise ValueError("Recipe not found in library")
+
+    target_item.recipe_id = recipe.recipe_id
+    target_item.recipe_title = recipe.title
+    target_item.calories = recipe.nutrition.calories
+    target_item.protein = recipe.nutrition.protein
+    target_item.carbs = recipe.nutrition.carbs
+    target_item.fat = recipe.nutrition.fat
+    target_item.estimated_cost = round(recipe.estimated_cost * target_item.servings, 2)
+    target_item.prep_time_minutes = recipe.prep_time_minutes
+
+    db.add(target_item)
+    _recalculate_plan_totals(plan)
+
+    user = _load_user_with_preferences(db, user_id)
+    if not user:
+        raise ValueError("User not found")
+    profile = _build_preference_profile(user.preferences, None)
+    _refresh_plan_state(db, plan, profile)
+    db.commit()
+    return get_meal_plan(db, plan_id)
+
+
+def regenerate_meal_plan_assignments(
+    db: Session,
+    user_id: str,
+    plan_id: str,
+    day_of_week: Optional[int] = None,
+    preferences_override: Optional[MealPlanPreferencesOverride] = None,
+) -> models.MealPlan:
+    plan = get_meal_plan(db, plan_id)
+    if not plan:
+        raise ValueError("Meal plan not found")
+    if str(plan.user_id) != str(user_id):
+        raise ValueError("Not authorized to modify this meal plan")
+    if day_of_week is not None and (day_of_week < 0 or day_of_week > 6):
+        raise ValueError("day_of_week must be between 0 and 6")
+
+    user = _load_user_with_preferences(db, user_id)
+    if not user:
+        raise ValueError("User not found")
+    profile = _build_preference_profile(user.preferences, preferences_override)
+    new_plan = _ENGINE.build_plan(profile, plan.week_start_date)
+
+    if day_of_week is None:
+        db.query(models.MealPlanItem).filter(models.MealPlanItem.plan_id == plan.id).delete(synchronize_session=False)
+        for assignment in new_plan.assignments:
+            record = assignment.recipe
+            db.add(
+                models.MealPlanItem(
+                    plan_id=plan.id,
+                    day_of_week=assignment.day_of_week,
+                    meal_type=assignment.meal_type,
+                    recipe_id=record.recipe_id,
+                    recipe_title=record.title,
+                    servings=assignment.servings,
+                    calories=record.nutrition.calories,
+                    protein=record.nutrition.protein,
+                    carbs=record.nutrition.carbs,
+                    fat=record.nutrition.fat,
+                    estimated_cost=round(record.estimated_cost * assignment.servings, 2),
+                    prep_time_minutes=record.prep_time_minutes,
+                )
+            )
+        plan.total_calories = new_plan.total_calories
+        plan.total_protein = new_plan.total_protein
+        plan.total_carbs = new_plan.total_carbs
+        plan.total_fat = new_plan.total_fat
+        plan.total_estimated_cost = new_plan.total_cost
+        db.add(plan)
+    else:
+        db.query(models.MealPlanItem).filter(
+            models.MealPlanItem.plan_id == plan.id,
+            models.MealPlanItem.day_of_week == day_of_week,
+        ).delete(synchronize_session=False)
+        replacements = [assignment for assignment in new_plan.assignments if assignment.day_of_week == day_of_week]
+        for assignment in replacements:
+            record = assignment.recipe
+            db.add(
+                models.MealPlanItem(
+                    plan_id=plan.id,
+                    day_of_week=assignment.day_of_week,
+                    meal_type=assignment.meal_type,
+                    recipe_id=record.recipe_id,
+                    recipe_title=record.title,
+                    servings=assignment.servings,
+                    calories=record.nutrition.calories,
+                    protein=record.nutrition.protein,
+                    carbs=record.nutrition.carbs,
+                    fat=record.nutrition.fat,
+                    estimated_cost=round(record.estimated_cost * assignment.servings, 2),
+                    prep_time_minutes=record.prep_time_minutes,
+                )
+            )
+    db.flush()
+    refreshed_plan = get_meal_plan(db, plan_id)
+    if not refreshed_plan:
+        raise ValueError("Meal plan not found after regeneration")
+
+    _recalculate_plan_totals(refreshed_plan)
+    _refresh_plan_state(db, refreshed_plan, profile)
+    db.commit()
+    return get_meal_plan(db, plan_id)
+
+
+def _weekly_calorie_target(profile: PreferenceProfile) -> Optional[int]:
+    if not profile.calorie_target:
+        return None
+    return profile.calorie_target * 7 * profile.people_count
+
+
+def _run_validation_checks(plan: models.MealPlan, profile: PreferenceProfile) -> List[dict]:
+    issues: List[dict] = []
+    weekly_target = _weekly_calorie_target(profile)
+    if weekly_target:
+        delta = abs(plan.total_calories - weekly_target)
+        tolerance = weekly_target * CALORIE_TOLERANCE
+        if delta > tolerance:
+            issues.append(
+                {
+                    "code": "calorie_target_miss",
+                    "severity": "error",
+                    "message": (
+                        "Weekly calories differ from target by "
+                        f"{round((delta / weekly_target) * 100, 1)}% (target {weekly_target}, actual {plan.total_calories})."
+                    ),
+                }
+            )
+
+    if profile.budget_per_week and plan.total_estimated_cost > profile.budget_per_week:
+        issues.append(
+            {
+                "code": "budget_exceeded",
+                "severity": "error",
+                "message": (
+                    f"Plan cost ${plan.total_estimated_cost:.2f} exceeds weekly budget of ${profile.budget_per_week:.2f}."
+                ),
+            }
+        )
+
+    for item in plan.items:
+        record = _recipe_id_lookup().get(str(item.recipe_id))
+        if not record:
+            issues.append(
+                {
+                    "code": "recipe_metadata_missing",
+                    "severity": "warning",
+                    "message": f"Recipe metadata missing for '{item.recipe_title}' ({item.recipe_id}).",
+                }
+            )
+            continue
+
+        if _violates_diet(record, profile.dietary_restrictions):
+            issues.append(
+                {
+                    "code": "dietary_restriction_violation",
+                    "severity": "error",
+                    "message": f"Meal '{record.title}' conflicts with dietary restrictions {profile.dietary_restrictions}.",
+                }
+            )
+
+        if _violates_allergies(record, profile.allergies):
+            issues.append(
+                {
+                    "code": "allergy_violation",
+                    "severity": "error",
+                    "message": f"Meal '{record.title}' includes an allergen from {profile.allergies}.",
+                }
+            )
+
+        slot = _slot_for_item(profile, item)
+        if slot.max_prep_time and item.prep_time_minutes and item.prep_time_minutes > slot.max_prep_time:
+            issues.append(
+                {
+                    "code": "prep_time_exceeded",
+                    "severity": "warning",
+                    "message": (
+                        f"Meal '{record.title}' requires {item.prep_time_minutes} minutes "
+                        f"(limit {slot.max_prep_time} minutes)."
+                    ),
+                }
+            )
+
+    return issues
+
+
+def validate_meal_plan(
+    db: Session,
+    user_id: str,
+    plan_id: str,
+    preferences_override: Optional[MealPlanPreferencesOverride] = None,
+    refresh: bool = False,
+) -> dict:
+    if preferences_override is not None:
+        refresh = True
+
+    plan = get_meal_plan(db, plan_id)
+    if not plan:
+        raise ValueError("Meal plan not found")
+    if str(plan.user_id) != str(user_id):
+        raise ValueError("Not authorized to validate this meal plan")
+
+    if not refresh and plan.last_validated_at and plan.validation_issues is not None:
+        return {
+            "plan_id": plan.id,
+            "is_valid": bool(plan.is_valid),
+            "issues": plan.validation_issues or [],
+        }
+
+    user = _load_user_with_preferences(db, user_id)
+    if not user:
+        raise ValueError("User not found")
+
+    profile = _build_preference_profile(user.preferences, preferences_override)
+    _refresh_plan_state(db, plan, profile, refresh_summary=False)
+    db.commit()
+    plan = get_meal_plan(db, plan_id)
+    if not plan:
+        raise ValueError("Meal plan not found")
+
+    return {
+        "plan_id": plan.id,
+        "is_valid": bool(plan.is_valid),
+        "issues": plan.validation_issues or [],
+    }
+
+
+def summarize_meal_plan(
+    db: Session,
+    user_id: str,
+    plan_id: str,
+    refresh: bool = False,
+) -> dict:
+    plan = get_meal_plan(db, plan_id)
+    if not plan:
+        raise ValueError("Meal plan not found")
+    if str(plan.user_id) != str(user_id):
+        raise ValueError("Not authorized to view this meal plan")
+
+    dirty = False
+    if refresh or not plan.summary_snapshot:
+        _ensure_summary_snapshot(plan, refresh=True)
+        dirty = True
+
+    if dirty:
+        db.add(plan)
+        db.commit()
+        plan = get_meal_plan(db, plan_id)
+        if not plan:
+            raise ValueError("Meal plan not found")
+
+    snapshot = plan.summary_snapshot or {}
+    return _hydrate_summary_response(plan, snapshot)
+

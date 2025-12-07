@@ -9,23 +9,25 @@ from pydantic import BaseModel, Field
 
 from src.services.neo4j_service import get_hybrid_substitutes, recipe_details as fetch_recipe_details
 from src.utils.recipesuggestionmodel import suggest_recipes, metadata_df
-from src.api.routers import auth, users, meal_plans
+from src.api.routers import auth, users, meal_plans, shopping_lists
 from src.database.session import engine, Base
-from src.database.schema_guards import ensure_phase_two_schema
+from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema
 
 # ——— Database Initialization ———
 Base.metadata.create_all(bind=engine)
 ensure_phase_two_schema()
+ensure_phase_three_schema()  # Phase 3: Shopping Lists
 
 # ——— FastAPI app setup ———
 app = FastAPI(
     title="Plate Planner Backend",
-    version="0.3",
+    version="0.4",  # Phase 3: Shopping Lists
     openapi_tags=[
         {"name": "health", "description": "Health check"},
         {"name": "authentication", "description": "User registration and login"},
         {"name": "users", "description": "User profile and preferences"},
         {"name": "meal-plans", "description": "AI-powered weekly meal planning"},
+        {"name": "shopping-lists", "description": "Shopping list generation and management"},
         {"name": "recipes", "description": "Recipe suggestion operations"},
         {"name": "substitution", "description": "Ingredient substitution operations"},
     ],
@@ -44,6 +46,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(meal_plans.router)
+app.include_router(shopping_lists.router)
 
 # ——— Logging ———
 logging.basicConfig(

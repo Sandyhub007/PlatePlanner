@@ -7,6 +7,7 @@ readme = "README.md"
 license = "MIT"
 keywords = ["fastapi", "nutrition", "api", "plate planning"]
 homepage = "https://github.com/yourusername/plate-planner-api"
+packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -46,6 +47,9 @@ psycopg2-binary = "^2.9.9"
 email-validator = "^2.1.0.post1"
 python-multipart = "^0.0.6"
 argon2-cffi = "^23.1.0"
+thefuzz = "^0.22.1"
+python-Levenshtein = "^0.25.1"
+pint = "^0.23"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.3.5,<9.0.0"
