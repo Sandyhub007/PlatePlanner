@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Boolean, Column, String, Integer, Float, ForeignKey, DateTime, ARRAY, Text, Date, JSON
+from sqlalchemy import Boolean, Column, String, Integer, Float, ForeignKey, DateTime, ARRAY, Text, Date, JSON, DECIMAL, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -155,3 +155,98 @@ class ShoppingListItem(Base):
     
     # Relationships
     shopping_list = relationship("ShoppingList", back_populates="items")
+
+
+# ========================================
+# Phase 4A: Nutrition Models
+# ========================================
+
+class IngredientNutrition(Base):
+    """Ingredient nutrition data cache from USDA"""
+    __tablename__ = "ingredient_nutrition"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ingredient_name = Column(String(255), unique=True, nullable=False, index=True)
+    normalized_name = Column(String(255), nullable=False, index=True)
+    usda_fdc_id = Column(Integer, nullable=True, index=True)
+    
+    # Macronutrients (per 100g)
+    calories = Column(Integer, nullable=False)
+    protein_g = Column(DECIMAL(6, 2), nullable=False, default=0)
+    carbs_g = Column(DECIMAL(6, 2), nullable=False, default=0)
+    fat_g = Column(DECIMAL(6, 2), nullable=False, default=0)
+    fiber_g = Column(DECIMAL(6, 2), default=0)
+    sugar_g = Column(DECIMAL(6, 2), default=0)
+    sodium_mg = Column(Integer, default=0)
+    
+    # Micronutrients (optional)
+    vitamin_a_mcg = Column(Integer, default=0)
+    vitamin_c_mg = Column(Integer, default=0)
+    calcium_mg = Column(Integer, default=0)
+    iron_mg = Column(DECIMAL(5, 2), default=0)
+    potassium_mg = Column(Integer, default=0)
+    
+    # Fat breakdown
+    saturated_fat_g = Column(DECIMAL(6, 2), default=0)
+    trans_fat_g = Column(DECIMAL(6, 2), default=0)
+    
+    # Metadata
+    data_source = Column(String(50), default="usda")  # 'usda', 'manual', 'estimated'
+    confidence_score = Column(DECIMAL(3, 2), default=1.0)  # 0.0 to 1.0
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class NutritionGoal(Base):
+    """User nutrition goals and targets"""
+    __tablename__ = "nutrition_goals"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    
+    goal_type = Column(String(50), nullable=False)  # 'weight_loss', 'muscle_gain', 'maintenance', 'general_health'
+    
+    daily_calorie_target = Column(Integer, nullable=False)
+    daily_protein_g_target = Column(Integer, nullable=True)
+    daily_carbs_g_target = Column(Integer, nullable=True)
+    daily_fat_g_target = Column(Integer, nullable=True)
+    
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=True)
+    
+    is_active = Column(Boolean, default=True, index=True)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", foreign_keys=[user_id])
+
+
+class NutritionLog(Base):
+    """Daily nutrition consumption logs"""
+    __tablename__ = "nutrition_logs"
+    
+    __table_args__ = (
+        UniqueConstraint('user_id', 'log_date', name='unique_user_date'),
+    )
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    log_date = Column(Date, nullable=False, index=True)
+    
+    total_calories = Column(Integer, default=0)
+    total_protein_g = Column(Integer, default=0)
+    total_carbs_g = Column(Integer, default=0)
+    total_fat_g = Column(Integer, default=0)
+    total_fiber_g = Column(Integer, default=0)
+    total_sodium_mg = Column(Integer, default=0)
+    
+    meals_count = Column(Integer, default=0)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", foreign_keys=[user_id])
