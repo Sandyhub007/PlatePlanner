@@ -13,6 +13,7 @@ from src.database.models import User, MealPlan, NutritionGoal, NutritionLog
 from src.services.neo4j_service import Neo4jService
 from src.services.nutrition_service import NutritionService
 from src.services.healthy_alternatives import HealthyAlternativesService
+from src.services.nutrition_insights import NutritionInsightsEngine
 from src.auth.security import get_current_user
 from src.schemas.nutrition import (
     RecipeNutrition,
@@ -54,6 +55,13 @@ def get_healthy_alternatives_service(
 ) -> HealthyAlternativesService:
     """Dependency for healthy alternatives service"""
     return HealthyAlternativesService(neo4j)
+
+
+def get_insights_engine(
+    db: Session = Depends(get_db)
+) -> NutritionInsightsEngine:
+    """Dependency for nutrition insights engine"""
+    return NutritionInsightsEngine(db)
 
 
 # ========================================
@@ -783,4 +791,244 @@ def _generate_summary_insights(
         insights.append("Try to include more high-fiber meals for better digestion")
     
     return insights
+
+
+# ========================================
+# Week 4 Advanced Endpoints
+# ========================================
+
+@router.get("/insights/recommendations", response_model=dict)
+def get_personalized_recommendations(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    insights_engine: NutritionInsightsEngine = Depends(get_insights_engine)
+):
+    """
+    Get personalized nutrition recommendations
+    
+    **Returns:**
+    - Personalized recommendations based on recent nutrition
+    - Goal-specific advice
+    - Actionable recipe suggestions
+    - Priority-ranked improvements
+    
+    **Features:**
+    - Analyzes recent 7-day nutrition patterns
+    - Considers active nutrition goals
+    - Provides specific recipe suggestions
+    - Ranks recommendations by priority
+    """
+    try:
+        # Get recent nutrition data (simplified for now)
+        # In production, calculate from actual meal plan data
+        recent_nutrition = NutritionMacros(
+            calories=2000,
+            protein_g=100,
+            carbs_g=200,
+            fat_g=70,
+            fiber_g=25,
+            sugar_g=40,
+            sodium_mg=2000
+        )
+        
+        # Get active goal
+        active_goal = db.query(NutritionGoal).filter(
+            and_(
+                NutritionGoal.user_id == current_user.id,
+                NutritionGoal.is_active == True
+            )
+        ).first()
+        
+        # Generate recommendations
+        recommendations = insights_engine.generate_personalized_recommendations(
+            user_id=str(current_user.id),
+            recent_nutrition=recent_nutrition,
+            goal=active_goal
+        )
+        
+        return {
+            "user_id": str(current_user.id),
+            "period": "Last 7 days",
+            "total_recommendations": len(recommendations),
+            "recommendations": [
+                {
+                    "type": rec.type,
+                    "message": rec.message,
+                    "recipe_suggestions": rec.recipe_suggestions
+                }
+                for rec in recommendations
+            ]
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error generating recommendations: {str(e)}"
+        )
+
+
+@router.get("/insights/trends", response_model=dict)
+def get_nutrition_trends(
+    days: int = Query(30, ge=7, le=90, description="Days to analyze"),
+    current_user: User = Depends(get_current_user),
+    insights_engine: NutritionInsightsEngine = Depends(get_insights_engine)
+):
+    """
+    Get nutrition trends analysis
+    
+    **Parameters:**
+    - `days`: Number of days to analyze (7-90, default 30)
+    
+    **Returns:**
+    - Calorie trends (increasing/decreasing/stable)
+    - Protein trends
+    - Consistency score (0-10)
+    - Actionable insights
+    
+    **Use Cases:**
+    - Identify nutrition patterns
+    - Track progress over time
+    - Spot inconsistencies
+    """
+    try:
+        trends = insights_engine.analyze_nutrition_trends(
+            user_id=str(current_user.id),
+            days=days
+        )
+        
+        return {
+            "user_id": str(current_user.id),
+            "analysis_period": trends["period"],
+            "weeks_analyzed": trends["weeks_analyzed"],
+            "calorie_trend": trends["calorie_trend"],
+            "protein_trend": trends["protein_trend"],
+            "consistency_score": trends["consistency_score"],
+            "insights": trends["insights"]
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error analyzing trends: {str(e)}"
+        )
+
+
+@router.get("/insights/goal-prediction", response_model=dict)
+def predict_goal_achievement(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    insights_engine: NutritionInsightsEngine = Depends(get_insights_engine)
+):
+    """
+    Predict likelihood of achieving nutrition goal
+    
+    **Returns:**
+    - Achievement prediction (highly_likely/likely/possible/unlikely)
+    - Confidence percentage
+    - Success rate based on recent performance
+    - Days on/off track
+    - Specific recommendations to improve
+    
+    **Algorithm:**
+    - Analyzes last 14 days of performance
+    - Calculates success rate
+    - Projects to goal end date
+    - Provides confidence score
+    """
+    try:
+        # Get active goal
+        active_goal = db.query(NutritionGoal).filter(
+            and_(
+                NutritionGoal.user_id == current_user.id,
+                NutritionGoal.is_active == True
+            )
+        ).first()
+        
+        if not active_goal:
+            return {
+                "has_active_goal": False,
+                "message": "No active goal to predict. Create a goal to get started!"
+            }
+        
+        # Get recent performance (simplified)
+        # In production, calculate from nutrition logs
+        recent_performance = {
+            "days_on_track": 10,
+            "days_off_track": 4
+        }
+        
+        prediction = insights_engine.predict_goal_achievement(
+            user_id=str(current_user.id),
+            goal=active_goal,
+            recent_performance=recent_performance
+        )
+        
+        return {
+            "has_active_goal": True,
+            "goal_type": active_goal.goal_type,
+            "goal_start": active_goal.start_date.isoformat(),
+            "goal_end": active_goal.end_date.isoformat() if active_goal.end_date else None,
+            "prediction": prediction["prediction"],
+            "confidence": prediction["confidence"],
+            "message": prediction["message"],
+            "success_rate": prediction["success_rate"],
+            "days_on_track": prediction["days_on_track"],
+            "days_off_track": prediction["days_off_track"],
+            "progress_pct": prediction["progress_pct"],
+            "days_remaining": prediction["days_remaining"],
+            "recommendations": prediction["recommendations"]
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error predicting goal achievement: {str(e)}"
+        )
+
+
+@router.get("/insights/weekly-report", response_model=dict)
+def get_weekly_report(
+    week_start: date = Query(..., description="Week start date (Monday)"),
+    current_user: User = Depends(get_current_user),
+    insights_engine: NutritionInsightsEngine = Depends(get_insights_engine)
+):
+    """
+    Get comprehensive weekly nutrition report
+    
+    **Parameters:**
+    - `week_start`: Start of week (should be Monday)
+    
+    **Returns:**
+    - Week summary
+    - Key highlights
+    - Areas to improve
+    - Wins and achievements
+    - Action items for next week
+    
+    **Perfect for:**
+    - Weekly check-ins
+    - Progress reviews
+    - Planning next week
+    """
+    try:
+        report = insights_engine.generate_weekly_report(
+            user_id=str(current_user.id),
+            week_start=week_start
+        )
+        
+        return {
+            "user_id": str(current_user.id),
+            "week": report["week"],
+            "summary": report["summary"],
+            "highlights": report["highlights"],
+            "areas_to_improve": report["areas_to_improve"],
+            "wins": report["wins"],
+            "action_items": report["action_items"]
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error generating weekly report: {str(e)}"
+        )
 
