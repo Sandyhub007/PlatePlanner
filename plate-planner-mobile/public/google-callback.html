@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signing in…</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fafafa;
+      color: #333;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #eee;
+      border-top-color: #ff6b35;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .container {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="spinner"></div>
+    <p>Signing you in…</p>
+  </div>
+
+  <script>
+    // This page is the Google OAuth redirect target.
+    // It captures tokens from the URL hash and passes them to the app.
+    (function () {
+      var hash = window.location.hash;
+      if (hash && hash.length > 1) {
+        var params = new URLSearchParams(hash.substring(1));
+        var accessToken = params.get('access_token');
+        var idToken = params.get('id_token');
+        var state = params.get('state');
+
+        if (accessToken || idToken) {
+          // Store tokens (mainly for web fallback)
+          try {
+            sessionStorage.setItem('google_oauth_access_token', accessToken || '');
+            sessionStorage.setItem('google_oauth_id_token', idToken || '');
+          } catch (e) {}
+          
+          if (state) {
+            // "state" contains the return URL (e.g. exp://... or http://.../login)
+            var dest = decodeURIComponent(state);
+            
+            // Append tokens to the destination URL
+            var separator = dest.includes('?') ? '&' : '?';
+            dest += separator + 'access_token=' + (accessToken || '') + '&id_token=' + (idToken || '');
+            
+            // Show a visible link just in case auto-redirect fails
+            var link = document.createElement('a');
+            link.href = dest;
+            link.innerText = "Click here to return to app";
+            link.style.display = "block";
+            link.style.marginTop = "20px";
+            link.style.padding = "10px 20px";
+            link.style.background = "#ff6b35";
+            link.style.color = "white";
+            link.style.textDecoration = "none";
+            link.style.borderRadius = "5px";
+            document.querySelector('.container').appendChild(link);
+            
+            // Auto-redirect
+            setTimeout(function() {
+              window.location.href = dest;
+            }, 500);
+            return;
+          }
+        }
+      }
+
+      // Default fallback (web behavior)
+      window.location.replace('/login');
+    })();
+  </script>
+</body>
+
+</html>

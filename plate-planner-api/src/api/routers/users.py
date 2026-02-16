@@ -17,6 +17,19 @@ async def read_users_me(
 ):
     return current_user
 
+@router.put("/me", response_model=schemas.User)
+def update_user_profile(
+    update_data: schemas.UserUpdate,
+    current_user: models.User = Depends(security.get_current_active_user),
+    db: Session = Depends(session.get_db)
+):
+    data = update_data.model_dump(exclude_unset=True)
+    for key, value in data.items():
+        setattr(current_user, key, value)
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
 @router.put("/me/preferences", response_model=schemas.UserPreferences)
 def update_user_preferences(
     preferences: schemas.UserPreferencesUpdate,

@@ -40,10 +40,15 @@ def suggest_recipes(
     ingredients: list[str],
     top_n: int = 5,
     rerank_weight: float = 0.6,
-    raw_k: int = 50,
-    min_overlap: int = 2
+    raw_k: int = 500,  # Increased to find enough matches after filtering
+    min_overlap: int = 2,
+    # Dietary filters
+    is_vegan: bool = False,
+    is_vegetarian: bool = False,
+    is_gluten_free: bool = False,
+    is_dairy_free: bool = False
 ) -> list[dict]:
-    """Suggest recipes based on semantic similarity + ingredient overlap."""
+    """Suggest recipes based on semantic similarity + ingredient overlap + dietary filters."""
     query_vec = model.encode([" ".join(ingredients)])
     faiss.normalize_L2(query_vec)
     distances, indices = index.search(query_vec, raw_k)
@@ -54,10 +59,26 @@ def suggest_recipes(
     results: list[dict] = []
     for dist_i, idx in enumerate(indices[0]):
         row = metadata_df.iloc[idx]
-        try:
-            raw_list = literal_eval(row["NER"])
-        except (ValueError, SyntaxError):
+        
+        # --- Dietary Checks ---
+        # If user asked for Vegan but recipe is NOT vegan -> Skip
+        if is_vegan and not row.get("is_vegan", False):
             continue
+        if is_vegetarian and not row.get("is_vegetarian", False):
+            continue
+        if is_gluten_free and not row.get("is_gluten_free", False):
+            continue
+        if is_dairy_free and not row.get("is_dairy_free", False):
+            continue
+
+        raw_ner = row["NER"]
+        if not isinstance(raw_ner, str) or not raw_ner.strip():
+            continue
+        # Try Python list format first, fall back to comma-separated
+        try:
+            raw_list = literal_eval(raw_ner)
+        except (ValueError, SyntaxError):
+            raw_list = [x.strip() for x in raw_ner.split(",") if x.strip()]
 
         # 1) dedupe the recipe's ingredient list, preserving order
         seen = set()
@@ -67,8 +88,17 @@ def suggest_recipes(
                 unique_full_list.append(ing)
                 seen.add(ing)
 
-        # 2) find the intersection as a set (no duplicates)
-        overlap_set = unique_full_list and (input_set & set(unique_full_list))
+    # 2) find the intersection (fuzzy match)
+        norm_inputs = [x.lower().strip() for x in ingredients]
+        norm_recipe_ings = [x.lower().strip() for x in unique_full_list]
+        
+        overlap_set = set()
+        for i, r_ing in enumerate(norm_recipe_ings):
+            for u_ing in norm_inputs:
+                if u_ing and u_ing in r_ing:
+                     overlap_set.add(unique_full_list[i])
+                     break
+
         if len(overlap_set) < min_overlap:
             continue
 
@@ -86,9 +116,18 @@ def suggest_recipes(
         results.append({
             "title": row["title"],
             "ingredients": [i for i in unique_full_list if i in overlap_set],
+            "all_ingredients": unique_full_list,
+            "directions": "Directions not available.",
             "semantic_score": sem_score,
             "overlap_score": overlap_score,
             "combined_score": combined_score,
+            # Return tags so frontend can display "Vegan", "GF" badges
+            "tags": {
+                "vegan": bool(row.get("is_vegan", False)),
+                "vegetarian": bool(row.get("is_vegetarian", False)),
+                "gluten_free": bool(row.get("is_gluten_free", False)),
+                "dairy_free": bool(row.get("is_dairy_free", False))
+            }
         })
 
     # sort, rank, and return top_n

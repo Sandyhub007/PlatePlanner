@@ -9,7 +9,7 @@ import yaml
 # --- Paths ---
 RAW_DATA_PATH = "app/src/data/raw/recipe_dataset_200k.csv"
 CLEANED_DATA_PATH = "/app/src/data/processed/ingredient_substitution/cleaned_ner.csv"
-NORMALIZER_YAML_PATH = "src/ml_training/normalizer_config.yaml"  # <-- Adjust if needed
+NORMALIZER_YAML_PATH = "src/utils/normalizer_config.yaml"
 
 # --- Load YAML config ---
 with open(NORMALIZER_YAML_PATH) as f:

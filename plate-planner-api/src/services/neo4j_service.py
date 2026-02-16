@@ -9,6 +9,29 @@ from src.evaluation.hybrid_substitution import (
 
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 
+
+class Neo4jService:
+    """Lightweight Neo4j wrapper used by service layer."""
+
+    def __init__(self):
+        self._driver = driver
+
+    def execute_query(self, query: str, params: dict | None = None):
+        """Run a Cypher query and return list of dict rows."""
+        def _run(tx):
+            result = tx.run(query, **(params or {}))
+            return [record.data() for record in result]
+
+        with self._driver.session() as session:
+            return session.execute_read(_run)
+
+    def close(self):
+        """Close the shared driver."""
+        try:
+            self._driver.close()
+        except Exception:
+            pass
+
 def get_hybrid_substitutes(
     ingredient: str,
     context: str | None = None,

@@ -53,8 +53,15 @@ class User(UserBase):
     id: UUID
     is_active: bool
     is_premium: bool
+    auth_provider: str = "email"
+    profile_photo_url: Optional[str] = None
     created_at: datetime
     preferences: Optional[UserPreferences] = None
+
+
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    profile_photo_url: Optional[str] = None
 
 # --- Token ---
 class Token(BaseModel):
@@ -63,4 +70,10 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+
+class GoogleLoginRequest(BaseModel):
+    id_token: Optional[str] = None
+    access_token: Optional[str] = None
+
 

@@ -51,6 +51,7 @@ thefuzz = "^0.22.1"
 python-Levenshtein = "^0.25.1"
 pint = "^0.23"
 aiohttp = "^3.9.0"
+google-auth = "^2.48.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.3.5,<9.0.0"

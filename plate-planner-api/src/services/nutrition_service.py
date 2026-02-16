@@ -11,7 +11,7 @@ from sqlalchemy import and_
 from src.database.models import User, MealPlan
 from src.services.neo4j_service import Neo4jService
 from src.utils.usda_client import get_usda_client, USDAClient
-from src.utils.ingredient_normalizer import normalize_ingredient_name
+from src.utils.ingredient_matcher import normalize_ingredient_name
 
 logger = logging.getLogger(__name__)
 
