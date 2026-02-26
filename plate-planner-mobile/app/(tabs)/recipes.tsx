@@ -1,9 +1,10 @@
-import { ScrollView, ActivityIndicator, Pressable } from "react-native";
+import { ScrollView, ActivityIndicator, Pressable, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Text, VStack, HStack, Input, InputField, InputSlot, InputIcon, SearchIcon, Button, ButtonText, Icon } from "@gluestack-ui/themed";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { apiRequest } from "../../src/api/client";
+import { LinearGradient } from "expo-linear-gradient";
 
 type RecipeResult = {
   title: string;
@@ -54,36 +55,48 @@ export default function RecipesScreen() {
   const ingredientChips = query.split(",").map(i => i.trim()).filter(Boolean);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }} edges={["top", "left", "right"]}>
-      <Box px="$6" py="$4">
-        <Text color="$coolGray400" fontWeight="$medium">Find your next meal</Text>
-        <Text size="3xl" bold color="$coolGray900" mt="$1">Discover Recipes</Text>
-      </Box>
+    <Box style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
+      {/* Premium Header with Image & Gradient */}
+      <ImageBackground
+        source={{ uri: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80' }}
+        style={{ width: '100%', paddingTop: 60, paddingBottom: 30 }}
+        imageStyle={{ opacity: 0.9 }}
+      >
+        <LinearGradient
+          colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.3)']}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+        <Box px="$6" mb="$4">
+          <Text color="$coolGray200" fontWeight="$medium">Find your next meal</Text>
+          <Text size="3xl" bold color="$white" mt="$1">Discover Recipes</Text>
+        </Box>
 
-      {/* Search Bar */}
-      <Box px="$6" mb="$4">
-        <HStack space="sm">
-          <Input variant="outline" size="lg" flex={1} bg="$white" borderRadius="$xl" borderColor="$coolGray200">
-            <InputSlot pl="$3">
-              <InputIcon as={SearchIcon} color="$coolGray400" />
-            </InputSlot>
-            <InputField
-              placeholder="e.g. chicken, tomato, garlic"
-              value={query}
-              onChangeText={setQuery}
-              onSubmitEditing={handleSearch}
-              returnKeyType="search"
-            />
-          </Input>
-          <Button bg="$green600" borderRadius="$xl" px="$5" h="$12" onPress={handleSearch}>
-            <ButtonText color="$white" bold>Search</ButtonText>
-          </Button>
-        </HStack>
-      </Box>
+        {/* Search Bar */}
+        <Box px="$6">
+          <HStack space="sm">
+            <Input variant="outline" size="lg" flex={1} bg="$white" borderRadius="$xl" borderColor="$coolGray200" shadowColor="$black" shadowOffset={{ width: 0, height: 4 }} shadowOpacity={0.1} shadowRadius={8}>
+              <InputSlot pl="$3">
+                <InputIcon as={SearchIcon} color="$coolGray400" />
+              </InputSlot>
+              <InputField
+                placeholder="chicken, tomato..."
+                placeholderTextColor="#9ca3af"
+                value={query}
+                onChangeText={setQuery}
+                onSubmitEditing={handleSearch}
+                returnKeyType="search"
+              />
+            </Input>
+            <Button bg="$green600" borderRadius="$xl" px="$5" h="$12" onPress={handleSearch} shadowColor="$green600" shadowOffset={{ width: 0, height: 4 }} shadowOpacity={0.3} shadowRadius={8}>
+              <ButtonText color="$white" bold>Search</ButtonText>
+            </Button>
+          </HStack>
+        </Box>
+      </ImageBackground>
 
       {/* Ingredient Chips Preview */}
       {ingredientChips.length > 0 && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16, marginTop: 24 }}>
           <HStack space="xs">
             {ingredientChips.map((chip, i) => (
               <Box key={i} px="$3" py="$1" bg="$green100" borderRadius="$full">
@@ -95,7 +108,7 @@ export default function RecipesScreen() {
       )}
 
       {/* Category Filters */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16, marginTop: ingredientChips.length === 0 ? 24 : 0 }}>
         <HStack space="sm">
           {categories.map((cat) => (
             <Box key={cat}>
@@ -177,11 +190,11 @@ export default function RecipesScreen() {
                 <Box p="$4">
                   <HStack justifyContent="space-between" alignItems="center" mb="$3">
                     <HStack space="sm" flexWrap="wrap">
-                      <Box px="$2" py="$1" bg="$green100" borderRadius="$md" mb="$1">
-                        <Text size="xs" color="$green700" bold>Match: {(recipe.combined_score * 100).toFixed(0)}%</Text>
+                      <Box px="$2" py="$1" bg="$green100" borderRadius="$md" mb="$1" borderWidth={1} borderColor="$green200">
+                        <Text size="xs" color="$green700" bold>Relevance: {(recipe.combined_score * 100).toFixed(0)}%</Text>
                       </Box>
-                      <Box px="$2" py="$1" bg="$green100" borderRadius="$md" mb="$1">
-                        <Text size="xs" color="$green700">Overlap: {(recipe.overlap_score * 100).toFixed(0)}%</Text>
+                      <Box px="$2" py="$1" bg="$blue100" borderRadius="$md" mb="$1" borderWidth={1} borderColor="$blue200">
+                        <Text size="xs" color="$blue700" bold>Pantry Coverage: {(recipe.overlap_score * 100).toFixed(0)}%</Text>
                       </Box>
                       <Box px="$2" py="$1" bg="$coolGray100" borderRadius="$md" mb="$1">
                         <Text size="xs" color="$coolGray700">#{recipe.rank}</Text>
@@ -230,6 +243,6 @@ export default function RecipesScreen() {
           </>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </Box>
   );
 }

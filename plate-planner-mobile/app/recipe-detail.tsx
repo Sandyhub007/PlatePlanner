@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Box, Text, ScrollView, Button, ButtonText, HStack, VStack, Icon, ArrowLeftIcon } from '@gluestack-ui/themed';
-import { ActivityIndicator, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { apiRequest } from '../src/api/client';
 
@@ -190,40 +191,46 @@ export default function RecipeDetailScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         {/* Header Banner */}
-        <Box h={250} bg="$green600" justifyContent="center" alignItems="center">
+        <ImageBackground
+          source={{ uri: `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80` }}
+          style={{ height: 280, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <LinearGradient
+            colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0)']}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 100 }}
+          />
           <Box position="absolute" top={16} left={16} zIndex={10}>
-            <Button onPress={() => router.back()} variant="solid" bg="rgba(0,0,0,0.3)" borderRadius="$full" w={40} h={40} p={0}>
+            <Button onPress={() => router.back()} variant="solid" bg="rgba(0,0,0,0.5)" borderRadius="$full" w={40} h={40} p={0}>
               <Icon as={ArrowLeftIcon} color="white" />
             </Button>
           </Box>
-          <Text color="white" opacity={0.5} size="4xl" bold>Food Image</Text>
-        </Box>
+        </ImageBackground>
 
-        <Box px="$6" py="$6" mt="-$6" bg="#FAFAFA" borderTopLeftRadius="$3xl" borderTopRightRadius="$3xl">
+        <Box px="$6" py="$6" mt="-$8" bg="#FAFAFA" borderTopLeftRadius="$3xl" borderTopRightRadius="$3xl">
           <Text size="2xl" bold color="$coolGray900" mb="$2" lineHeight={34}>{title}</Text>
 
           {/* Tags Row */}
           <HStack space="md" mb="$6" flexWrap="wrap">
-            <Box px="$3" py="$1" bg="$green100" borderRadius="$md">
-              <Text color="$green700" bold>Match: {(score * 100).toFixed(0)}%</Text>
+            <Box px="$3" py="$1" bg="$green100" borderRadius="$md" borderWidth={1} borderColor="$green200" mb="$2">
+              <Text color="$green700" bold>Relevance: {(score * 100).toFixed(0)}%</Text>
             </Box>
             {tags.vegan && (
-              <Box px="$3" py="$1" bg="$green100" borderRadius="$md">
+              <Box px="$3" py="$1" bg="$green100" borderRadius="$md" mb="$2">
                 <Text color="$green700" bold>🌱 Vegan</Text>
               </Box>
             )}
             {tags.vegetarian && !tags.vegan && (
-              <Box px="$3" py="$1" bg="$green100" borderRadius="$md">
+              <Box px="$3" py="$1" bg="$green100" borderRadius="$md" mb="$2">
                 <Text color="$green700" bold>🥬 Vegetarian</Text>
               </Box>
             )}
             {tags.gluten_free && (
-              <Box px="$3" py="$1" bg="$blue100" borderRadius="$md">
+              <Box px="$3" py="$1" bg="$blue100" borderRadius="$md" mb="$2">
                 <Text color="$blue700" bold>🚫 Gluten-Free</Text>
               </Box>
             )}
             {tags.dairy_free && (
-              <Box px="$3" py="$1" bg="$purple100" borderRadius="$md">
+              <Box px="$3" py="$1" bg="$purple100" borderRadius="$md" mb="$2">
                 <Text color="$purple700" bold>🥛 Dairy-Free</Text>
               </Box>
             )}
