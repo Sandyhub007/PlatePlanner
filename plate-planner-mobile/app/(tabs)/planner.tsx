@@ -1,8 +1,11 @@
 import { ScrollView, TouchableOpacity, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Box, Text, VStack, HStack, Icon, ChevronLeftIcon, ChevronRightIcon, PlusIcon, Divider, Button, ButtonText, CalendarDaysIcon } from "@gluestack-ui/themed";
+import { Box, Text, VStack, HStack, Icon, ChevronLeftIcon, ChevronRightIcon, AddIcon, Divider, Button, ButtonText, CalendarDaysIcon } from "@gluestack-ui/themed";
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import * as ImagePicker from 'expo-image-picker';
+import { useAuth } from "../../src/state/auth";
+import { apiUploadRequest } from "../../src/api/client";
 
 // Generate this week's dates
 const generateWeek = () => {
@@ -23,15 +26,68 @@ const generateWeek = () => {
 };
 
 export default function MealPlannerScreen() {
+  const { token } = useAuth();
   const [weekDates] = useState(generateWeek());
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
-  // Dummy Meal Data
-  const meals: Record<string, { type: string, filled: boolean, title?: string, image?: string, calories?: number }> = {
+  // Meal Data State
+  const [meals, setMeals] = useState<Record<string, { type: string, filled: boolean, title?: string, image?: string, calories?: number }>>({
     Breakfast: { type: 'Breakfast', filled: true, title: 'Avocado Toast & Egg', image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80', calories: 420 },
     Lunch: { type: 'Lunch', filled: false },
     Dinner: { type: 'Dinner', filled: true, title: 'Lemon Herb Grilled Salmon', image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=80', calories: 580 },
     Snacks: { type: 'Snacks', filled: false },
+  });
+
+  const handlePickImage = async (mealKey: string) => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const asset = result.assets[0];
+
+      // Optioanlly set loading state here...
+
+      const formData = new FormData();
+      // React Native FormData requires { uri, name, type }
+      const uriParts = asset.uri.split('.');
+      const fileType = uriParts[uriParts.length - 1];
+
+      formData.append('file', {
+        uri: asset.uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      } as any);
+
+      formData.append('meal_type', meals[mealKey].type);
+      formData.append('meal_date', selectedDate);
+      formData.append('title', 'My Custom Meal');
+
+      try {
+        const response = await apiUploadRequest<{ image_url: string }>(
+          "/user-meals/upload",
+          formData,
+          token
+        );
+
+        // Update local state with the permanent URL
+        setMeals(prev => ({
+          ...prev,
+          [mealKey]: {
+            ...prev[mealKey],
+            filled: true,
+            title: 'My Custom Meal',
+            image: response.image_url, // Permanent Vercel URL
+          }
+        }));
+      } catch (err) {
+        console.error("Failed to upload image", err);
+        alert("Failed to save meal photo. Please try again.");
+      }
+    }
   };
 
   return (
@@ -99,8 +155,8 @@ export default function MealPlannerScreen() {
 
         {/* Meal Slots */}
         <Box px="$6">
-          {Object.values(meals).map((meal, index) => (
-            <Box key={index} mb="$6">
+          {Object.entries(meals).map(([mealKey, meal]) => (
+            <Box key={mealKey} mb="$6">
 
               <HStack justifyContent="space-between" alignItems="center" mb="$3">
                 <Text size="lg" bold color="$coolGray900">{meal.type}</Text>
@@ -113,7 +169,7 @@ export default function MealPlannerScreen() {
 
               {meal.filled ? (
                 /* Filled Meal Card */
-                <TouchableOpacity activeOpacity={0.8}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => handlePickImage(mealKey)}>
                   <Box bg="$white" borderRadius="$2xl" overflow="hidden" shadowColor="$black" shadowOffset={{ width: 0, height: 4 }} shadowOpacity={0.06} shadowRadius={10} elevation={3} borderWidth={1} borderColor="$coolGray50">
                     <ImageBackground source={{ uri: meal.image }} style={{ height: 120, width: '100%' }}>
                       <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)']} style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
@@ -121,20 +177,20 @@ export default function MealPlannerScreen() {
                         <Text color="$white" bold size="md">{meal.title}</Text>
                       </Box>
                       <Box position="absolute" top={10} right={10} bg="rgba(0,0,0,0.5)" borderRadius="$full" p="$1">
-                        <Icon as={PlusIcon} color="white" style={{ transform: [{ rotate: '45deg' }] }} />
+                        <Icon as={AddIcon} color="white" style={{ transform: [{ rotate: '45deg' }] }} />
                       </Box>
                     </ImageBackground>
                   </Box>
                 </TouchableOpacity>
               ) : (
                 /* Empty Meal Slot */
-                <TouchableOpacity activeOpacity={0.7}>
+                <TouchableOpacity activeOpacity={0.7} onPress={() => handlePickImage(mealKey)}>
                   <Box bg="$white" borderRadius="$2xl" borderStyle="dashed" borderWidth={1.5} borderColor="$coolGray300" h={120} alignItems="center" justifyContent="center">
                     <Box bg="$green50" w={40} h={40} borderRadius="$full" alignItems="center" justifyContent="center" mb="$2">
-                      <Icon as={PlusIcon} color="$green600" />
+                      <Icon as={AddIcon} color="$green600" />
                     </Box>
                     <Text color="$coolGray500" bold>Add {meal.type.toLowerCase()}</Text>
-                    <Text color="$coolGray400" size="xs">Tap to discover recipes</Text>
+                    <Text color="$coolGray400" size="xs">Tap to upload a photo</Text>
                   </Box>
                 </TouchableOpacity>
               )}

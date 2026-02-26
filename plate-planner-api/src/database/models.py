@@ -23,6 +23,7 @@ class User(Base):
     preferences = relationship("UserPreferences", back_populates="user", uselist=False, cascade="all, delete-orphan")
     meal_plans = relationship("MealPlan", back_populates="user", cascade="all, delete-orphan")
     shopping_lists = relationship("ShoppingList", back_populates="user", cascade="all, delete-orphan")
+    user_meals = relationship("UserMeal", back_populates="user", cascade="all, delete-orphan")
 
 class UserPreferences(Base):
     __tablename__ = "user_preferences"
@@ -252,3 +253,24 @@ class NutritionLog(Base):
     
     # Relationships
     user = relationship("User", foreign_keys=[user_id])
+
+
+class UserMeal(Base):
+    """User uploaded meal photos and metadata"""
+    __tablename__ = "user_meals"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    
+    meal_type = Column(String(50), nullable=False) # Breakfast, Lunch, Dinner, Snacks
+    image_url = Column(String(500), nullable=False) # URL to vercel blob
+    meal_date = Column(Date, nullable=False, index=True)
+    title = Column(String(255), nullable=True)
+    
+    calories = Column(Integer, nullable=True)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User", back_populates="user_meals")

@@ -52,6 +52,8 @@ python-Levenshtein = "^0.25.1"
 pint = "^0.23"
 aiohttp = "^3.9.0"
 google-auth = "^2.48.0"
+vercel-blob = "^0.4.2"
+pydantic-settings = "^2.13.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.3.5,<9.0.0"

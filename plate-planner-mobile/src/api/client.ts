@@ -62,3 +62,27 @@ export async function apiFormRequest<T>(
 
   return res.json() as Promise<T>;
 }
+
+export async function apiUploadRequest<T>(
+  path: string,
+  formData: FormData,
+  token?: string | null
+): Promise<T> {
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new ApiError(text || "Upload failed", res.status);
+  }
+
+  return res.json() as Promise<T>;
+}

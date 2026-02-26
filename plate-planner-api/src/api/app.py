@@ -14,7 +14,7 @@ from src.services.substitution_service import get_pantry_substitutions
 from src.utils.recipesuggestionmodel import suggest_recipes, DB_PATH
 import sqlite3
 import json
-from src.api.routers import auth, users, meal_plans, shopping_lists, nutrition, recommendations
+from src.api.routers import auth, users, meal_plans, shopping_lists, nutrition, recommendations, user_meals
 from src.database.session import engine, Base
 from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema
 from src.config.paths import DataPaths
@@ -57,6 +57,7 @@ app.include_router(meal_plans.router)
 app.include_router(shopping_lists.router)
 app.include_router(nutrition.router)
 app.include_router(recommendations.router)
+app.include_router(user_meals.router)
 
 # ——— Logging ———
 logging.basicConfig(
