@@ -1,196 +1,148 @@
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Box, Text, VStack, HStack, Button, ButtonText, Icon, CalendarDaysIcon, Heading, AddIcon, Modal, ModalBackdrop, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Input, InputField, CloseIcon } from "@gluestack-ui/themed";
+import { Box, Text, VStack, HStack, Icon, ChevronLeftIcon, ChevronRightIcon, PlusIcon, Divider, Button, ButtonText, CalendarDaysIcon } from "@gluestack-ui/themed";
 import { useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 
-const dates = [
-  { day: "Mon", date: "12" },
-  { day: "Tue", date: "13", active: true },
-  { day: "Wed", date: "14" },
-  { day: "Thu", date: "15" },
-  { day: "Fri", date: "16" },
-];
+// Generate this week's dates
+const generateWeek = () => {
+  const dates = [];
+  const curr = new Date();
+  const first = curr.getDate() - curr.getDay(); // First day is Sunday
 
-const initialMeals = [
-  { id: "1", meal_type: "Breakfast", time: "8:00 AM", recipe_title: "Avocado Toast with Eggs", calories: 420 },
-  { id: "2", meal_type: "Lunch", time: "12:30 PM", recipe_title: "Grilled Chicken Salad", calories: 550 },
-  { id: "3", meal_type: "Snack", time: "3:00 PM", recipe_title: "Greek Yogurt & Berries", calories: 180 },
-  { id: "4", meal_type: "Dinner", time: "7:00 PM", recipe_title: "Salmon with Quinoa", calories: 620 },
-];
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(curr.setDate(first + i));
+    dates.push({
+      date: day.getDate(),
+      day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day.getDay()],
+      fullDate: day.toISOString().split('T')[0],
+      isToday: day.getDate() === new Date().getDate() && day.getMonth() === new Date().getMonth(),
+    });
+  }
+  return dates;
+};
 
-export default function PlannerScreen() {
-  const [selectedDay, setSelectedDay] = useState("Tue");
-  const [meals, setMeals] = useState(initialMeals);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newMealName, setNewMealName] = useState("");
-  const [newMealCals, setNewMealCals] = useState("");
-  const [newMealType, setNewMealType] = useState("Snack");
+export default function MealPlannerScreen() {
+  const [weekDates] = useState(generateWeek());
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
-  const handleAddMeal = () => {
-    if (!newMealName || !newMealCals) return;
-    const newMeal = {
-      id: Date.now().toString(),
-      meal_type: newMealType,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      recipe_title: newMealName,
-      calories: parseInt(newMealCals) || 0
-    };
-    setMeals([...meals, newMeal]);
-    setShowAddModal(false);
-    setNewMealName("");
-    setNewMealCals("");
+  // Dummy Meal Data
+  const meals: Record<string, { type: string, filled: boolean, title?: string, image?: string, calories?: number }> = {
+    Breakfast: { type: 'Breakfast', filled: true, title: 'Avocado Toast & Egg', image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80', calories: 420 },
+    Lunch: { type: 'Lunch', filled: false },
+    Dinner: { type: 'Dinner', filled: true, title: 'Lemon Herb Grilled Salmon', image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=80', calories: 580 },
+    Snacks: { type: 'Snacks', filled: false },
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }} edges={["top", "left", "right"]}>
-      <Box px="$6" py="$4">
-        <HStack justifyContent="space-between" alignItems="center">
-          <VStack>
-            <Text size="sm" color="$coolGray400">This Week</Text>
-            <Heading size="xl" color="$coolGray900">Meal Plan</Heading>
-          </VStack>
-          <HStack space="md">
-            <TouchableOpacity onPress={() => setShowAddModal(true)}>
-              <Box w="$10" h="$10" bg="$green600" borderRadius="$full" alignItems="center" justifyContent="center" shadowColor="#16a34a" shadowOffset={{ width: 0, height: 4 }} shadowOpacity={0.3} shadowRadius={8}>
-                <Icon as={AddIcon} size="lg" color="white" />
-              </Box>
-            </TouchableOpacity>
-          </HStack>
-        </HStack>
-      </Box>
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
 
-      {/* Date Strip */}
-      <HStack px="$6" mb="$6" space="sm">
-        {dates.map((d) => (
-          <Box
-            key={d.day}
-            flex={1}
-            py="$3"
-            borderRadius="$xl"
-            bg={d.day === selectedDay ? "$green600" : "$white"}
-            borderWidth={1}
-            borderColor={d.day === selectedDay ? "$green600" : "$coolGray100"}
-            alignItems="center"
-          >
-            <Text color={d.day === selectedDay ? "$white" : "$coolGray400"} size="xs">{d.day}</Text>
-            <Text color={d.day === selectedDay ? "$white" : "$coolGray900"} bold size="lg">{d.date}</Text>
-          </Box>
-        ))}
-      </HStack>
-
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 100 }}>
-        <Text size="sm" color="$coolGray500" bold mb="$4" textTransform="uppercase">Today's Meals</Text>
-
-        {meals.map((meal, index) => (
-          <HStack key={meal.id} mb="$4" bg="$white" p="$4" borderRadius="$2xl" borderWidth={1} borderColor="$coolGray100" alignItems="center" space="md">
-            <Box w="$12" h="$12" borderRadius="$xl" bg={
-              meal.meal_type === "Breakfast" ? "$yellow100" :
-                meal.meal_type === "Lunch" ? "$green100" :
-                  meal.meal_type === "Snack" ? "$blue100" : "$orange100"
-            } alignItems="center" justifyContent="center">
-              <Text size="lg">{
-                meal.meal_type === "Breakfast" ? "🌅" :
-                  meal.meal_type === "Lunch" ? "🥗" :
-                    meal.meal_type === "Snack" ? "🍎" : "🍽️"
-              }</Text>
-            </Box>
-            <VStack flex={1}>
-              <HStack justifyContent="space-between">
-                <Text bold color="$coolGray900" size="md">{meal.recipe_title}</Text>
-              </HStack>
-              <HStack space="md" mt="$1">
-                <Text size="xs" color="$orange500" bold>{meal.meal_type}</Text>
-                <Text size="xs" color="$coolGray400">{meal.time}</Text>
-                <Text size="xs" color="$coolGray400">{meal.calories} kcal</Text>
-              </HStack>
-            </VStack>
-          </HStack>
-        ))}
-
-        {/* Daily Summary */}
-        <Box bg="$green600" p="$5" borderRadius="$2xl" mt="$2">
-          <HStack justifyContent="space-between" alignItems="center">
+        {/* Header */}
+        <Box px="$6" pt="$4" pb="$4" bg="$white" shadowColor="$black" shadowOffset={{ width: 0, height: 4 }} shadowOpacity={0.03} shadowRadius={8} elevation={2} zIndex={10}>
+          <HStack alignItems="center" justifyContent="space-between" mb="$6">
             <VStack>
-              <Text color="$white" bold size="lg">Daily Total</Text>
-              <Text color="$green100" size="sm">{meals.length} meals planned</Text>
+              <Text color="$coolGray500" size="sm" bold textTransform="uppercase" letterSpacing={1}>This Week</Text>
+              <Text size="3xl" bold color="$coolGray900">Meal Plan</Text>
             </VStack>
-            <VStack alignItems="flex-end">
-              <Text color="$white" bold size="2xl">{meals.reduce((sum, m) => sum + m.calories, 0).toLocaleString()}</Text>
-              <Text color="$green100" size="sm">of 2,213 kcal</Text>
-            </VStack>
+            <Box p="$2" bg="$green50" borderRadius="$full">
+              <Icon as={CalendarDaysIcon} color="$green600" size="xl" />
+            </Box>
+          </HStack>
+
+          {/* Date Selector */}
+          <HStack justifyContent="space-between">
+            {weekDates.map((d, i) => {
+              const isSelected = d.fullDate === selectedDate;
+              return (
+                <TouchableOpacity key={i} onPress={() => setSelectedDate(d.fullDate)} activeOpacity={0.7}>
+                  <VStack
+                    alignItems="center"
+                    p="$2"
+                    w={44}
+                    h={65}
+                    borderRadius="$full"
+                    bg={isSelected ? "$green600" : d.isToday ? "$green50" : "transparent"}
+                    shadowColor={isSelected ? "$green600" : "transparent"}
+                    shadowOffset={{ width: 0, height: 4 }}
+                    shadowOpacity={0.3}
+                    shadowRadius={6}
+                    elevation={isSelected ? 4 : 0}
+                  >
+                    <Text color={isSelected ? "$white" : d.isToday ? "$green700" : "$coolGray400"} size="xs" bold={isSelected} mb="$1">
+                      {d.day}
+                    </Text>
+                    <Text color={isSelected ? "$white" : "$coolGray900"} size="md" bold={isSelected}>
+                      {d.date}
+                    </Text>
+                  </VStack>
+                </TouchableOpacity>
+              );
+            })}
           </HStack>
         </Box>
-      </ScrollView>
 
-      {/* Add Meal Modal */}
-      <Modal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        finalFocusRef={undefined}
-      >
-        <ModalBackdrop />
-        <ModalContent p="$6" borderRadius="$2xl" bg="white">
-          <ModalHeader>
-            <Heading size="lg">Log Meal</Heading>
-            <ModalCloseButton>
-              <Icon as={CloseIcon} />
-            </ModalCloseButton>
-          </ModalHeader>
-          <ModalBody py="$4">
-            <VStack space="md">
-              <Box>
-                <Text size="sm" mb="$1" color="$coolGray500">Meal Name</Text>
-                <Input variant="outline" size="md" borderRadius="$lg" borderColor="$coolGray200">
-                  <InputField placeholder="e.g. Oatmeal" value={newMealName} onChangeText={setNewMealName} autoFocus />
-                </Input>
+        {/* Nutritional Summary Banner */}
+        <Box px="$6" mt="$6" mb="$6">
+          <LinearGradient colors={['#D1FAE5', '#A7F3D0']} style={{ borderRadius: 20, padding: 16 }}>
+            <HStack justifyContent="space-between" alignItems="center">
+              <VStack>
+                <Text color="$green800" bold>Daily Goal Progress</Text>
+                <Text color="$green700" size="sm">1,000 / 2,000 kcal planned</Text>
+              </VStack>
+              <Box w={40} h={40} borderRadius="$full" bg="$white" alignItems="center" justifyContent="center">
+                <Text color="$green600" bold>50%</Text>
               </Box>
-              <Box>
-                <Text size="sm" mb="$1" color="$coolGray500">Calories (kcal)</Text>
-                <Input variant="outline" size="md" borderRadius="$lg" borderColor="$coolGray200">
-                  <InputField placeholder="e.g. 350" keyboardType="numeric" value={newMealCals} onChangeText={setNewMealCals} />
-                </Input>
-              </Box>
-              <Box>
-                <Text size="sm" mb="$1" color="$coolGray500">Type</Text>
-                <HStack space="sm">
-                  {["Breakfast", "Lunch", "Dinner", "Snack"].map(t => (
-                    <TouchableOpacity key={t} onPress={() => setNewMealType(t)} style={{ flex: 1 }}>
-                      <Box
-                        bg={newMealType === t ? "$green600" : "$coolGray100"}
-                        py="$2"
-                        borderRadius="$lg"
-                        alignItems="center"
-                      >
-                        <Text size="xs" color={newMealType === t ? "white" : "$coolGray600"} bold>{t}</Text>
+            </HStack>
+          </LinearGradient>
+        </Box>
+
+        {/* Meal Slots */}
+        <Box px="$6">
+          {Object.values(meals).map((meal, index) => (
+            <Box key={index} mb="$6">
+
+              <HStack justifyContent="space-between" alignItems="center" mb="$3">
+                <Text size="lg" bold color="$coolGray900">{meal.type}</Text>
+                {meal.calories && (
+                  <Text size="xs" color="$green600" bold bg="$green100" px="$2" py="$0.5" borderRadius="$full">
+                    {meal.calories} kcal
+                  </Text>
+                )}
+              </HStack>
+
+              {meal.filled ? (
+                /* Filled Meal Card */
+                <TouchableOpacity activeOpacity={0.8}>
+                  <Box bg="$white" borderRadius="$2xl" overflow="hidden" shadowColor="$black" shadowOffset={{ width: 0, height: 4 }} shadowOpacity={0.06} shadowRadius={10} elevation={3} borderWidth={1} borderColor="$coolGray50">
+                    <ImageBackground source={{ uri: meal.image }} style={{ height: 120, width: '100%' }}>
+                      <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)']} style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
+                      <Box position="absolute" bottom={0} left={0} p="$4">
+                        <Text color="$white" bold size="md">{meal.title}</Text>
                       </Box>
-                    </TouchableOpacity>
-                  ))}
-                </HStack>
-              </Box>
-            </VStack>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              variant="outline"
-              action="secondary"
-              mr="$3"
-              onPress={() => setShowAddModal(false)}
-              borderColor="$coolGray200"
-              borderRadius="$xl"
-            >
-              <ButtonText color="$coolGray600">Cancel</ButtonText>
-            </Button>
-            <Button
-              size="md"
-              bg="$green600"
-              borderRadius="$xl"
-              onPress={handleAddMeal}
-            >
-              <ButtonText color="white" bold>Add Meal</ButtonText>
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </SafeAreaView >
+                      <Box position="absolute" top={10} right={10} bg="rgba(0,0,0,0.5)" borderRadius="$full" p="$1">
+                        <Icon as={PlusIcon} color="white" style={{ transform: [{ rotate: '45deg' }] }} />
+                      </Box>
+                    </ImageBackground>
+                  </Box>
+                </TouchableOpacity>
+              ) : (
+                /* Empty Meal Slot */
+                <TouchableOpacity activeOpacity={0.7}>
+                  <Box bg="$white" borderRadius="$2xl" borderStyle="dashed" borderWidth={1.5} borderColor="$coolGray300" h={120} alignItems="center" justifyContent="center">
+                    <Box bg="$green50" w={40} h={40} borderRadius="$full" alignItems="center" justifyContent="center" mb="$2">
+                      <Icon as={PlusIcon} color="$green600" />
+                    </Box>
+                    <Text color="$coolGray500" bold>Add {meal.type.toLowerCase()}</Text>
+                    <Text color="$coolGray400" size="xs">Tap to discover recipes</Text>
+                  </Box>
+                </TouchableOpacity>
+              )}
+            </Box>
+          ))}
+        </Box>
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }
