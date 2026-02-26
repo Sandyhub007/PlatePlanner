@@ -12,14 +12,15 @@ RAW_DATA = Path("src/data/raw/RecipeNLG_dataset.csv")
 MODEL_DIR = Path("src/data/models/ingredient_substitution")
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_PATH = MODEL_DIR / "ingredient_w2v.model"
+OUTPUT_PATH_BACKUP = MODEL_DIR / "ingredient_w2v_100k_backup.model"
 
-# Training parameters
-LIMIT = 100000  # Train on 100K recipes (can use more or all 2.2M)
-VECTOR_SIZE = 100
+# Training parameters — upgraded for quality
+LIMIT = None  # Use FULL 2.2M dataset (was 100K — 22x more data!)
+VECTOR_SIZE = 128  # Richer representations (was 100)
 WINDOW = 5  # Ingredients within 5 positions are considered related
 MIN_COUNT = 10  # Only include ingredients that appear in at least 10 recipes
 WORKERS = 4
-EPOCHS = 10
+EPOCHS = 15  # More epochs for convergence (was 10)
 
 print(f"📥 Loading RecipeNLG dataset (limit={LIMIT})...")
 df = pd.read_csv(RAW_DATA, nrows=LIMIT)
@@ -74,12 +75,17 @@ model = Word2Vec(
     min_count=MIN_COUNT,
     workers=WORKERS,
     epochs=EPOCHS,
-    sg=0,  # Use CBOW (0) or Skip-gram (1)
-    negative=5,
+    sg=1,  # Skip-gram: better for rare ingredients (was CBOW)
+    negative=10,  # More negative samples for better quality (was 5)
     seed=42
 )
 
-# Save the model
+# Save the model (backup old one first)
+import shutil
+if OUTPUT_PATH.exists():
+    shutil.copy(str(OUTPUT_PATH), str(OUTPUT_PATH_BACKUP))
+    print(f"📦 Backed up previous model to {OUTPUT_PATH_BACKUP}")
+
 print(f"\n💾 Saving model to {OUTPUT_PATH}...")
 model.save(str(OUTPUT_PATH))
 print(f"✅ Model saved successfully!")

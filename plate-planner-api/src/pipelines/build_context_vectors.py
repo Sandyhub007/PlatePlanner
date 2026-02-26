@@ -49,11 +49,12 @@ def main():
     print("🧠 Training Ingredient Word2Vec...")
     ingredient_model = Word2Vec(
         sentences=df["ner_list_cleaned"].tolist(),
-        vector_size=100,
+        vector_size=128,  # Match train_word2vec.py (was 100)
         window=5,
         min_count=2,
         workers=4,
-        sg=1
+        sg=1,
+        negative=10,
     )
     create_directory(INGREDIENT_W2V_MODEL_PATH)
     ingredient_model.save(INGREDIENT_W2V_MODEL_PATH)

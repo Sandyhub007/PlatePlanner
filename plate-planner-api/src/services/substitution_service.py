@@ -38,15 +38,34 @@ def _is_neo4j_available(driver) -> bool:
         return False
 
 
+import re
+
 def _fuzzy_match(pantry_tokens: set[str], ingredient: str) -> bool:
     """
-    Check if an ingredient is 'in' the pantry using substring matching.
-    e.g. pantry has "chicken" → matches "chicken breast", "boneless chicken"
+    Check if an ingredient is 'in' the pantry using word-boundary matching.
     """
     ing_lower = ingredient.lower().strip()
     for pantry_item in pantry_tokens:
-        if pantry_item in ing_lower or ing_lower in pantry_item:
+        p_item = pantry_item.lower().strip()
+        if not p_item: continue
+        
+        # 1. Exact match (fast)
+        if p_item == ing_lower: return True
+        
+        # 2. Match as whole word substring
+        # e.g. "chicken" matches "chicken breast"
+        # escaped = re.escape(p_item)
+        # Using \b to ensure we match "onion" in "green onion" but NOT "corn" in "popcorn"
+        pattern = r'\b' + re.escape(p_item) + r'\b'
+        if re.search(pattern, ing_lower):
             return True
+            
+        # 3. Simple plural handling: allow pantry item + 's' or 'es' match
+        # e.g. pantry "egg" matches "eggs"
+        pattern_plural = r'\b' + re.escape(p_item) + r'(s|es)?\b'
+        if re.search(pattern_plural, ing_lower):
+            return True
+            
     return False
 
 

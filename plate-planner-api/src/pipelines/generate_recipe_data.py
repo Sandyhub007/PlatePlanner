@@ -16,12 +16,12 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 MODEL_DIR = Path("src/data/models/recipe_suggestion")
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
-# Limit for processing (set to None for full dataset, or e.g. 10000 for testing)
-LIMIT = 50000  # Processing 50k recipes for reasonable speed
+# Limit for processing (set to None to process the full dataset of ~2M recipes)
+LIMIT = None 
 
-print(f"📥 Loading RecipeNLG dataset (limit={LIMIT})...")
+print(f"📥 Loading RecipeNLG dataset (limit={LIMIT if LIMIT else 'FULL'})...")
 df = pd.read_csv(RAW_DATA, nrows=LIMIT)
-print(f"✅ Loaded {len(df)} recipes")
+print(f"✅ Loaded {len(df):,} recipes")
 
 # Parse NER column (ingredients)
 print("🔍 Parsing ingredients...")

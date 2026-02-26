@@ -11,8 +11,10 @@ from pydantic import BaseModel, Field
 
 from src.services.neo4j_service import get_hybrid_substitutes, recipe_details as fetch_recipe_details
 from src.services.substitution_service import get_pantry_substitutions
-from src.utils.recipesuggestionmodel import suggest_recipes, metadata_df
-from src.api.routers import auth, users, meal_plans, shopping_lists, nutrition
+from src.utils.recipesuggestionmodel import suggest_recipes, DB_PATH
+import sqlite3
+import json
+from src.api.routers import auth, users, meal_plans, shopping_lists, nutrition, recommendations
 from src.database.session import engine, Base
 from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema
 from src.config.paths import DataPaths
@@ -35,6 +37,7 @@ app = FastAPI(
         {"name": "nutrition", "description": "Nutritional analysis, health tracking, and goals"},
         {"name": "recipes", "description": "Recipe suggestion operations"},
         {"name": "substitution", "description": "Ingredient substitution operations"},
+        {"name": "AI Assistant", "description": "AI-powered recipe adaptation, meal planning, and cooking tips"},
     ],
 )
 
@@ -53,6 +56,7 @@ app.include_router(users.router)
 app.include_router(meal_plans.router)
 app.include_router(shopping_lists.router)
 app.include_router(nutrition.router)
+app.include_router(recommendations.router)
 
 # ——— Logging ———
 logging.basicConfig(
@@ -61,6 +65,14 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 logger = logging.getLogger("plate_planner")
+
+# ——— RAG AI Assistant Router (graceful if LLM not configured) ———
+try:
+    from src.services.rag_service import create_rag_router
+    app.include_router(create_rag_router())
+    logger.info("🤖 AI Assistant endpoints enabled (/ai/*)")
+except Exception as e:
+    logger.warning(f"AI Assistant endpoints not available: {e}")
 
 
 # ——— Models ———
@@ -317,6 +329,62 @@ def _load_csv_recipes():
 _load_csv_recipes()
 
 
+def _get_recipe_from_sqlite(title: str) -> Optional[dict]:
+    """Fetch recipe details from optimized SQLite DB."""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            # Try exact match first
+            cursor.execute("SELECT title, ingredients, directions, ner FROM recipes WHERE title = ?", (title,))
+            row = cursor.fetchone()
+            
+            # If not found, try case-insensitive
+            if not row:
+                cursor.execute("SELECT title, ingredients, directions, ner FROM recipes WHERE title = ? COLLATE NOCASE", (title,))
+                row = cursor.fetchone()
+            
+            if row:
+                db_title, raw_ings, raw_dirs, ner = row
+                
+                # Parse ingredients (try ner first as it is cleaner)
+                # If ner is None or empty, fallback to raw ingredients
+                ingredients_list = []
+                if ner:
+                    try:
+                        ingredients_list = literal_eval(ner)
+                    except:
+                        pass
+                
+                if not ingredients_list and raw_ings:
+                    try:
+                        ingredients_list = literal_eval(raw_ings)
+                    except:
+                        pass
+                    
+                # Parse directions
+                directions_list = []
+                if raw_dirs:
+                    try:
+                        parsed = literal_eval(raw_dirs)
+                        if isinstance(parsed, list):
+                            directions_list = parsed
+                        else:
+                            directions_list = [str(parsed)]
+                    except:
+                        directions_list = [str(raw_dirs)]
+                    
+                return {
+                   "title": db_title,
+                   "ingredients": ingredients_list,
+                   "directions": directions_list,
+                   "link": "",
+                   "source": "SQLiteDB"
+                }
+    except Exception as e:
+        logger.warning(f"SQLite lookup failed for {title}: {e}")
+    return None
+
+
 @app.get(
     "/recipes/{recipe_title}",
     response_model=RecipeDetails,
@@ -334,10 +402,14 @@ async def get_recipe_details(
     """
     Returns detailed recipe data. Tries Neo4j first, falls back to CSV.
     """
-    # 1) Try Neo4j first
-    record = await asyncio.to_thread(fetch_recipe_details, recipe_title)
+    # 1) Try SQLite first (SSOT)
+    record = _get_recipe_from_sqlite(recipe_title)
+    
+    # 2) Try Neo4j if not found
+    if not record:
+        record = await asyncio.to_thread(fetch_recipe_details, recipe_title)
 
-    # 2) Fall back to CSV
+    # 3) Fall back to CSV
     if not record:
         csv_record = _recipes_by_title.get(recipe_title.strip().lower())
         if csv_record:
@@ -349,13 +421,23 @@ async def get_recipe_details(
                     raw_dirs = literal_eval(raw_dirs)
                 except Exception:
                     raw_dirs = [raw_dirs]
-            # dedupe ingredients
-            seen = set()
+            # dedupe ingredients (plural aware)
+            seen_keys = set()
             unique_ings = []
             for ing in ings:
-                if ing not in seen:
+                clean = ing.lower().strip()
+                # Normalize plurals (simple heuristic)
+                if clean.endswith('s') and len(clean) > 3:
+                    key = clean[:-1]
+                else:
+                    key = clean
+                
+                if key not in seen_keys:
                     unique_ings.append(ing)
-                    seen.add(ing)
+                    seen_keys.add(key)
+                    # Also block the plural/singular form
+                    if clean.endswith('s'): seen_keys.add(clean)
+                    else: seen_keys.add(clean + 's')
             return RecipeDetails(
                 title=csv_record["title"],
                 directions=raw_dirs if isinstance(raw_dirs, list) else [raw_dirs],
@@ -380,14 +462,22 @@ async def get_recipe_details(
     elif not isinstance(raw_dirs, list):
          raw_dirs = [str(raw_dirs)]
 
-    # Parse & dedupe ingredients
+    # Parse & dedupe ingredients (plural aware)
     raw_ings = record.get("ingredients", []) or []
-    seen = set()
+    seen_keys = set()
     unique_ings: list[str] = []
     for ing in raw_ings:
-        if ing not in seen:
+        clean = ing.lower().strip()
+        if clean.endswith('s') and len(clean) > 3:
+            key = clean[:-1]
+        else:
+            key = clean
+
+        if key not in seen_keys:
             unique_ings.append(ing)
-            seen.add(ing)
+            seen_keys.add(key)
+            if clean.endswith('s'): seen_keys.add(clean)
+            else: seen_keys.add(clean + 's')
 
     return RecipeDetails(
         title=record.get("title", ""),
@@ -425,29 +515,47 @@ async def get_recipe_substitutions(
     # Try Neo4j first, gracefully fall through to CSV if Neo4j is down
     record = None
     try:
-        record = await asyncio.to_thread(fetch_recipe_details, recipe_title)
+        record = _get_recipe_from_sqlite(recipe_title)
+        if not record:
+            record = await asyncio.to_thread(fetch_recipe_details, recipe_title)
     except Exception:
-        logger.warning("Neo4j unavailable for substitution lookup, falling back to CSV")
+        logger.warning("Neo4j/SQLite unavailable for substitution lookup, falling back to CSV")
 
     recipe_ingredients = []
     if record:
         raw_ings = record.get("ingredients", []) or []
-        seen = set()
+        seen_keys = set()
         for ing in raw_ings:
-            if ing and ing not in seen:
+            clean = ing.lower().strip()
+            if clean.endswith('s') and len(clean) > 3:
+                key = clean[:-1]
+            else:
+                key = clean
+            
+            if ing and key not in seen_keys:
                 recipe_ingredients.append(ing)
-                seen.add(ing)
+                seen_keys.add(key)
+                if clean.endswith('s'): seen_keys.add(clean)
+                else: seen_keys.add(clean + 's')
     else:
         # CSV fallback
         csv_record = _recipes_by_title.get(recipe_title.strip().lower())
         if csv_record:
             recipe_id = csv_record["recipe_id"]
             ings = _ingredients_by_recipe_id.get(recipe_id, [])
-            seen = set()
+            seen_keys = set()
             for ing in ings:
-                if ing not in seen:
+                clean = ing.lower().strip()
+                if clean.endswith('s') and len(clean) > 3:
+                    key = clean[:-1]
+                else:
+                    key = clean
+
+                if key not in seen_keys:
                     recipe_ingredients.append(ing)
-                    seen.add(ing)
+                    seen_keys.add(key)
+                    if clean.endswith('s'): seen_keys.add(clean)
+                    else: seen_keys.add(clean + 's')
 
     if not recipe_ingredients:
         raise HTTPException(
