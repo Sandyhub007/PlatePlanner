@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Home, Utensils, Calendar, ShoppingCart, User, Plus } from "lucide-react-native";
+import { Home, Utensils, Calendar, Package, User, Plus } from "lucide-react-native";
 import { View, Platform } from "react-native";
 
 export default function TabLayout() {
@@ -71,15 +71,16 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="shopping"
+        name="pantry"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <View className={`items-center justify-center ${focused ? 'bg-gray-100 p-2 rounded-xl' : ''}`}>
-              <ShoppingCart size={24} color={color} strokeWidth={focused ? 2.5 : 2} />
+            <View className={`items-center justify-center ${focused ? 'bg-green-50 p-2 rounded-xl' : ''}`}>
+              <Package size={24} color={color} strokeWidth={focused ? 2.5 : 2} />
             </View>
           ),
         }}
       />
+      <Tabs.Screen name="shopping" options={{ href: null }} />
       <Tabs.Screen
         name="profile"
         options={{

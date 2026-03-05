@@ -113,6 +113,26 @@ def ensure_phase_three_schema() -> None:
             ON shopping_list_items(is_purchased)
         """))
         connection.execute(text("""
-            CREATE INDEX IF NOT EXISTS idx_shopping_list_items_normalized_name 
+            CREATE INDEX IF NOT EXISTS idx_shopping_list_items_normalized_name
             ON shopping_list_items(normalized_name)
+        """))
+
+
+# ===== Pantry Schema =====
+
+def ensure_pantry_schema() -> None:
+    """Idempotent helper to create the user_pantry_items table."""
+    with engine.begin() as connection:
+        connection.execute(text("""
+            CREATE TABLE IF NOT EXISTS user_pantry_items (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                item_name VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT uq_user_pantry_item UNIQUE (user_id, item_name)
+            )
+        """))
+        connection.execute(text("""
+            CREATE INDEX IF NOT EXISTS idx_pantry_user_id
+            ON user_pantry_items(user_id)
         """))

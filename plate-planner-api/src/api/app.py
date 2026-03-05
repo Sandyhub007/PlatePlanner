@@ -1,6 +1,9 @@
 import asyncio
 import csv
+import difflib
 import logging
+import re
+import unicodedata
 from collections import defaultdict
 from typing import List, Optional
 from ast import literal_eval
@@ -11,18 +14,20 @@ from pydantic import BaseModel, Field
 
 from src.services.neo4j_service import get_hybrid_substitutes, recipe_details as fetch_recipe_details
 from src.services.substitution_service import get_pantry_substitutions
+from src.services.external_recipe_service import spoonacular
 from src.utils.recipesuggestionmodel import suggest_recipes, DB_PATH
 import sqlite3
 import json
-from src.api.routers import auth, users, meal_plans, shopping_lists, nutrition, recommendations, user_meals
+from src.api.routers import auth, users, meal_plans, shopping_lists, nutrition, recommendations, user_meals, pantry
 from src.database.session import engine, Base
-from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema
+from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema, ensure_pantry_schema
 from src.config.paths import DataPaths
 
 # ——— Database Initialization ———
 Base.metadata.create_all(bind=engine)
 ensure_phase_two_schema()
 ensure_phase_three_schema()  # Phase 3: Shopping Lists
+ensure_pantry_schema()        # Pantry
 
 # ——— FastAPI app setup ———
 app = FastAPI(
@@ -58,6 +63,7 @@ app.include_router(shopping_lists.router)
 app.include_router(nutrition.router)
 app.include_router(recommendations.router)
 app.include_router(user_meals.router)
+app.include_router(pantry.router)
 
 # ——— Logging ———
 logging.basicConfig(
@@ -95,11 +101,27 @@ class RecipeRequest(BaseModel):
         example=0.6,
     )
     
-    # New dietary filters
+    # Dietary filters
     is_vegan: bool = Field(False, description="Filter for vegan recipes")
     is_vegetarian: bool = Field(False, description="Filter for vegetarian recipes")
     is_gluten_free: bool = Field(False, description="Filter for gluten-free recipes")
     is_dairy_free: bool = Field(False, description="Filter for dairy-free recipes")
+
+    # Extended search options
+    cuisine: Optional[str] = Field(
+        None,
+        description="Cuisine filter (e.g. 'Italian', 'Japanese', 'Indian'). "
+                    "When set, Spoonacular external search is always included.",
+        example="Thai",
+    )
+    enable_external: bool = Field(
+        True,
+        description="Allow Spoonacular external search when local results are sparse or low-confidence",
+    )
+    enable_llm_fallback: bool = Field(
+        True,
+        description="Generate a recipe via LLM when no good matches are found anywhere",
+    )
 
     class Config:
         schema_extra = {
@@ -138,7 +160,12 @@ class RecipeResult(BaseModel):
     overlap_score: float
     combined_score: float
     rank: int
-    tags: Optional[dict] = None  # Return dietary tags
+    tags: Optional[dict] = None
+    # Extended fields for external/LLM results
+    source: str = "local"
+    cuisine: List[str] = []
+    source_url: str = ""
+    image: str = ""
 
 
 class RecipeSuggestionResponse(BaseModel):
@@ -217,6 +244,47 @@ class PantrySubstitutionResponse(BaseModel):
     missing: List[MissingIngredient]
 
 
+# ——— Fuzzy Title Deduplication Helpers ———
+def _normalize_title(title: str) -> str:
+    """
+    Canonical form used for fast-path exact dedup:
+      • lowercase
+      • unicode → ASCII (café → cafe)
+      • strip punctuation / hyphens / extra whitespace
+      • sort words alphabetically (handles "Lemon Rosemary" vs "Rosemary Lemon")
+    """
+    t = title.lower()
+    t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode("ascii")
+    t = re.sub(r"[^a-z0-9\s]", " ", t)   # drop punctuation
+    t = re.sub(r"\s+", " ", t).strip()
+    return " ".join(sorted(t.split()))    # sort words
+
+
+def _is_duplicate_title(
+    candidate: str,
+    seen_normalized: list[str],
+    threshold: float = 0.82,
+) -> bool:
+    """
+    Return True if *candidate* is too similar to any already-seen title.
+
+    Two-stage check (fast-path first):
+      1. Normalized exact match (handles hyphens, punctuation, word-order).
+      2. SequenceMatcher ratio on the *original* lowercased titles.
+    """
+    norm_candidate = _normalize_title(candidate)
+    if norm_candidate in seen_normalized:
+        return True
+    # Fuzzy fallback — only run against titles whose first word matches
+    # to keep O(n) manageable on large result sets
+    low = candidate.lower()
+    for norm in seen_normalized:
+        ratio = difflib.SequenceMatcher(None, low, norm, autojunk=False).ratio()
+        if ratio >= threshold:
+            return True
+    return False
+
+
 # ——— Endpoints ———
 @app.get("/", tags=["health"], summary="Health check")
 async def root() -> dict:
@@ -227,31 +295,129 @@ async def root() -> dict:
     "/suggest_recipes",
     response_model=List[RecipeResult],
     status_code=status.HTTP_200_OK,
-    summary="Suggest recipes (only overlapping ingredients returned)",
+    summary="Suggest recipes — federated search (local FAISS + Spoonacular + LLM fallback)",
     tags=["recipes"],
 )
 async def suggest_recipes_endpoint(request: RecipeRequest):
+    """
+    Three-tier federated recipe search:
+      1. Local FAISS (2M recipes, fastest)
+      2. Spoonacular API (380K+ recipes, 80+ cuisines) — triggered when cuisine is set,
+         local results are sparse, or combined_score falls below 0.35
+      3. LLM generation — triggered when combined results are still fewer than 2
+         or max score is below 0.25
+    """
+    # ── Tier 1: Local FAISS search ────────────────────────────────────────
     try:
-        results = await asyncio.to_thread(
+        local_results = await asyncio.to_thread(
             suggest_recipes,
             request.ingredients,
             request.top_n,
             request.rerank_weight,
-            500, # raw_k
-            2, # min_overlap
+            500,  # raw_k
+            2,    # min_overlap
             request.is_vegan,
             request.is_vegetarian,
             request.is_gluten_free,
-            request.is_dairy_free
+            request.is_dairy_free,
         )
     except Exception:
-        logger.exception("Failed to suggest recipes")
+        logger.exception("Local FAISS search failed")
+        local_results = []
+
+    # Tag local results with source
+    for r in local_results:
+        r.setdefault("source", "local")
+        r.setdefault("cuisine", [])
+        r.setdefault("source_url", "")
+        r.setdefault("image", "")
+
+    # Decide whether to trigger external search
+    _LOCAL_CONFIDENCE_THRESHOLD = 0.35
+    max_local_score = max((r["combined_score"] for r in local_results), default=0.0)
+    needs_external = (
+        request.enable_external
+        and spoonacular.enabled
+        and (
+            request.cuisine is not None           # cuisine explicitly requested
+            or len(local_results) < request.top_n # not enough local results
+            or max_local_score < _LOCAL_CONFIDENCE_THRESHOLD  # low confidence
+        )
+    )
+
+    # ── Tier 2: Spoonacular external search (parallel when triggered) ─────
+    external_results: list[dict] = []
+    if needs_external:
+        try:
+            external_results = await spoonacular.search_by_ingredients(
+                ingredients=request.ingredients,
+                top_n=request.top_n,
+                cuisine=request.cuisine,
+                is_vegan=request.is_vegan,
+                is_vegetarian=request.is_vegetarian,
+                is_gluten_free=request.is_gluten_free,
+                is_dairy_free=request.is_dairy_free,
+            )
+        except Exception:
+            logger.exception("Spoonacular search failed — continuing with local results")
+
+    # ── Merge and de-duplicate (fuzzy title matching) ─────────────────────
+    seen_normalized: list[str] = []   # list preserves insertion order for ratio checks
+    merged: list[dict] = []
+    for result in local_results + external_results:
+        if not _is_duplicate_title(result["title"], seen_normalized):
+            seen_normalized.append(_normalize_title(result["title"]))
+            merged.append(result)
+
+    merged.sort(key=lambda x: x["combined_score"], reverse=True)
+    merged = merged[:request.top_n]
+
+    # ── Tier 3: LLM generation fallback ──────────────────────────────────
+    _LLM_TRIGGER_THRESHOLD = 0.25
+    max_merged_score = max((r["combined_score"] for r in merged), default=0.0)
+    needs_llm = (
+        request.enable_llm_fallback
+        and (len(merged) < 2 or max_merged_score < _LLM_TRIGGER_THRESHOLD)
+    )
+
+    if needs_llm:
+        try:
+            from src.services.rag_service import RAGService
+            rag = RAGService()
+            llm_results = await rag.generate_recipe(
+                ingredients=request.ingredients,
+                cuisine=request.cuisine,
+                is_vegan=request.is_vegan,
+                is_vegetarian=request.is_vegetarian,
+                is_gluten_free=request.is_gluten_free,
+                is_dairy_free=request.is_dairy_free,
+                top_n=max(request.top_n - len(merged), 1),
+            )
+            for r in llm_results:
+                if not _is_duplicate_title(r["title"], seen_normalized):
+                    seen_normalized.append(_normalize_title(r["title"]))
+                    merged.append(r)
+            merged.sort(key=lambda x: x["combined_score"], reverse=True)
+            merged = merged[:request.top_n]
+        except Exception:
+            logger.exception("LLM recipe generation fallback failed")
+
+    if not merged:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Could not generate recipe suggestions",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No recipes found for the given ingredients.",
         )
 
-    return results
+    # Assign final ranks
+    for i, r in enumerate(merged):
+        r["rank"] = i + 1
+
+    logger.info(
+        f"suggest_recipes: ingredients={request.ingredients} → "
+        f"{len(local_results)} local, {len(external_results)} external "
+        f"→ {len(merged)} merged (cuisine={request.cuisine})"
+    )
+    return merged
 
 
 @app.get(

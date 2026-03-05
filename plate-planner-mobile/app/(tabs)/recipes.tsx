@@ -99,8 +99,8 @@ export default function RecipesScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16, marginTop: 24 }}>
           <HStack space="xs">
             {ingredientChips.map((chip, i) => (
-              <Box key={i} px="$3" py="$1" bg="$green100" borderRadius="$full">
-                <Text size="sm" color="$green700">{chip}</Text>
+              <Box key={i} px="$3" py="$1" bg="$green600" borderRadius="$full">
+                <Text size="sm" color="$white" bold>{chip}</Text>
               </Box>
             ))}
           </HStack>

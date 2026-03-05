@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { apiRequest } from '../src/api/client';
+import { useAuth } from '../src/state/auth';
 
 // Types
 type RecipeDetails = {
@@ -69,14 +70,19 @@ type SearchedSubResult = {
 export default function RecipeDetailScreen() {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const { token } = useAuth();
 
   const title = typeof params.title === 'string' ? params.title : "";
   const matchScore = typeof params.matchScore === 'string' ? params.matchScore : "0";
   const initialIngredients = typeof params.ingredients === 'string' ? params.ingredients.split(',') : [];
+  // URL-param pantry kept as fallback (for unauthenticated flow)
   const pantryRaw = typeof params.pantry === 'string' ? params.pantry : "";
   const tagsRaw = typeof params.tags === 'string' ? params.tags : "";
 
-  const pantryItems = pantryRaw.split(",").map(i => i.trim()).filter(Boolean);
+  // Resolved pantry: API-loaded (preferred) or URL-param fallback
+  const [pantryItems, setPantryItems] = useState<string[]>(
+    pantryRaw.split(",").map(i => i.trim()).filter(Boolean)
+  );
   const pantryLower = new Set(pantryItems.map(p => p.toLowerCase()));
 
   let tags: { vegan?: boolean; vegetarian?: boolean; gluten_free?: boolean; dairy_free?: boolean } = {};
@@ -92,6 +98,17 @@ export default function RecipeDetailScreen() {
 
   // Per-ingredient on-demand search results (keyed by ingredient name)
   const [searchResults, setSearchResults] = useState<Record<string, SearchedSubResult>>({});
+
+  // Load pantry from API (overrides URL-param pantry when user is logged in)
+  useEffect(() => {
+    if (!token) return;
+    apiRequest<{ items: { name: string }[] }>("/pantry", { token })
+      .then(data => {
+        const names = data.items.map(i => i.name);
+        if (names.length > 0) setPantryItems(names);
+      })
+      .catch(() => {/* silently fall back to URL-param pantry */});
+  }, [token]);
 
   // Fetch recipe details
   useEffect(() => {
@@ -112,7 +129,7 @@ export default function RecipeDetailScreen() {
     fetchDetails();
   }, [title]);
 
-  // Fetch substitution data (only if pantry is available)
+  // Fetch substitution data whenever title or pantry resolves
   useEffect(() => {
     if (!title || pantryItems.length === 0) return;
     const fetchSubs = async () => {
@@ -134,7 +151,7 @@ export default function RecipeDetailScreen() {
       }
     };
     fetchSubs();
-  }, [title]);
+  }, [title, pantryItems]);
 
   // Fuzzy match: check if a substitute name matches anything in pantry
   const isInPantry = (name: string): boolean => {

@@ -24,6 +24,7 @@ class User(Base):
     meal_plans = relationship("MealPlan", back_populates="user", cascade="all, delete-orphan")
     shopping_lists = relationship("ShoppingList", back_populates="user", cascade="all, delete-orphan")
     user_meals = relationship("UserMeal", back_populates="user", cascade="all, delete-orphan")
+    pantry_items = relationship("UserPantryItem", back_populates="user", cascade="all, delete-orphan")
 
 class UserPreferences(Base):
     __tablename__ = "user_preferences"
@@ -253,6 +254,22 @@ class NutritionLog(Base):
     
     # Relationships
     user = relationship("User", foreign_keys=[user_id])
+
+
+class UserPantryItem(Base):
+    """Persistent pantry ingredient saved by the user."""
+    __tablename__ = "user_pantry_items"
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "item_name", name="uq_user_pantry_item"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    item_name = Column(String(255), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="pantry_items")
 
 
 class UserMeal(Base):

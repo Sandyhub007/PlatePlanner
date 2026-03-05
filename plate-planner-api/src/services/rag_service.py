@@ -363,6 +363,95 @@ Format your responses with clear headers and bullet points when appropriate."""
         )
         return await self.llm.generate(prompt, self.SYSTEM_PROMPT, temperature=0.6)
 
+    async def generate_recipe(
+        self,
+        ingredients: list[str],
+        cuisine: Optional[str] = None,
+        is_vegan: bool = False,
+        is_vegetarian: bool = False,
+        is_gluten_free: bool = False,
+        is_dairy_free: bool = False,
+        top_n: int = 1,
+    ) -> list[dict]:
+        """
+        LLM fallback: generate recipe(s) from scratch when no good matches
+        are found in either the local index or external APIs.
+
+        Returns a list of RecipeResult-compatible dicts with source='llm'.
+        """
+        dietary_flags = []
+        if is_vegan: dietary_flags.append("vegan")
+        if is_vegetarian: dietary_flags.append("vegetarian")
+        if is_gluten_free: dietary_flags.append("gluten-free")
+        if is_dairy_free: dietary_flags.append("dairy-free")
+
+        dietary_str = ", ".join(dietary_flags) if dietary_flags else "no specific dietary restrictions"
+        cuisine_str = f"{cuisine} cuisine" if cuisine else "any cuisine"
+        ing_str = ", ".join(ingredients)
+
+        prompt = (
+            f"Generate {top_n} complete recipe(s) using these ingredients: {ing_str}.\n"
+            f"Cuisine: {cuisine_str}. Dietary requirements: {dietary_str}.\n\n"
+            f"Return ONLY a valid JSON array. Each element must have these exact keys:\n"
+            f'  "title": string\n'
+            f'  "ingredients": array of strings (only ingredients from the user\'s list that are used)\n'
+            f'  "all_ingredients": array of strings (full ingredient list including quantities)\n'
+            f'  "directions": string (numbered steps separated by newlines)\n'
+            f'  "cuisine": array of strings (e.g. ["Italian"])\n\n'
+            f"No markdown, no explanation, just the JSON array."
+        )
+
+        system = (
+            "You are a professional chef and recipe writer. "
+            "Always respond with valid, parseable JSON only. No markdown code blocks."
+        )
+
+        try:
+            raw = await self.llm.generate(prompt, system, temperature=0.8)
+
+            # Strip markdown code fences if LLM included them
+            raw = raw.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+                raw = raw.strip()
+
+            parsed = json.loads(raw)
+            if not isinstance(parsed, list):
+                parsed = [parsed]
+
+            results = []
+            for i, recipe in enumerate(parsed[:top_n]):
+                if not isinstance(recipe, dict) or "title" not in recipe:
+                    continue
+                results.append({
+                    "title": recipe.get("title", "Generated Recipe"),
+                    "ingredients": recipe.get("ingredients", ingredients),
+                    "all_ingredients": recipe.get("all_ingredients", ingredients),
+                    "directions": recipe.get("directions", ""),
+                    "semantic_score": 0.5,
+                    "overlap_score": 1.0,
+                    "combined_score": 0.7,
+                    "rank": 0,
+                    "source": "llm",
+                    "cuisine": recipe.get("cuisine", [cuisine] if cuisine else []),
+                    "source_url": "",
+                    "image": "",
+                    "tags": {
+                        "vegan": is_vegan,
+                        "vegetarian": is_vegetarian or is_vegan,
+                        "gluten_free": is_gluten_free,
+                        "dairy_free": is_dairy_free,
+                    },
+                })
+            logger.info(f"LLM generated {len(results)} recipe(s) for {ingredients}")
+            return results
+
+        except Exception as e:
+            logger.error(f"LLM recipe generation failed: {e}")
+            return []
+
 
 # ─── FastAPI Integration ──────────────────────────────────────────────
 def create_rag_router():
