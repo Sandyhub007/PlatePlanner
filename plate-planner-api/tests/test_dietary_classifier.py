@@ -163,7 +163,7 @@ class TestRecipeClassification:
         result = classifier.classify_recipe("recipe-123")
         
         assert result["is_vegetarian"] == True
-        assert result["is_vegan"] == False  # soy sauce might have wheat
+        assert result["is_vegan"] == True  # all ingredients are plant-based
         assert "soy" in result["allergens"]
     
     def test_classify_vegan_recipe(self, classifier, mock_neo4j):
@@ -232,6 +232,83 @@ class TestDietaryFiltering:
         """Test filter query with no restrictions"""
         where_clause = classifier.filter_recipes_by_dietary_needs([], [])
         assert where_clause == ""
+
+
+class TestDietaryFilterFlowThrough:
+    """
+    Verify that dietary filter parameters (is_vegan, etc.) flow through
+    the recipe suggestion model and correctly filter out non-matching recipes.
+
+    These tests exercise the DietaryClassifier used inside
+    recipesuggestionmodel.suggest_recipes.
+    """
+
+    def test_vegan_classification_filters_non_vegan(self, classifier):
+        """Recipes with meat should fail the vegan check."""
+        meat_recipe = ["chicken", "garlic", "onion"]
+        assert classifier._is_vegan(meat_recipe) is False
+
+    def test_vegan_classification_passes_plant_only(self, classifier):
+        """Fully plant-based recipes should pass the vegan check."""
+        vegan_recipe = ["tofu", "broccoli", "soy sauce", "rice"]
+        assert classifier._is_vegan(vegan_recipe) is True
+
+    def test_dairy_recipe_fails_vegan_check(self, classifier):
+        """Recipes with dairy should fail vegan classification."""
+        dairy_recipe = ["cream", "pasta", "garlic"]
+        assert classifier._is_vegan(dairy_recipe) is False
+
+    def test_vegetarian_filter_allows_dairy(self, classifier):
+        """Vegetarian filter should still allow dairy."""
+        dairy_recipe = ["cheese", "bread", "tomato"]
+        assert classifier._is_vegetarian(dairy_recipe) is True
+
+    def test_gluten_free_filter_rejects_wheat(self, classifier):
+        """Gluten-free filter should reject wheat-containing recipes."""
+        wheat_recipe = ["wheat flour", "butter", "sugar"]
+        assert classifier._is_gluten_free(wheat_recipe) is False
+
+    def test_dairy_free_filter_accepts_plant_milk(self, classifier):
+        """Dairy-free filter should accept coconut milk."""
+        plant_milk_recipe = ["coconut milk", "rice", "curry paste"]
+        assert classifier._is_dairy_free(plant_milk_recipe) is True
+
+
+class TestDietaryClassifierUtility:
+    """
+    Test the lightweight DietaryClassifier from src.utils.dietary_classifier
+    which is used inside recipesuggestionmodel.suggest_recipes.
+    """
+
+    def test_classify_returns_all_fields(self):
+        from src.utils.dietary_classifier import DietaryClassifier as UtilClassifier
+        util_cls = UtilClassifier()
+        result = util_cls.classify(["chicken", "rice", "broccoli"])
+        assert "is_vegan" in result
+        assert "is_vegetarian" in result
+        assert "is_gluten_free" in result
+        assert "is_dairy_free" in result
+        assert "allergens" in result
+
+    def test_vegan_recipe_classified_correctly(self):
+        from src.utils.dietary_classifier import DietaryClassifier as UtilClassifier
+        util_cls = UtilClassifier()
+        result = util_cls.classify(["tofu", "broccoli", "soy sauce"])
+        assert result["is_vegan"] is True
+        assert result["is_vegetarian"] is True
+
+    def test_non_vegan_recipe_classified_correctly(self):
+        from src.utils.dietary_classifier import DietaryClassifier as UtilClassifier
+        util_cls = UtilClassifier()
+        result = util_cls.classify(["chicken breast", "butter", "garlic"])
+        assert result["is_vegan"] is False
+        assert result["is_vegetarian"] is False
+
+    def test_gluten_free_recipe_detected(self):
+        from src.utils.dietary_classifier import DietaryClassifier as UtilClassifier
+        util_cls = UtilClassifier()
+        result = util_cls.classify(["rice", "chicken", "vegetables"])
+        assert result["is_gluten_free"] is True
 
 
 if __name__ == "__main__":

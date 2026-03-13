@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_, desc
 
 from src.database.session import get_db
-from src.database.models import User, MealPlan, NutritionGoal, NutritionLog
+from src.database.models import User, MealPlan, NutritionGoal, NutritionLog, MealLogItem
 from src.services.neo4j_service import Neo4jService
 from src.services.nutrition_service import NutritionService
 from src.services.healthy_alternatives import HealthyAlternativesService
@@ -1032,3 +1032,319 @@ def get_weekly_report(
             detail=f"Error generating weekly report: {str(e)}"
         )
 
+
+# ========================================
+# Meal Logging Endpoints (Phase 2)
+# ========================================
+
+from pydantic import BaseModel as PydanticBase
+import uuid as uuid_lib
+import json
+import os
+
+
+class LogMealRequest(PydanticBase):
+    date: date
+    meal_type: str          # Breakfast / Lunch / Dinner / Snack
+    description: str
+    calories: Optional[int] = None
+    protein_g: Optional[float] = None
+    carbs_g: Optional[float] = None
+    fat_g: Optional[float] = None
+    image_url: Optional[str] = None
+
+
+class MealLogItemOut(PydanticBase):
+    id: str
+    log_date: date
+    meal_type: str
+    description: str
+    calories: Optional[int]
+    protein_g: Optional[float]
+    carbs_g: Optional[float]
+    fat_g: Optional[float]
+    image_url: Optional[str]
+    source: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class DailyLogOut(PydanticBase):
+    date: date
+    meals: List[MealLogItemOut]
+    totals: dict
+
+
+def _ai_estimate_calories(description: str) -> dict:
+    """Use Gemini to estimate macros from a text description of a meal."""
+    try:
+        import google.generativeai as genai
+        api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+        if not api_key:
+            return {}
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        prompt = (
+            f"Estimate the nutritional content for this meal: '{description}'. "
+            "Return ONLY valid JSON with these exact keys: "
+            "{\"calories\": int, \"protein_g\": float, \"carbs_g\": float, \"fat_g\": float}. "
+            "No markdown, no explanation, just the JSON object."
+        )
+        response = model.generate_content(prompt)
+        text = response.text.strip()
+        # Strip markdown fences if present
+        if text.startswith("```"):
+            text = text.split("```")[1]
+            if text.startswith("json"):
+                text = text[4:]
+        return json.loads(text.strip())
+    except Exception as e:
+        print(f"[AI estimate] failed: {e}")
+        return {}
+
+
+def _upsert_nutrition_log(user_id, log_date: date, db: Session):
+    """Recompute and upsert the NutritionLog daily aggregate from meal_log_items."""
+    meals = db.query(MealLogItem).filter(
+        MealLogItem.user_id == user_id,
+        MealLogItem.log_date == log_date,
+    ).all()
+
+    totals = {
+        "total_calories": sum(m.calories or 0 for m in meals),
+        "total_protein_g": round(sum(m.protein_g or 0 for m in meals), 1),
+        "total_carbs_g": round(sum(m.carbs_g or 0 for m in meals), 1),
+        "total_fat_g": round(sum(m.fat_g or 0 for m in meals), 1),
+        "meals_count": len(meals),
+    }
+
+    log = db.query(NutritionLog).filter(
+        NutritionLog.user_id == user_id,
+        NutritionLog.log_date == log_date,
+    ).first()
+
+    if log:
+        for k, v in totals.items():
+            setattr(log, k, v)
+        log.updated_at = datetime.utcnow()
+    else:
+        log = NutritionLog(
+            user_id=user_id,
+            log_date=log_date,
+            **totals,
+        )
+        db.add(log)
+
+    db.commit()
+
+
+@router.post("/log/meal", status_code=status.HTTP_201_CREATED)
+def log_meal(
+    req: LogMealRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Log a meal for a specific date. If calories not provided, Gemini estimates them."""
+    calories = req.calories
+    protein_g = req.protein_g
+    carbs_g = req.carbs_g
+    fat_g = req.fat_g
+    source = "manual"
+
+    if calories is None:
+        estimated = _ai_estimate_calories(req.description)
+        if estimated:
+            calories = estimated.get("calories")
+            protein_g = protein_g if protein_g is not None else estimated.get("protein_g")
+            carbs_g = carbs_g if carbs_g is not None else estimated.get("carbs_g")
+            fat_g = fat_g if fat_g is not None else estimated.get("fat_g")
+            source = "ai_estimated"
+
+    if req.image_url:
+        source = "photo" if source != "ai_estimated" else "ai_estimated"
+
+    item = MealLogItem(
+        user_id=current_user.id,
+        log_date=req.date,
+        meal_type=req.meal_type,
+        description=req.description,
+        calories=calories,
+        protein_g=protein_g,
+        carbs_g=carbs_g,
+        fat_g=fat_g,
+        image_url=req.image_url,
+        source=source,
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+
+    _upsert_nutrition_log(current_user.id, req.date, db)
+
+    return MealLogItemOut(
+        id=str(item.id),
+        log_date=item.log_date,
+        meal_type=item.meal_type,
+        description=item.description,
+        calories=item.calories,
+        protein_g=item.protein_g,
+        carbs_g=item.carbs_g,
+        fat_g=item.fat_g,
+        image_url=item.image_url,
+        source=item.source,
+        created_at=item.created_at,
+    )
+
+
+@router.get("/log/daily")
+def get_daily_log(
+    date: date = Query(..., description="Date in YYYY-MM-DD format"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Get all logged meals for a specific date with daily totals."""
+    meals = db.query(MealLogItem).filter(
+        MealLogItem.user_id == current_user.id,
+        MealLogItem.log_date == date,
+    ).order_by(MealLogItem.created_at).all()
+
+    items = [
+        MealLogItemOut(
+            id=str(m.id),
+            log_date=m.log_date,
+            meal_type=m.meal_type,
+            description=m.description,
+            calories=m.calories,
+            protein_g=m.protein_g,
+            carbs_g=m.carbs_g,
+            fat_g=m.fat_g,
+            image_url=m.image_url,
+            source=m.source,
+            created_at=m.created_at,
+        )
+        for m in meals
+    ]
+
+    totals = {
+        "calories": sum(m.calories or 0 for m in meals),
+        "protein_g": round(sum(m.protein_g or 0 for m in meals), 1),
+        "carbs_g": round(sum(m.carbs_g or 0 for m in meals), 1),
+        "fat_g": round(sum(m.fat_g or 0 for m in meals), 1),
+    }
+
+    return {"date": date, "meals": items, "totals": totals}
+
+
+@router.get("/log/range")
+def get_log_range(
+    start: date = Query(..., description="Start date YYYY-MM-DD"),
+    end: date = Query(..., description="End date YYYY-MM-DD"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Get daily nutrition summaries for a date range (max 90 days)."""
+    if (end - start).days > 90:
+        raise HTTPException(status_code=400, detail="Maximum range is 90 days")
+    if end < start:
+        raise HTTPException(status_code=400, detail="end must be after start")
+
+    logs = db.query(NutritionLog).filter(
+        NutritionLog.user_id == current_user.id,
+        NutritionLog.log_date >= start,
+        NutritionLog.log_date <= end,
+    ).order_by(NutritionLog.log_date).all()
+
+    # Also get active goal for context
+    active_goal = db.query(NutritionGoal).filter(
+        NutritionGoal.user_id == current_user.id,
+        NutritionGoal.is_active == True,
+    ).first()
+
+    daily_calorie_target = active_goal.daily_calorie_target if active_goal else None
+
+    result = []
+    for log in logs:
+        result.append({
+            "date": log.log_date.isoformat(),
+            "calories": log.total_calories,
+            "protein_g": log.total_protein_g,
+            "carbs_g": log.total_carbs_g,
+            "fat_g": log.total_fat_g,
+            "meals_count": log.meals_count,
+            "on_track": (
+                abs(log.total_calories - daily_calorie_target) <= 200
+                if daily_calorie_target and log.total_calories > 0
+                else None
+            ),
+        })
+
+    return {
+        "start": start.isoformat(),
+        "end": end.isoformat(),
+        "daily_calorie_target": daily_calorie_target,
+        "days": result,
+    }
+
+
+@router.delete("/log/meal/{meal_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_meal_log(
+    meal_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Delete a logged meal and recompute the daily aggregate."""
+    item = db.query(MealLogItem).filter(
+        MealLogItem.id == meal_id,
+        MealLogItem.user_id == current_user.id,
+    ).first()
+
+    if not item:
+        raise HTTPException(status_code=404, detail="Meal log entry not found")
+
+    log_date = item.log_date
+    db.delete(item)
+    db.commit()
+
+    _upsert_nutrition_log(current_user.id, log_date, db)
+
+
+# ========================================
+# Fix: GET /nutrition/goals/progress with real NutritionLog data
+# ========================================
+
+@router.get("/log/today-summary")
+def get_today_summary(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Return today's macro totals + active goal targets for the home screen arc."""
+    today = date.today()
+
+    log = db.query(NutritionLog).filter(
+        NutritionLog.user_id == current_user.id,
+        NutritionLog.log_date == today,
+    ).first()
+
+    active_goal = db.query(NutritionGoal).filter(
+        NutritionGoal.user_id == current_user.id,
+        NutritionGoal.is_active == True,
+    ).first()
+
+    consumed = {
+        "calories": log.total_calories if log else 0,
+        "protein_g": log.total_protein_g if log else 0,
+        "carbs_g": log.total_carbs_g if log else 0,
+        "fat_g": log.total_fat_g if log else 0,
+        "meals_count": log.meals_count if log else 0,
+    }
+
+    targets = {
+        "calories": active_goal.daily_calorie_target if active_goal else 2000,
+        "protein_g": active_goal.daily_protein_g_target if active_goal else 150,
+        "carbs_g": active_goal.daily_carbs_g_target if active_goal else 200,
+        "fat_g": active_goal.daily_fat_g_target if active_goal else 65,
+    }
+
+    return {"date": today.isoformat(), "consumed": consumed, "targets": targets}

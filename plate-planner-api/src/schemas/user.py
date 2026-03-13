@@ -53,6 +53,7 @@ class User(UserBase):
     id: UUID
     is_active: bool
     is_premium: bool
+    onboarding_complete: bool = False
     auth_provider: str = "email"
     profile_photo_url: Optional[str] = None
     created_at: datetime
@@ -70,6 +71,21 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+
+class OnboardingRequest(BaseModel):
+    """All preferences collected during onboarding in one call."""
+    goal_type: Optional[str] = Field(None, description="Nutrition goal: weight_loss, muscle_gain, maintenance, general_health")
+    calorie_target: Optional[int] = Field(None, description="Daily calorie target")
+    dietary_restrictions: List[str] = Field(default_factory=list, description="e.g. ['vegan', 'gluten-free']")
+    cuisine_preferences: List[str] = Field(default_factory=list, description="e.g. ['italian', 'mexican']")
+    allergies: List[str] = Field(default_factory=list, description="e.g. ['peanut', 'shellfish']")
+    protein_target: Optional[int] = None
+    carb_target: Optional[int] = None
+    fat_target: Optional[int] = None
+    cooking_time_max: Optional[int] = None
+    budget_per_week: Optional[float] = None
+    people_count: int = 1
 
 
 class GoogleLoginRequest(BaseModel):

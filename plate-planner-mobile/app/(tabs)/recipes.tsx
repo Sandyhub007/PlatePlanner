@@ -39,9 +39,13 @@ export default function RecipesScreen() {
     setLoading(true);
     setSearched(true);
     try {
+      const body: any = { ingredients, top_n: 5, rerank_weight: 0.6 };
+      if (selectedCat !== "All") {
+        body.category = selectedCat.toLowerCase();
+      }
       const data = await apiRequest<RecipeResult[]>("/suggest_recipes", {
         method: "POST",
-        body: { ingredients, top_n: 5, rerank_weight: 0.6 },
+        body,
       });
       setRecipes(data);
     } catch (e: any) {

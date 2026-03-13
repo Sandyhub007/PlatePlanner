@@ -17,6 +17,7 @@ class User(Base):
     auth_provider = Column(String, default="email")  # "email" or "google"
     profile_photo_url = Column(String, nullable=True)
     is_premium = Column(Boolean, default=False)
+    onboarding_complete = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -272,20 +273,45 @@ class UserPantryItem(Base):
     user = relationship("User", back_populates="pantry_items")
 
 
+class MealLogItem(Base):
+    """Individual meal logged by the user each day (with optional AI calorie estimation)."""
+    __tablename__ = "meal_log_items"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+
+    log_date = Column(Date, nullable=False, index=True)
+    meal_type = Column(String(50), nullable=False)  # Breakfast / Lunch / Dinner / Snack
+
+    description = Column(Text, nullable=False)
+    calories = Column(Integer, nullable=True)
+    protein_g = Column(Float, nullable=True)
+    carbs_g = Column(Float, nullable=True)
+    fat_g = Column(Float, nullable=True)
+
+    image_url = Column(String(500), nullable=True)
+    source = Column(String(50), default="manual")  # manual / ai_estimated / photo
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = relationship("User", foreign_keys=[user_id])
+
+
 class UserMeal(Base):
     """User uploaded meal photos and metadata"""
     __tablename__ = "user_meals"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    
+
     meal_type = Column(String(50), nullable=False) # Breakfast, Lunch, Dinner, Snacks
     image_url = Column(String(500), nullable=False) # URL to vercel blob
     meal_date = Column(Date, nullable=False, index=True)
     title = Column(String(255), nullable=True)
-    
+
     calories = Column(Integer, nullable=True)
-    
+
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

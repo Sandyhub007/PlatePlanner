@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from src.config.paths import DataPaths
 from src.database import models
-from src.schemas.meal_plan import MealPlanPreferencesOverride
+from src.schemas.meal_plan import MealPlanPreferencesOverride, MealPlanItemCreate
 # OPTIMIZATION: Use lightweight suggestion engine and DB path
 from src.utils.recipesuggestionmodel import suggest_recipes, DB_PATH
 
@@ -182,7 +182,8 @@ def _estimate_prep_time(ingredients: Sequence[str], raw_directions: Optional[str
     estimate = 8 + len(ingredients) * 2 + steps * 3
     return max(10, min(90, estimate))
 
-def _estimate_nutrition(ingredients: Sequence[str]) -> NutritionEstimate:
+def _heuristic_nutrition(ingredients: Sequence[str]) -> NutritionEstimate:
+    """Fallback heuristic when USDA data is not available."""
     protein_hits = sum(1 for ing in ingredients if _contains_keyword(ing, PROTEIN_KEYWORDS))
     carb_hits = sum(1 for ing in ingredients if _contains_keyword(ing, CARB_KEYWORDS))
     fat_hits = sum(1 for ing in ingredients if _contains_keyword(ing, FAT_KEYWORDS))
@@ -192,6 +193,55 @@ def _estimate_nutrition(ingredients: Sequence[str]) -> NutritionEstimate:
     carbs = max(12, carb_hits * 15)
     fat = max(8, fat_hits * 10)
     return NutritionEstimate(calories=calories, protein=protein, carbs=carbs, fat=fat)
+
+
+def _estimate_nutrition(ingredients: Sequence[str]) -> NutritionEstimate:
+    """
+    Try to compute nutrition from the USDA ingredient cache (IngredientNutrition table).
+    Falls back to keyword-based heuristic if no cached data is available.
+    """
+    try:
+        from src.database.session import SessionLocal
+        from src.database.models import IngredientNutrition
+        from src.utils.ingredient_matcher import normalize_ingredient_name
+
+        db = SessionLocal()
+        try:
+            total_cal = 0
+            total_protein = 0.0
+            total_carbs = 0.0
+            total_fat = 0.0
+            hits = 0
+
+            for ing in ingredients:
+                normalized = normalize_ingredient_name(ing)
+                cached = db.query(IngredientNutrition).filter(
+                    IngredientNutrition.normalized_name == normalized
+                ).first()
+                if cached:
+                    # USDA values are per 100g; assume ~100g per ingredient as a rough
+                    # single-serving portion estimate (same scale the heuristic targets).
+                    total_cal += int(cached.calories)
+                    total_protein += float(cached.protein_g)
+                    total_carbs += float(cached.carbs_g)
+                    total_fat += float(cached.fat_g)
+                    hits += 1
+
+            if hits >= max(1, len(ingredients) // 2):
+                # We have USDA data for at least half the ingredients -- use real values.
+                return NutritionEstimate(
+                    calories=max(100, int(total_cal)),
+                    protein=max(1, int(total_protein)),
+                    carbs=max(1, int(total_carbs)),
+                    fat=max(1, int(total_fat)),
+                )
+        finally:
+            db.close()
+    except Exception:
+        pass
+
+    # Fallback to keyword heuristic
+    return _heuristic_nutrition(ingredients)
 
 def _estimate_cost(ingredients: Sequence[str], nutrition: NutritionEstimate) -> float:
     base = 2.0 + len(ingredients) * 0.65
@@ -266,8 +316,14 @@ def _convert_row_to_record(row) -> Optional[RecipeRecord]:
 # DB Fetchers (On-Demand)
 # -------------------------------------------------------------------------
 class RecipeLibrary:
-    """Lazy interface to database."""
+    """Lazy interface to database with in-memory override cache for testing."""
+
+    def __init__(self) -> None:
+        self._cache: Dict[str, RecipeRecord] = {}
+
     def get(self, recipe_id: str) -> Optional[RecipeRecord]:
+        if recipe_id in self._cache:
+            return self._cache[recipe_id]
         try:
             with sqlite3.connect(DB_PATH) as conn:
                 conn.row_factory = sqlite3.Row
@@ -278,6 +334,15 @@ class RecipeLibrary:
         except Exception:
             pass
         return None
+
+    def __setitem__(self, recipe_id: str, record: RecipeRecord) -> None:
+        self._cache[recipe_id] = record
+
+    def __delitem__(self, recipe_id: str) -> None:
+        self._cache.pop(recipe_id, None)
+
+    def pop(self, recipe_id: str, default=None):
+        return self._cache.pop(recipe_id, default)
 
 _LIBRARY = RecipeLibrary()
 
@@ -463,9 +528,14 @@ class MealPlanEngine:
             calorie_penalty = abs(record.nutrition.calories - slot.calorie_target)
             budget_penalty = 0.0
             if remaining_budget is not None and slot.per_meal_budget:
-                remaining = remaining_budget - (record.estimated_cost * profile.people_count)
-                # pseudo logic for budget balancing
-                pass
+                meal_cost = record.estimated_cost * profile.people_count
+                remaining_after = remaining_budget - meal_cost
+                if remaining_after < 0:
+                    # Hard penalty: meal pushes us over budget
+                    budget_penalty = abs(remaining_after) * 10.0
+                elif meal_cost > slot.per_meal_budget:
+                    # Soft penalty: meal is more expensive than average per-meal budget
+                    budget_penalty = (meal_cost - slot.per_meal_budget) * 5.0
             
             score = calorie_penalty + repeat_penalty + budget_penalty
             if best is None or score < best_score:
@@ -600,6 +670,24 @@ def _ensure_summary_snapshot(plan: models.MealPlan, refresh: bool = False) -> di
 def _hydrate_summary_response(plan: models.MealPlan, snapshot: dict) -> dict:
     data = deepcopy(snapshot) if snapshot else {}
     data["plan_id"] = plan.id
+
+    # De-serialize ISO date strings back to date objects
+    for key in ("week_start_date", "week_end_date"):
+        val = data.get(key)
+        if isinstance(val, str):
+            data[key] = date.fromisoformat(val)
+
+    # Inject meals grouped by day_of_week
+    by_day: Dict[int, List] = defaultdict(list)
+    for item in (plan.items or []):
+        by_day[item.day_of_week].append(item)
+
+    for day_entry in data.get("daily", []):
+        day_idx = day_entry.get("day_index", 0)
+        if isinstance(day_entry.get("date"), str):
+            day_entry["date"] = date.fromisoformat(day_entry["date"])
+        day_entry["meals"] = by_day.get(day_idx, [])
+
     return data
 
 def _refresh_plan_state(
@@ -630,17 +718,45 @@ def _weekly_calorie_target(profile: PreferenceProfile) -> Optional[int]:
 
 def _run_validation_checks(plan: models.MealPlan, profile: PreferenceProfile) -> List[dict]:
     issues: List[dict] = []
-    # Implementation simplified, checks targets + diet
-    # Look up metadata using new lazy fetcher
-    
+
+    # Plan-level checks (don't require per-item records)
+    weekly_target = _weekly_calorie_target(profile)
+    if weekly_target and plan.total_calories:
+        ratio = plan.total_calories / weekly_target
+        if abs(1 - ratio) > CALORIE_TOLERANCE:
+            issues.append({
+                "code": "calorie_target_miss",
+                "severity": "warning",
+                "message": f"Weekly calories ({plan.total_calories}) differ from target ({weekly_target}) by {abs(1-ratio)*100:.0f}%",
+            })
+
+    if profile.budget_per_week and plan.total_estimated_cost and plan.total_estimated_cost > profile.budget_per_week:
+        issues.append({
+            "code": "budget_exceeded",
+            "severity": "warning",
+            "message": f"Estimated cost ${plan.total_estimated_cost:.2f} exceeds weekly budget ${profile.budget_per_week:.2f}",
+        })
+
+    # Per-item checks
     for item in plan.items:
+        # Prep time check (uses item data directly — no DB lookup needed)
+        if profile.cooking_time_max and item.prep_time_minutes and item.prep_time_minutes > profile.cooking_time_max:
+            issues.append({
+                "code": "prep_time_exceeded",
+                "severity": "warning",
+                "message": f"{item.recipe_title} prep time ({item.prep_time_minutes} min) exceeds limit ({profile.cooking_time_max} min)",
+            })
+
         record = _LIBRARY.get(str(item.recipe_id))
         if not record:
-             continue # omit warning for now or handle gracefully
-        
+            continue
+
         if _violates_diet(record, profile.dietary_restrictions):
             issues.append({"code": "diet_conflict", "severity": "error", "message": f"{item.recipe_title} conflicts with diet"})
-            
+
+        if _violates_allergies(record, profile.allergies):
+            issues.append({"code": "allergy_violation", "severity": "error", "message": f"{item.recipe_title} contains allergen from user's list"})
+
     return issues
 
 def _build_preference_profile(
@@ -649,7 +765,7 @@ def _build_preference_profile(
 ) -> PreferenceProfile:
     # Basic mapping
     base = {
-        "dietary_restrictions": list((user_preferences.dietary_restrictions or []) if user_preferences else []),
+        "dietary_restrictions": [r.lower() for r in (user_preferences.dietary_restrictions or []) if r] if user_preferences else [],
         "allergies": list((user_preferences.allergies or []) if user_preferences else []),
         "cuisine_preferences": list((user_preferences.cuisine_preferences or []) if user_preferences else []),
         "calorie_target": user_preferences.calorie_target if user_preferences else None,
@@ -811,3 +927,89 @@ def list_meal_plan_alternatives(
         {"recipe_id": r.recipe_id, "title": r.title, "calories": r.nutrition.calories}
         for r in pool
     ]
+
+
+def get_meal_plan_by_week(db: Session, user_id: str, week_start: date) -> Optional[models.MealPlan]:
+    """Get a user's meal plan for a specific week by start date."""
+    return (
+        db.query(models.MealPlan)
+        .options(selectinload(models.MealPlan.items))
+        .filter(
+            models.MealPlan.user_id == user_id,
+            models.MealPlan.week_start_date == week_start,
+        )
+        .order_by(models.MealPlan.created_at.desc())
+        .first()
+    )
+
+
+def delete_meal_plan_item(
+    db: Session,
+    user_id: str,
+    plan_id: str,
+    item_id: str,
+) -> None:
+    """Remove a specific item from a meal plan and recalculate totals."""
+    plan = get_meal_plan(db, plan_id)
+    if not plan:
+        raise ValueError("Meal plan not found")
+    if str(plan.user_id) != str(user_id):
+        raise ValueError("Not authorized to modify this plan")
+
+    target = next((i for i in plan.items if str(i.id) == str(item_id)), None)
+    if not target:
+        raise ValueError("Item not found in meal plan")
+
+    db.delete(target)
+    db.flush()
+
+    # Refresh items list and recalculate totals
+    plan.items = [i for i in plan.items if str(i.id) != str(item_id)]
+    _recalculate_plan_totals(plan)
+    db.add(plan)
+    db.commit()
+
+
+def update_meal_plan_items(
+    db: Session,
+    user_id: str,
+    plan_id: str,
+    items: List[MealPlanItemCreate],
+) -> models.MealPlan:
+    """Replace the items of a meal plan with the provided list."""
+    plan = get_meal_plan(db, plan_id)
+    if not plan:
+        raise ValueError("Meal plan not found")
+    if str(plan.user_id) != str(user_id):
+        raise ValueError("Not authorized to modify this plan")
+
+    # Delete existing items
+    for existing_item in plan.items:
+        db.delete(existing_item)
+    db.flush()
+
+    # Add new items
+    for item_data in items:
+        db.add(
+            models.MealPlanItem(
+                plan_id=plan.id,
+                day_of_week=item_data.day_of_week,
+                meal_type=item_data.meal_type,
+                recipe_id=item_data.recipe_id,
+                recipe_title=item_data.recipe_title,
+                servings=item_data.servings,
+                calories=item_data.calories,
+                protein=item_data.protein,
+                carbs=item_data.carbs,
+                fat=item_data.fat,
+                estimated_cost=item_data.estimated_cost or 0.0,
+                prep_time_minutes=item_data.prep_time_minutes,
+            )
+        )
+
+    db.flush()
+    refreshed = get_meal_plan(db, plan_id)
+    _recalculate_plan_totals(refreshed)
+    db.add(refreshed)
+    db.commit()
+    return get_meal_plan(db, plan_id)

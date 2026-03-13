@@ -20,7 +20,7 @@ import sqlite3
 import json
 from src.api.routers import auth, users, meal_plans, shopping_lists, nutrition, recommendations, user_meals, pantry
 from src.database.session import engine, Base
-from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema, ensure_pantry_schema
+from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema, ensure_pantry_schema, ensure_meal_log_schema, ensure_onboarding_schema
 from src.config.paths import DataPaths
 
 # ——— Database Initialization ———
@@ -28,6 +28,8 @@ Base.metadata.create_all(bind=engine)
 ensure_phase_two_schema()
 ensure_phase_three_schema()  # Phase 3: Shopping Lists
 ensure_pantry_schema()        # Pantry
+ensure_meal_log_schema()      # Meal logging
+ensure_onboarding_schema()    # Onboarding flag
 
 # ——— FastAPI app setup ———
 app = FastAPI(
@@ -106,6 +108,13 @@ class RecipeRequest(BaseModel):
     is_vegetarian: bool = Field(False, description="Filter for vegetarian recipes")
     is_gluten_free: bool = Field(False, description="Filter for gluten-free recipes")
     is_dairy_free: bool = Field(False, description="Filter for dairy-free recipes")
+
+    # Category / meal type filter
+    category: Optional[str] = Field(
+        None,
+        description="Recipe category or meal type filter (e.g. 'breakfast', 'lunch', 'dinner', 'dessert', 'appetizer', 'snack')",
+        example="dinner",
+    )
 
     # Extended search options
     cuisine: Optional[str] = Field(
@@ -401,6 +410,36 @@ async def suggest_recipes_endpoint(request: RecipeRequest):
             merged = merged[:request.top_n]
         except Exception:
             logger.exception("LLM recipe generation fallback failed")
+
+    # ── Category / meal-type filter ─────────────────────────────────────
+    if request.category and merged:
+        _CATEGORY_KEYWORDS: dict[str, set[str]] = {
+            "breakfast": {"pancake", "waffle", "omelette", "omelet", "french toast", "muffin",
+                          "smoothie", "oatmeal", "cereal", "scramble", "breakfast", "granola",
+                          "yogurt", "egg", "bagel", "hash brown", "frittata"},
+            "lunch": {"sandwich", "wrap", "salad", "soup", "lunch", "bowl", "quesadilla",
+                      "panini", "burrito", "flatbread"},
+            "dinner": {"steak", "roast", "casserole", "pasta", "curry", "stir fry",
+                       "stew", "lasagna", "risotto", "dinner", "chicken", "beef",
+                       "pork", "salmon", "grilled"},
+            "dessert": {"cake", "cookie", "brownie", "pie", "ice cream", "pudding",
+                        "mousse", "fudge", "cheesecake", "tart", "cupcake", "dessert",
+                        "chocolate", "caramel", "sweet"},
+            "appetizer": {"dip", "bruschetta", "crostini", "appetizer", "bite", "slider",
+                          "stuffed", "spring roll", "hummus", "guacamole", "nachos"},
+            "snack": {"snack", "bar", "trail mix", "popcorn", "chip", "cracker",
+                      "energy ball", "granola bar", "nuts"},
+        }
+        cat_lower = request.category.lower()
+        keywords = _CATEGORY_KEYWORDS.get(cat_lower, set())
+        if keywords:
+            filtered = [
+                r for r in merged
+                if any(kw in r["title"].lower() for kw in keywords)
+                or any(kw in " ".join(r.get("all_ingredients", [])).lower() for kw in keywords)
+            ]
+            if filtered:
+                merged = filtered
 
     if not merged:
         raise HTTPException(

@@ -51,7 +51,7 @@ def get_cooccurrence_subs(tx, ingredient, top_k=5):
         ORDER BY score DESC
         LIMIT $top_k
     """, ingredient=ingredient, top_k=top_k)
-    return [{"name": r["substitute"], "score": round(r["score"] / 50.0, 4), "context": None, "source": "cooccurrence"} for r in result]
+    return [{"name": r["substitute"], "score": round(min(r["score"] / 50.0, 1.0), 4), "context": None, "source": "cooccurrence"} for r in result]
 
 def get_hybrid_subs(tx, ingredient, context=None, top_k=5, alpha=0.9):
     direct_subs, mode = get_direct_subs(tx, ingredient, context, top_k=top_k * 2)

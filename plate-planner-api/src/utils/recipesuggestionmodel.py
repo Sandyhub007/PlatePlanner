@@ -5,6 +5,7 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from src.config.paths import DataPaths
+from src.utils.dietary_classifier import DietaryClassifier
 
 # -------------------------
 # Constants
@@ -44,9 +45,12 @@ try:
     index = faiss.read_index(str(OPT_INDEX_PATH))
     print(f"✅ Loaded: {MODEL_NAME} + Index with {index.ntotal} vectors.")
 except Exception as e:
-    print(f"❌ Failed to load optimized resources: {e}")
+    print(f"Failed to load optimized resources: {e}")
     model = None
     index = None
+
+# Dietary classifier (lightweight, no external deps)
+_dietary_classifier = DietaryClassifier()
 
 # -------------------------
 # Recipe Suggestion Logic (Optimized for Mobile/Memory)
@@ -155,6 +159,25 @@ def suggest_recipes(
         except:
             final_directions = str(directions)
 
+        # Classify dietary tags from actual ingredients
+        classification = _dietary_classifier.classify(unique_full_list)
+        tags = {
+            "vegan": classification["is_vegan"],
+            "vegetarian": classification["is_vegetarian"],
+            "gluten_free": classification["is_gluten_free"],
+            "dairy_free": classification["is_dairy_free"],
+        }
+
+        # Apply dietary filters -- skip recipes that don't match
+        if is_vegan and not tags["vegan"]:
+            continue
+        if is_vegetarian and not tags["vegetarian"]:
+            continue
+        if is_gluten_free and not tags["gluten_free"]:
+            continue
+        if is_dairy_free and not tags["dairy_free"]:
+            continue
+
         results.append({
             "title": row['title'],
             "ingredients": list(overlap_set), # Matched ingredients
@@ -164,12 +187,7 @@ def suggest_recipes(
             "overlap_score": overlap_score,
             "combined_score": combined_score,
             "rank": 0, # assigned later
-            "tags": { # Default placeholders until classification added to DB
-                "vegan": False,
-                "vegetarian": False,
-                "gluten_free": False,
-                "dairy_free": False
-            }
+            "tags": tags,
         })
 
     # Sort & Rank

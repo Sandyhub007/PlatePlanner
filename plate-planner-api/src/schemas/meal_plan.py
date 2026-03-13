@@ -62,6 +62,11 @@ class MealPlanItemSwap(BaseModel):
     new_recipe_id: str
 
 
+class MealPlanItemsUpdate(BaseModel):
+    """Bulk update for meal plan items."""
+    items: List[MealPlanItemCreate] = Field(..., description="List of meal plan items to set")
+
+
 class MealPlanRegenerateRequest(BaseModel):
     day_of_week: Optional[int] = Field(None, ge=0, le=6)
     preferences_override: Optional[MealPlanPreferencesOverride] = None

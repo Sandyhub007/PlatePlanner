@@ -56,7 +56,7 @@ def test_meal_plan(db: Session, test_user_token: str):
     )
     
     if response.status_code == 200:
-        return response.json()["plan_id"]
+        return response.json().get("plan_id")
     else:
         # Fallback: get existing meal plan
         response = client.get(

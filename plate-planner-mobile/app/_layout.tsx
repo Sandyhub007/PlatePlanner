@@ -23,6 +23,22 @@ export default function RootLayout() {
                 animation: "slide_from_bottom",
               }}
             />
+            <Stack.Screen
+              name="insights"
+              options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="meal-log"
+              options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="nutrition-goals"
+              options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="progress"
+              options={{ animation: "slide_from_right" }}
+            />
           </Stack>
           <StatusBar style="auto" />
         </SafeAreaProvider>

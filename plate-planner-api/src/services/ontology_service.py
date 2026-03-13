@@ -38,25 +38,26 @@ class OntologyService:
 
         # Cypher Query:
         # Pass the list of candidate IDs and the list of restricted terms.
-        # Check all :HAS_INGREDIENT relationships. If ANY related ingredient's name 
-        # contains ANY of the restricted terms, drop the recipe.
+        # Check all :HAS_INGREDIENT relationships. If ANY related ingredient's name
+        # matches ANY of the restricted terms as a whole word, drop the recipe.
+        # Uses word-boundary regex to prevent "nut" from blocking "nutmeg" or "coconut".
         query = """
             UNWIND $recipe_ids AS rid
-            
+
             // Handle possibility of recipe_id being int or string
             MATCH (r:Recipe)
             WHERE r.recipe_id = toInteger(rid) OR r.recipe_id = toString(rid)
-            
+
             OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient)
             WITH r, collect(toLower(i.name)) AS ingredients
-            
-            // Check if ANY of the recipe's ingredients contain ANY of the restricted terms
+
+            // Use word-boundary regex: (?i)\\bterm\\b so "nut" matches "nut" but NOT "nutmeg" or "coconut"
             WHERE NOT any(
                 ing IN ingredients WHERE any(
-                    term IN $restricted_terms WHERE ing CONTAINS term
+                    term IN $restricted_terms WHERE ing =~ ('(?i).*\\\\b' + term + '\\\\b.*')
                 )
             )
-            
+
             // Return IDs of recipes that are SAFE
             RETURN r.recipe_id AS safe_id
         """

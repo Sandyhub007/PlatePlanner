@@ -1,6 +1,8 @@
+from datetime import date
+from typing import List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
-from typing import List
 
 from src.database import session, models
 from src.schemas import meal_plan as schemas
@@ -40,6 +42,20 @@ def get_my_meal_plans(
     db: Session = Depends(session.get_db)
 ):
     return meal_plan_service.get_user_meal_plans(db, current_user.id)
+
+
+@router.get("/weekly", response_model=Optional[schemas.MealPlan])
+def get_weekly_meal_plan(
+    week_start: date = Query(..., description="Start date of the week (ISO format, e.g. 2026-03-09)"),
+    current_user: models.User = Depends(security.get_current_active_user),
+    db: Session = Depends(session.get_db),
+):
+    """Fetch the meal plan for a specific week, identified by its start date."""
+    plan = meal_plan_service.get_meal_plan_by_week(db, current_user.id, week_start)
+    if not plan:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No meal plan found for the given week")
+    return plan
+
 
 @router.get("/{plan_id}", response_model=schemas.MealPlan)
 def get_meal_plan(
@@ -103,6 +119,54 @@ def swap_meal_item(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(exc)
+        ) from exc
+
+
+@router.delete("/{plan_id}/items/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_meal_plan_item(
+    plan_id: str,
+    item_id: str,
+    current_user: models.User = Depends(security.get_current_active_user),
+    db: Session = Depends(session.get_db),
+):
+    """Remove a specific meal item from a meal plan."""
+    try:
+        meal_plan_service.delete_meal_plan_item(
+            db=db,
+            user_id=current_user.id,
+            plan_id=plan_id,
+            item_id=item_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
+        ) from exc
+
+
+@router.put("/{plan_id}/items", response_model=schemas.MealPlan)
+def update_meal_plan_items(
+    plan_id: str,
+    items_update: schemas.MealPlanItemsUpdate,
+    current_user: models.User = Depends(security.get_current_active_user),
+    db: Session = Depends(session.get_db),
+):
+    """Bulk update meal plan items (replace the full items list for specified slots)."""
+    try:
+        return meal_plan_service.update_meal_plan_items(
+            db=db,
+            user_id=current_user.id,
+            plan_id=plan_id,
+            items=items_update.items,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
         ) from exc
 
 

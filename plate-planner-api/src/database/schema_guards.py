@@ -118,7 +118,43 @@ def ensure_phase_three_schema() -> None:
         """))
 
 
+# ===== Meal Log Schema =====
+
+def ensure_meal_log_schema() -> None:
+    """Idempotent helper to create the meal_log_items table."""
+    with engine.begin() as connection:
+        connection.execute(text("""
+            CREATE TABLE IF NOT EXISTS meal_log_items (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                log_date DATE NOT NULL,
+                meal_type VARCHAR(50) NOT NULL,
+                description TEXT NOT NULL,
+                calories INTEGER,
+                protein_g DOUBLE PRECISION,
+                carbs_g DOUBLE PRECISION,
+                fat_g DOUBLE PRECISION,
+                image_url VARCHAR(500),
+                source VARCHAR(50) DEFAULT 'manual',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """))
+        connection.execute(text("""
+            CREATE INDEX IF NOT EXISTS idx_meal_log_user_date
+            ON meal_log_items(user_id, log_date)
+        """))
+
+
 # ===== Pantry Schema =====
+
+def ensure_onboarding_schema() -> None:
+    """Idempotent helper to add onboarding_complete column to users table."""
+    with engine.begin() as connection:
+        connection.execute(text(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS onboarding_complete BOOLEAN DEFAULT FALSE"
+        ))
+
 
 def ensure_pantry_schema() -> None:
     """Idempotent helper to create the user_pantry_items table."""

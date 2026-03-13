@@ -60,12 +60,21 @@ def _fuzzy_match(pantry_tokens: set[str], ingredient: str) -> bool:
         if re.search(pattern, ing_lower):
             return True
             
-        # 3. Simple plural handling: allow pantry item + 's' or 'es' match
-        # e.g. pantry "egg" matches "eggs"
+        # 3. Simple plural handling: pantry "egg" matches recipe "eggs"
         pattern_plural = r'\b' + re.escape(p_item) + r'(s|es)?\b'
         if re.search(pattern_plural, ing_lower):
             return True
-            
+
+        # 4. Reverse plural: pantry "eggs" matches recipe "egg"
+        if p_item.endswith('es') and len(p_item) > 3:
+            base = p_item[:-2]
+            if re.search(r'\b' + re.escape(base) + r'\b', ing_lower):
+                return True
+        elif p_item.endswith('s') and len(p_item) > 2:
+            base = p_item[:-1]
+            if re.search(r'\b' + re.escape(base) + r'\b', ing_lower):
+                return True
+
     return False
 
 

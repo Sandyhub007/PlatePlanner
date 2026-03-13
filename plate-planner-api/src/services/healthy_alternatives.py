@@ -262,9 +262,11 @@ class HealthyAlternativesService:
         dietary_filter = dietary_filter.replace("r2.", "r.")  # Adjust for single recipe query
         
         meal_filter = ""
+        params: dict = {"limit": limit}
         if meal_type:
-            meal_filter = f"AND toLower(r.meal_type) = '{meal_type.lower()}'"
-        
+            meal_filter = "AND toLower(r.meal_type) = toLower($meal_type)"
+            params["meal_type"] = meal_type
+
         query = f"""
         MATCH (r:Recipe)
         WHERE r.health_score IS NOT NULL
@@ -280,8 +282,8 @@ class HealthyAlternativesService:
         ORDER BY r.health_score DESC
         LIMIT $limit
         """
-        
-        return self.neo4j.execute_query(query, {"limit": limit})
+
+        return self.neo4j.execute_query(query, params)
 
 
 def get_healthy_alternatives_service(neo4j_service: Neo4jService) -> HealthyAlternativesService:

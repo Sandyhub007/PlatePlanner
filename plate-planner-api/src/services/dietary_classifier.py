@@ -343,7 +343,7 @@ class DietaryClassifier:
                     carb_count += 1
                     break
         
-        return carb_count <= 1
+        return carb_count == 0
     
     def _is_paleo(self, ingredients: List[str]) -> bool:
         """Check if recipe is paleo (no grains, dairy, legumes)."""
