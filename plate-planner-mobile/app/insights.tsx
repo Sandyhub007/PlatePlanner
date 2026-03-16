@@ -13,7 +13,6 @@ import {
     ActivityIndicator,
     Dimensions,
     RefreshControl,
-    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Text, VStack, HStack } from "@gluestack-ui/themed";
@@ -24,10 +23,6 @@ import Svg, {
     Rect,
     Path,
     Circle,
-    Defs,
-    LinearGradient as SvgGrad,
-    Stop,
-    Line,
     Text as SvgText,
 } from "react-native-svg";
 import { useAuth } from "../src/state/auth";
@@ -433,7 +428,7 @@ export default function InsightsScreen() {
             if (pred.status === "fulfilled") setPrediction(pred.value);
             if (rep.status === "fulfilled") setWeeklyReport(rep.value);
         } catch (e) {
-            console.log("Insights fetch error:", e);
+            if (__DEV__) console.log("Insights fetch error:", e);
         } finally {
             setLoading(false);
             setRefreshing(false);

@@ -617,12 +617,36 @@ def get_goal_progress(
             days_remaining = None
             progress_pct = None
         
-        # Get recent logs (simplified - would query nutrition_logs table)
+        # Get real recent performance from NutritionLog data (last 7 days)
+        today = date.today()
+        week_ago = today - timedelta(days=7)
+
+        recent_logs = db.query(NutritionLog).filter(
+            and_(
+                NutritionLog.user_id == current_user.id,
+                NutritionLog.log_date >= week_ago,
+                NutritionLog.log_date <= today,
+            )
+        ).all()
+
+        days_on_track_7d = 0
+        total_cal_7d = 0
+        for log in recent_logs:
+            cal = log.total_calories or 0
+            total_cal_7d += cal
+            if cal > 0 and abs(cal - active_goal.daily_calorie_target) <= 200:
+                days_on_track_7d += 1
+
+        num_logged = len(recent_logs) or 1
+        avg_cal_7d = int(total_cal_7d / num_logged)
+        achievement_rate_7d = round((days_on_track_7d / num_logged) * 100, 1) if num_logged else 0
+
         recent_performance = {
             "last_7_days": {
-                "avg_calories": active_goal.daily_calorie_target,
-                "days_on_track": 5,
-                "achievement_rate": 71
+                "avg_calories": avg_cal_7d,
+                "days_on_track": days_on_track_7d,
+                "days_logged": len(recent_logs),
+                "achievement_rate": achievement_rate_7d,
             }
         }
         
@@ -819,18 +843,48 @@ def get_personalized_recommendations(
     - Ranks recommendations by priority
     """
     try:
-        # Get recent nutrition data (simplified for now)
-        # In production, calculate from actual meal plan data
-        recent_nutrition = NutritionMacros(
-            calories=2000,
-            protein_g=100,
-            carbs_g=200,
-            fat_g=70,
-            fiber_g=25,
-            sugar_g=40,
-            sodium_mg=2000
-        )
-        
+        # Calculate real recent nutrition from NutritionLog entries (last 7 days)
+        today = date.today()
+        week_ago = today - timedelta(days=7)
+
+        recent_logs = db.query(NutritionLog).filter(
+            and_(
+                NutritionLog.user_id == current_user.id,
+                NutritionLog.log_date >= week_ago,
+                NutritionLog.log_date <= today,
+            )
+        ).all()
+
+        if recent_logs:
+            num_days = len(recent_logs)
+            avg_calories = int(sum(l.total_calories or 0 for l in recent_logs) / num_days)
+            avg_protein = round(sum(l.total_protein_g or 0 for l in recent_logs) / num_days, 1)
+            avg_carbs = round(sum(l.total_carbs_g or 0 for l in recent_logs) / num_days, 1)
+            avg_fat = round(sum(l.total_fat_g or 0 for l in recent_logs) / num_days, 1)
+            avg_fiber = round(sum(l.total_fiber_g or 0 for l in recent_logs) / num_days, 1)
+            avg_sodium = int(sum(l.total_sodium_mg or 0 for l in recent_logs) / num_days)
+
+            recent_nutrition = NutritionMacros(
+                calories=avg_calories,
+                protein_g=avg_protein,
+                carbs_g=avg_carbs,
+                fat_g=avg_fat,
+                fiber_g=avg_fiber,
+                sugar_g=0,
+                sodium_mg=avg_sodium,
+            )
+        else:
+            # Sensible defaults when no logs exist yet
+            recent_nutrition = NutritionMacros(
+                calories=2000,
+                protein_g=100,
+                carbs_g=200,
+                fat_g=70,
+                fiber_g=25,
+                sugar_g=40,
+                sodium_mg=2000,
+            )
+
         # Get active goal
         active_goal = db.query(NutritionGoal).filter(
             and_(
@@ -838,17 +892,24 @@ def get_personalized_recommendations(
                 NutritionGoal.is_active == True
             )
         ).first()
-        
+
         # Generate recommendations
         recommendations = insights_engine.generate_personalized_recommendations(
             user_id=str(current_user.id),
             recent_nutrition=recent_nutrition,
             goal=active_goal
         )
-        
+
         return {
             "user_id": str(current_user.id),
             "period": "Last 7 days",
+            "days_with_data": len(recent_logs) if recent_logs else 0,
+            "daily_averages": {
+                "calories": recent_nutrition.calories,
+                "protein_g": recent_nutrition.protein_g,
+                "carbs_g": recent_nutrition.carbs_g,
+                "fat_g": recent_nutrition.fat_g,
+            },
             "total_recommendations": len(recommendations),
             "recommendations": [
                 {
@@ -859,7 +920,7 @@ def get_personalized_recommendations(
                 for rec in recommendations
             ]
         }
-        
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -895,15 +956,18 @@ def get_nutrition_trends(
             user_id=str(current_user.id),
             days=days
         )
-        
+
         return {
             "user_id": str(current_user.id),
             "analysis_period": trends["period"],
             "weeks_analyzed": trends["weeks_analyzed"],
+            "logged_days": trends.get("logged_days", 0),
             "calorie_trend": trends["calorie_trend"],
             "protein_trend": trends["protein_trend"],
             "consistency_score": trends["consistency_score"],
-            "insights": trends["insights"]
+            "weekly_avg_calories": trends.get("weekly_avg_calories", []),
+            "weekly_avg_protein": trends.get("weekly_avg_protein", []),
+            "insights": trends["insights"],
         }
         
     except Exception as e:
@@ -949,14 +1013,34 @@ def predict_goal_achievement(
                 "has_active_goal": False,
                 "message": "No active goal to predict. Create a goal to get started!"
             }
-        
-        # Get recent performance (simplified)
-        # In production, calculate from nutrition logs
+
+        # Calculate real recent performance from NutritionLog data (last 14 days)
+        today = date.today()
+        two_weeks_ago = today - timedelta(days=14)
+
+        recent_logs = db.query(NutritionLog).filter(
+            and_(
+                NutritionLog.user_id == current_user.id,
+                NutritionLog.log_date >= two_weeks_ago,
+                NutritionLog.log_date <= today,
+            )
+        ).all()
+
+        days_on_track = 0
+        days_off_track = 0
+        calorie_target = active_goal.daily_calorie_target
+
+        for log in recent_logs:
+            if log.total_calories and abs(log.total_calories - calorie_target) <= 200:
+                days_on_track += 1
+            else:
+                days_off_track += 1
+
         recent_performance = {
-            "days_on_track": 10,
-            "days_off_track": 4
+            "days_on_track": days_on_track,
+            "days_off_track": days_off_track,
         }
-        
+
         prediction = insights_engine.predict_goal_achievement(
             user_id=str(current_user.id),
             goal=active_goal,
@@ -1015,15 +1099,19 @@ def get_weekly_report(
             user_id=str(current_user.id),
             week_start=week_start
         )
-        
+
         return {
             "user_id": str(current_user.id),
             "week": report["week"],
             "summary": report["summary"],
+            "logged_days": report.get("logged_days", 0),
+            "total_calories": report.get("total_calories", 0),
+            "avg_daily_calories": report.get("avg_daily_calories", 0),
+            "daily_data": report.get("daily_data", []),
             "highlights": report["highlights"],
             "areas_to_improve": report["areas_to_improve"],
             "wins": report["wins"],
-            "action_items": report["action_items"]
+            "action_items": report["action_items"],
         }
         
     except Exception as e:

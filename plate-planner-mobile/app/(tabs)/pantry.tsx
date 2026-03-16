@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Text, VStack, HStack } from "@gluestack-ui/themed";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect } from "expo-router";
@@ -30,14 +29,18 @@ export default function PantryScreen() {
       const data = await apiRequest<PantryResponse>("/pantry", { token });
       setItems(data.items);
     } catch (e) {
-      console.log("Failed to load pantry", e);
+      if (__DEV__) console.log("Failed to load pantry", e);
     } finally {
       setLoading(false);
     }
   }, [token]);
 
   // Refresh whenever the tab becomes focused
-  useFocusEffect(fetchPantry);
+  useFocusEffect(
+    useCallback(() => {
+      fetchPantry();
+    }, [fetchPantry])
+  );
 
   const handleAdd = async () => {
     const names = inputText
@@ -55,7 +58,7 @@ export default function PantryScreen() {
       setItems(data.items);
       setInputText("");
     } catch (e) {
-      console.log("Failed to add pantry items", e);
+      if (__DEV__) console.log("Failed to add pantry items", e);
     } finally {
       setAdding(false);
     }
@@ -69,7 +72,7 @@ export default function PantryScreen() {
       });
       setItems((prev) => prev.filter((i) => i.name !== name));
     } catch (e) {
-      console.log("Failed to delete pantry item", e);
+      if (__DEV__) console.log("Failed to delete pantry item", e);
     }
   };
 
@@ -117,11 +120,15 @@ export default function PantryScreen() {
                 onSubmitEditing={handleAdd}
                 returnKeyType="done"
                 style={{ fontSize: 15, color: "#111827" }}
+                accessibilityLabel="Add pantry ingredients"
+                accessibilityHint="Enter ingredient names separated by commas"
               />
             </Box>
             <TouchableOpacity
               onPress={handleAdd}
               disabled={adding}
+              accessibilityLabel="Add ingredients to pantry"
+              accessibilityRole="button"
               style={{
                 backgroundColor: "#16a34a",
                 borderRadius: 12,
@@ -225,6 +232,8 @@ export default function PantryScreen() {
                   <TouchableOpacity
                     onPress={() => handleDelete(item.name)}
                     hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                    accessibilityLabel={`Remove ${item.name} from pantry`}
+                    accessibilityRole="button"
                   >
                     <Box
                       w={28}

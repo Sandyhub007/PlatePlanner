@@ -68,7 +68,7 @@ export default function HomeScreen() {
         // Weekly data is optional
       }
     } catch (err) {
-      console.log("Error fetching today summary:", err);
+      if (__DEV__) console.log("Error fetching today summary:", err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -175,6 +175,8 @@ export default function HomeScreen() {
               onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/meal-log'); }}
               activeOpacity={0.85}
               style={{ marginTop: 20 }}
+              accessibilityLabel="Log a meal"
+              accessibilityRole="button"
             >
               <LinearGradient
                 colors={['#16a34a', '#22c55e']}
@@ -198,7 +200,7 @@ export default function HomeScreen() {
               <Text size="xl" bold color="$coolGray900">Weekly Progress</Text>
               <Text color="$coolGray400" size="sm">See your activity</Text>
             </VStack>
-            <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/progress'); }} activeOpacity={0.8}>
+            <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/progress'); }} activeOpacity={0.8} accessibilityLabel="See progress" accessibilityRole="button">
               <Box bg="$green600" px="$3" py="$1.5" borderRadius="$full" shadowColor="#16a34a" shadowOpacity={0.3} shadowRadius={8} elevation={3}>
                 <Text color="white" bold size="xs">See Progress →</Text>
               </Box>
@@ -242,6 +244,8 @@ export default function HomeScreen() {
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/insights'); }}
+            accessibilityLabel="View nutrition insights"
+            accessibilityRole="button"
           >
             <LinearGradient
               colors={['#1e40af', '#3b82f6']}

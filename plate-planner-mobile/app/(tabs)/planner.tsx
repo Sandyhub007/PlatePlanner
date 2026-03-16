@@ -2,8 +2,8 @@ import {
   ScrollView,
   TouchableOpacity,
   ImageBackground,
-  View,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -359,8 +359,8 @@ export default function MealPlannerScreen() {
       await fetchMealPlan();
     } catch (err: any) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      console.error("Failed to generate meal plan:", err?.message || err);
-      alert("Failed to generate meal plan. Please try again.");
+      if (__DEV__) console.error("Failed to generate meal plan:", err?.message || err);
+      Alert.alert("Error", "Failed to generate meal plan. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -383,7 +383,7 @@ export default function MealPlannerScreen() {
         )
       );
     } catch (err) {
-      console.error("Failed to delete meal item:", err);
+      if (__DEV__) console.error("Failed to delete meal item:", err);
     }
   };
 
@@ -426,8 +426,8 @@ export default function MealPlannerScreen() {
         );
       } catch (err) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-        console.error("Upload failed", err);
-        alert("Failed to save meal photo. Please try again.");
+        if (__DEV__) console.error("Upload failed", err);
+        Alert.alert("Error", "Failed to save meal photo. Please try again.");
       }
     }
   };

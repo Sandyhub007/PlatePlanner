@@ -17,7 +17,6 @@ import {
   Button,
   ButtonText,
   Divider,
-  Pressable,
 } from "@gluestack-ui/themed";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "expo-router";
@@ -86,7 +85,7 @@ export default function MealLogScreen() {
       const data = await apiRequest<DailyLog>(`/nutrition/log/daily?date=${selectedDate}`, { token });
       setDailyLog(data);
     } catch (e: any) {
-      console.log("Failed to fetch daily log:", e?.message);
+      if (__DEV__) console.log("Failed to fetch daily log:", e?.message);
     } finally {
       setLoading(false);
     }
@@ -98,7 +97,7 @@ export default function MealLogScreen() {
       const data = await apiRequest<TodaySummary>("/nutrition/log/today-summary", { token });
       setTodaySummary(data);
     } catch (e: any) {
-      console.log("Failed to fetch today summary:", e?.message);
+      if (__DEV__) console.log("Failed to fetch today summary:", e?.message);
     }
   }, [token]);
 
@@ -187,7 +186,7 @@ export default function MealLogScreen() {
       {/* Header */}
       <Box px="$6" pt="$4" pb="$3" bg="$white" shadowColor="$black" shadowOffset={{ width: 0, height: 2 }} shadowOpacity={0.04} shadowRadius={4} elevation={2}>
         <HStack alignItems="center" justifyContent="space-between" mb="$3">
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.back()} accessibilityLabel="Go back" accessibilityRole="button">
             <Text color="$green600" bold>‹ Back</Text>
           </TouchableOpacity>
           <Text size="xl" bold color="$coolGray900">Meal Log</Text>
@@ -305,7 +304,7 @@ export default function MealLogScreen() {
         <Button
           bg="$green600"
           borderRadius="$xl"
-          h="$14"
+          h={56}
           onPress={() => setShowModal(true)}
           shadowColor="$green600"
           shadowOffset={{ width: 0, height: 4 }}

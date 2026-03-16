@@ -1,5 +1,4 @@
 import { ScrollView, ActivityIndicator, Pressable, ImageBackground } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Text, VStack, HStack, Input, InputField, InputSlot, InputIcon, SearchIcon, Button, ButtonText, Icon } from "@gluestack-ui/themed";
 import { useState } from "react";
 import { useRouter } from "expo-router";
@@ -49,7 +48,7 @@ export default function RecipesScreen() {
       });
       setRecipes(data);
     } catch (e: any) {
-      console.log("Failed to load recipes", e?.message || e);
+      if (__DEV__) console.log("Failed to load recipes", e?.message || e);
       setRecipes([]);
     } finally {
       setLoading(false);
@@ -89,6 +88,8 @@ export default function RecipesScreen() {
                 onChangeText={setQuery}
                 onSubmitEditing={handleSearch}
                 returnKeyType="search"
+                accessibilityLabel="Search ingredients"
+                accessibilityHint="Enter ingredients separated by commas"
               />
             </Input>
             <Button bg="$green600" borderRadius="$xl" px="$5" h="$12" onPress={handleSearch} shadowColor="$green600" shadowOffset={{ width: 0, height: 4 }} shadowOpacity={0.3} shadowRadius={8}>

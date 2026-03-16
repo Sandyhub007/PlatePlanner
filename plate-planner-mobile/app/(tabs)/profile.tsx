@@ -92,7 +92,7 @@ export default function ProfileScreen() {
         initialLoadDone.current = true;
       })
       .catch(err => {
-        console.log("Failed to load preferences:", err?.message);
+        if (__DEV__) console.log("Failed to load preferences:", err?.message);
         initialLoadDone.current = true;
       })
       .finally(() => setLoadingPrefs(false));
@@ -112,7 +112,7 @@ export default function ProfileScreen() {
         allergies: allergies,
       },
     })
-      .catch(err => console.log("Failed to save preferences:", err?.message))
+      .catch(err => { if (__DEV__) console.log("Failed to save preferences:", err?.message); })
       .finally(() => setSavingPrefs(false));
   }, [preferences, cuisinePrefs, allergies]);
 
@@ -331,7 +331,7 @@ export default function ProfileScreen() {
 
           <VStack bg="$white" borderRadius="$2xl" shadowColor="$black" shadowOffset={{ width: 0, height: 2 }} shadowOpacity={0.05} shadowRadius={8} elevation={2} borderWidth={1} borderColor="$coolGray100">
 
-            <TouchableOpacity onPress={() => router.push('/nutrition-goals')} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => router.push('/nutrition-goals')} activeOpacity={0.7} accessibilityLabel="Nutrition Goals" accessibilityRole="button">
               <HStack
                 justifyContent="space-between"
                 alignItems="center"
@@ -347,7 +347,7 @@ export default function ProfileScreen() {
               </HStack>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => router.push('/progress')} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => router.push('/progress')} activeOpacity={0.7} accessibilityLabel="Progress and Stats" accessibilityRole="button">
               <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={1} borderBottomColor="$coolGray100">
                 <HStack space="sm" alignItems="center">
                   <Text size="md">📊</Text>
@@ -357,7 +357,7 @@ export default function ProfileScreen() {
               </HStack>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => router.push('/insights')} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => router.push('/insights')} activeOpacity={0.7} accessibilityLabel="Nutrition Insights" accessibilityRole="button">
               <HStack justifyContent="space-between" alignItems="center" p="$4">
                 <HStack space="sm" alignItems="center">
                   <Text size="md">💡</Text>
@@ -372,7 +372,7 @@ export default function ProfileScreen() {
 
         {/* Logout */}
         <Box px="$6" mb="$10">
-          <Button variant="outline" borderColor="$red200" bg="$red50" h="$12" borderRadius="$xl" onPress={handleLogout}>
+          <Button variant="outline" borderColor="$red200" bg="$red50" h="$12" borderRadius="$xl" onPress={handleLogout} accessibilityLabel="Sign out" accessibilityRole="button">
             <Icon as={LogOut} color="$red500" mr="$2" />
             <ButtonText color="$red600" bold>Sign Out</ButtonText>
           </Button>

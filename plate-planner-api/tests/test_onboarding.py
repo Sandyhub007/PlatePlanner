@@ -24,6 +24,7 @@ from src.database import models
 # ---------------------------------------------------------------------------
 
 def _make_user(**overrides) -> models.User:
+    from datetime import datetime
     defaults = dict(
         id=uuid.uuid4(),
         email="onboard@example.com",
@@ -33,6 +34,8 @@ def _make_user(**overrides) -> models.User:
         onboarding_complete=False,
         auth_provider="email",
         profile_photo_url=None,
+        created_at=datetime(2025, 1, 1),
+        updated_at=datetime(2025, 1, 1),
     )
     defaults.update(overrides)
     return models.User(**defaults)

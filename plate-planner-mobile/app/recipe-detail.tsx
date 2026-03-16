@@ -120,7 +120,7 @@ export default function RecipeDetailScreen() {
         const data = await apiRequest<RecipeDetails>(`/recipes/${encodedTitle}`);
         setDetails(data);
       } catch (err) {
-        console.log("Failed to fetch details", err);
+        if (__DEV__) console.log("Failed to fetch details", err);
         setError(true);
       } finally {
         setLoading(false);
@@ -145,7 +145,7 @@ export default function RecipeDetailScreen() {
         );
         setSubData(data);
       } catch (err) {
-        console.log("Failed to fetch substitutions", err);
+        if (__DEV__) console.log("Failed to fetch substitutions", err);
       } finally {
         setSubLoading(false);
       }
@@ -191,7 +191,7 @@ export default function RecipeDetailScreen() {
         [ingredient]: { loading: false, searched: true, inPantry, other, error: false },
       }));
     } catch (err) {
-      console.log(`Failed to search substitutes for ${ingredient}`, err);
+      if (__DEV__) console.log(`Failed to search substitutes for ${ingredient}`, err);
       setSearchResults(prev => ({
         ...prev,
         [ingredient]: { loading: false, searched: true, inPantry: [], other: [], error: true },

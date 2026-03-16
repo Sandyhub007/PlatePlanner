@@ -24,16 +24,20 @@ from src.database import models
 # ---------------------------------------------------------------------------
 
 def _fake_user() -> models.User:
+    from datetime import datetime
     user = models.User(
         id=uuid.uuid4(),
         email="test_crud@example.com",
         hashed_password="hashed",
         is_active=True,
+        created_at=datetime(2025, 1, 1),
+        updated_at=datetime(2025, 1, 1),
     )
     return user
 
 
 def _fake_meal_plan(user_id, week_start=None) -> models.MealPlan:
+    from datetime import datetime
     ws = week_start or date.today()
     plan = models.MealPlan(
         id=uuid.uuid4(),
@@ -46,12 +50,15 @@ def _fake_meal_plan(user_id, week_start=None) -> models.MealPlan:
         total_carbs=700,
         total_fat=280,
         total_estimated_cost=70.0,
+        created_at=datetime(2025, 1, 1),
+        updated_at=datetime(2025, 1, 1),
     )
     plan.items = []
     return plan
 
 
 def _fake_item(plan_id) -> models.MealPlanItem:
+    from datetime import datetime
     return models.MealPlanItem(
         id=uuid.uuid4(),
         plan_id=plan_id,
@@ -66,6 +73,7 @@ def _fake_item(plan_id) -> models.MealPlanItem:
         fat=10,
         estimated_cost=4.5,
         prep_time_minutes=10,
+        created_at=datetime(2025, 1, 1),
     )
 
 

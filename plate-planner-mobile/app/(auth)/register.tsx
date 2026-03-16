@@ -128,7 +128,7 @@ export default function RegisterScreen() {
             await register(email.trim(), password, fullName.trim());
             // AuthGate handles redirect on successful register + auto-login
         } catch (e: any) {
-            console.error("Registration failed:", e);
+            if (__DEV__) console.error("Registration failed:", e);
             let errorMsg = e?.message || "Something went wrong. Please check your connection and try again.";
 
             if (errorMsg.includes("400")) {

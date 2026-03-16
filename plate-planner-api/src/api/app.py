@@ -2,6 +2,7 @@ import asyncio
 import csv
 import difflib
 import logging
+import os
 import re
 import unicodedata
 from collections import defaultdict
@@ -49,9 +50,18 @@ app = FastAPI(
 )
 
 # ——— CORS ———
+# Configure allowed origins via the CORS_ORIGINS environment variable.
+# In production, set a comma-separated list of allowed origins, e.g.:
+#   CORS_ORIGINS=https://plateplanner.vercel.app,https://www.plateplanner.com
+# When CORS_ORIGINS is not set, all origins are allowed (development default).
+_cors_origins_raw = os.getenv("CORS_ORIGINS", "*")
+_cors_origins = (
+    ["*"] if _cors_origins_raw.strip() == "*"
+    else [origin.strip() for origin in _cors_origins_raw.split(",") if origin.strip()]
+)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],      # <-- lock this down in production
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

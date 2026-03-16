@@ -117,8 +117,8 @@ class TestEstimateNutrition:
         ]
         mock_db.close = MagicMock()
 
-        with patch("src.services.meal_plan_service.SessionLocal", return_value=mock_db, create=True):
-            with patch("src.services.meal_plan_service.normalize_ingredient_name", side_effect=lambda x: x):
+        with patch("src.database.session.SessionLocal", return_value=mock_db):
+            with patch("src.utils.ingredient_matcher.normalize_ingredient_name", side_effect=lambda x: x):
                 result = _estimate_nutrition(("chicken", "rice"))
 
         assert isinstance(result, NutritionEstimate)
@@ -139,8 +139,8 @@ class TestEstimateNutrition:
         ]
         mock_db.close = MagicMock()
 
-        with patch("src.services.meal_plan_service.SessionLocal", return_value=mock_db, create=True):
-            with patch("src.services.meal_plan_service.normalize_ingredient_name", side_effect=lambda x: x):
+        with patch("src.database.session.SessionLocal", return_value=mock_db):
+            with patch("src.utils.ingredient_matcher.normalize_ingredient_name", side_effect=lambda x: x):
                 result = _estimate_nutrition(("x1", "x2", "x3", "x4"))
 
         assert isinstance(result, NutritionEstimate)

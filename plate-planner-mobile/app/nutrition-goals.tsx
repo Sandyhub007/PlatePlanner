@@ -112,7 +112,7 @@ export default function NutritionGoalsScreen() {
       {/* Header */}
       <Box px="$6" pt="$4" pb="$4" bg="$white" shadowColor="$black" shadowOffset={{ width: 0, height: 2 }} shadowOpacity={0.04} shadowRadius={4} elevation={2}>
         <HStack alignItems="center" justifyContent="space-between">
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.back()} accessibilityLabel="Go back" accessibilityRole="button">
             <Text color="$green600" bold>‹ Back</Text>
           </TouchableOpacity>
           <Text size="xl" bold color="$coolGray900">Nutrition Goals</Text>
@@ -246,7 +246,7 @@ export default function NutritionGoalsScreen() {
         <Button
           bg="$green600"
           borderRadius="$xl"
-          h="$14"
+          h={56}
           onPress={handleSave}
           disabled={saving}
           shadowColor="$green600"

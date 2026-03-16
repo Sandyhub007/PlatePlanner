@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       setUser(me);
     } catch (error: any) {
-      console.error("[Auth] Backend Google Sync Error:", error);
+      if (__DEV__) console.error("[Auth] Backend Google Sync Error:", error);
       const msg = error?.message || "Unknown error";
       if (Platform.OS === "web") {
         alert("Google sign-in failed: " + msg);
@@ -141,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         // Generate a deep link back to the app (e.g. exp://.../--/)
         const returnUrl = Linking.createURL("/");
-        console.log("[Auth] Return URL:", returnUrl);
+        if (__DEV__) console.log("[Auth] Return URL:", returnUrl);
 
         // Pass this return URL as 'state' to Google
         // Google -> google-callback.html -> detects state -> redirects to returnUrl
@@ -171,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
       } catch (error) {
-        console.error("[Auth] Google Sign-In error:", error);
+        if (__DEV__) console.error("[Auth] Google Sign-In error:", error);
       }
     }
   };

@@ -1,7 +1,8 @@
+import React from "react";
 import { ScrollView, ActivityIndicator, TouchableOpacity, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Text, VStack, HStack } from "@gluestack-ui/themed";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -408,7 +409,7 @@ export default function ProgressScreen() {
 
       setTarget(weekResp.daily_calorie_target || monthResp.daily_calorie_target || 0);
     } catch (e: any) {
-      console.log("Progress fetch error:", e?.message);
+      if (__DEV__) console.log("Progress fetch error:", e?.message);
     } finally {
       setLoading(false);
     }
@@ -484,6 +485,3 @@ export default function ProgressScreen() {
     </SafeAreaView>
   );
 }
-
-// Need React import for Fragment in the bar chart
-import React from "react";

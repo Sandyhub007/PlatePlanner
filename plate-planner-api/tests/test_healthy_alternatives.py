@@ -164,13 +164,15 @@ class TestHealthiestRecipes:
                 "calories": 300
             }
         ]
-        
+
         results = service.suggest_healthiest_recipes(meal_type="breakfast", limit=5)
-        
-        # Verify query included meal type filter
+
+        # Verify query included meal type filter (parameterized via $meal_type)
         call_args = mock_neo4j.execute_query.call_args
         query = call_args[0][0]
-        assert "breakfast" in query.lower()
+        params = call_args[0][1]
+        assert "$meal_type" in query or "meal_type" in query.lower()
+        assert params.get("meal_type") == "breakfast"
     
     def test_suggest_healthiest_recipes_with_dietary_restrictions(self, service, mock_neo4j):
         """Test getting healthiest recipes with dietary filters"""

@@ -1,4 +1,4 @@
-import { ScrollView, TouchableOpacity, TextInput, Animated, PanResponder, ActivityIndicator } from "react-native";
+import { ScrollView, TouchableOpacity, TextInput, Animated, PanResponder, ActivityIndicator, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Text, VStack, HStack, Button, ButtonText, Heading } from "@gluestack-ui/themed";
 import { useState, useRef, useCallback } from "react";
@@ -176,7 +176,7 @@ export default function ShoppingScreen() {
         setItems({});
       }
     } catch (err) {
-      console.log("Failed to load shopping list:", err);
+      if (__DEV__) console.log("Failed to load shopping list:", err);
       setItems({});
     } finally {
       setLoading(false);
@@ -216,7 +216,7 @@ export default function ShoppingScreen() {
           i.id === id ? { ...i, is_purchased: item.is_purchased } : i
         ),
       }));
-      console.log("Failed to toggle item:", err);
+      if (__DEV__) console.log("Failed to toggle item:", err);
     }
   };
 
@@ -238,7 +238,7 @@ export default function ShoppingScreen() {
       });
     } catch (err) {
       setItems(prevItems);
-      console.log("Failed to remove item:", err);
+      if (__DEV__) console.log("Failed to remove item:", err);
     }
   };
 
@@ -267,8 +267,8 @@ export default function ShoppingScreen() {
       setNewItemName("");
       setIsAdding(false);
     } catch (err) {
-      console.log("Failed to add item:", err);
-      alert("Failed to add item. Please try again.");
+      if (__DEV__) console.log("Failed to add item:", err);
+      Alert.alert("Error", "Failed to add item. Please try again.");
     }
   };
 

@@ -8,7 +8,7 @@ from datetime import datetime, date, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
-from src.database.models import User, MealPlan
+from src.database.models import User, MealPlan, MealPlanItem
 from src.services.neo4j_service import Neo4jService
 from src.utils.usda_client import get_usda_client, USDAClient
 from src.utils.ingredient_matcher import normalize_ingredient_name
@@ -413,15 +413,155 @@ class NutritionService:
         if not meal_plan:
             logger.warning(f"Meal plan not found: {meal_plan_id}")
             return {}
-        
-        # TODO: Implement full meal plan nutrition aggregation
-        # This requires iterating through all meals in the plan
-        # and calculating nutrition for each
-        
+
+        # Day name mapping (0=Monday ... 6=Sunday)
+        day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+        # Initialize per-day accumulators
+        daily_nutrition: Dict[int, Dict[str, Any]] = {}
+
+        # Grand totals across entire plan
+        grand_totals = {
+            "calories": 0,
+            "protein_g": 0.0,
+            "carbs_g": 0.0,
+            "fat_g": 0.0,
+            "fiber_g": 0.0,
+            "sugar_g": 0.0,
+            "sodium_mg": 0,
+            "saturated_fat_g": 0.0,
+        }
+
+        meal_details: List[Dict[str, Any]] = []
+        health_scores: List[float] = []
+
+        for item in meal_plan.items:
+            day_key = item.day_of_week  # 0-6
+
+            # Initialize day bucket if first time seeing this day
+            if day_key not in daily_nutrition:
+                daily_nutrition[day_key] = {
+                    "date": (meal_plan.week_start_date + timedelta(days=day_key)).isoformat(),
+                    "day_of_week": day_names[day_key] if 0 <= day_key <= 6 else f"Day {day_key}",
+                    "calories": 0,
+                    "protein_g": 0.0,
+                    "carbs_g": 0.0,
+                    "fat_g": 0.0,
+                    "fiber_g": 0.0,
+                    "sugar_g": 0.0,
+                    "sodium_mg": 0,
+                    "meals": [],
+                }
+
+            # Use stored per-item nutrition first (fast path, no API call needed)
+            if item.calories is not None:
+                meal_cal = item.calories
+                meal_protein = float(item.protein or 0)
+                meal_carbs = float(item.carbs or 0)
+                meal_fat = float(item.fat or 0)
+                meal_fiber = 0.0
+                meal_sugar = 0.0
+                meal_sodium = 0
+                meal_health_score = self.calculate_health_score({
+                    "fiber_g": meal_fiber,
+                    "protein_g": meal_protein,
+                    "sodium_mg": meal_sodium,
+                    "sugar_g": meal_sugar,
+                    "fat_g": meal_fat,
+                    "saturated_fat_g": 0,
+                })
+            else:
+                # Fall back to live calculation from Neo4j + USDA
+                try:
+                    recipe_nutrition = await self.calculate_recipe_nutrition(
+                        item.recipe_id, item.servings or 1
+                    )
+                except Exception as exc:
+                    logger.error(f"Failed to calculate nutrition for recipe {item.recipe_id}: {exc}")
+                    recipe_nutrition = {}
+
+                if not recipe_nutrition:
+                    continue
+
+                ps = recipe_nutrition.get("per_serving", {})
+                meal_cal = ps.get("calories", 0)
+                meal_protein = ps.get("protein_g", 0.0)
+                meal_carbs = ps.get("carbs_g", 0.0)
+                meal_fat = ps.get("fat_g", 0.0)
+                meal_fiber = ps.get("fiber_g", 0.0)
+                meal_sugar = ps.get("sugar_g", 0.0)
+                meal_sodium = ps.get("sodium_mg", 0)
+                meal_health_score = recipe_nutrition.get("health_score", 5.0)
+
+            health_scores.append(meal_health_score)
+
+            # Accumulate into daily bucket
+            daily_nutrition[day_key]["calories"] += meal_cal
+            daily_nutrition[day_key]["protein_g"] += meal_protein
+            daily_nutrition[day_key]["carbs_g"] += meal_carbs
+            daily_nutrition[day_key]["fat_g"] += meal_fat
+            daily_nutrition[day_key]["fiber_g"] += meal_fiber
+            daily_nutrition[day_key]["sugar_g"] += meal_sugar
+            daily_nutrition[day_key]["sodium_mg"] += meal_sodium
+            daily_nutrition[day_key]["meals"].append({
+                "meal_type": item.meal_type,
+                "recipe_id": item.recipe_id,
+                "recipe_title": item.recipe_title,
+                "servings": item.servings or 1,
+                "calories": meal_cal,
+                "protein_g": round(meal_protein, 1),
+                "carbs_g": round(meal_carbs, 1),
+                "fat_g": round(meal_fat, 1),
+                "health_score": round(meal_health_score, 1),
+            })
+
+            # Accumulate grand totals
+            grand_totals["calories"] += meal_cal
+            grand_totals["protein_g"] += meal_protein
+            grand_totals["carbs_g"] += meal_carbs
+            grand_totals["fat_g"] += meal_fat
+            grand_totals["fiber_g"] += meal_fiber
+            grand_totals["sugar_g"] += meal_sugar
+            grand_totals["sodium_mg"] += meal_sodium
+
+        # Round grand totals
+        for key in ["protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g"]:
+            grand_totals[key] = round(grand_totals[key], 1)
+
+        # Build sorted daily breakdown
+        num_days = len(daily_nutrition) or 1
+        daily_breakdown = []
+        for day_num in sorted(daily_nutrition.keys()):
+            day = daily_nutrition[day_num]
+            # Round float fields
+            for fk in ["protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g"]:
+                day[fk] = round(day[fk], 1)
+            daily_breakdown.append(day)
+
+        # Daily averages
+        daily_averages = {
+            "calories": int(grand_totals["calories"] / num_days),
+            "protein_g": round(grand_totals["protein_g"] / num_days, 1),
+            "carbs_g": round(grand_totals["carbs_g"] / num_days, 1),
+            "fat_g": round(grand_totals["fat_g"] / num_days, 1),
+            "fiber_g": round(grand_totals["fiber_g"] / num_days, 1),
+            "sugar_g": round(grand_totals["sugar_g"] / num_days, 1),
+            "sodium_mg": int(grand_totals["sodium_mg"] / num_days),
+        }
+
+        # Average health score
+        avg_health_score = round(sum(health_scores) / len(health_scores), 1) if health_scores else 5.0
+
         return {
             "plan_id": meal_plan_id,
             "week_start": meal_plan.week_start_date.isoformat(),
-            "status": "implemented in next iteration"
+            "week_end": meal_plan.week_end_date.isoformat(),
+            "total_nutrition": grand_totals,
+            "daily_averages": daily_averages,
+            "daily_breakdown": daily_breakdown,
+            "avg_health_score": avg_health_score,
+            "total_meals": len(meal_plan.items),
+            "days_with_meals": num_days,
         }
 
 
