@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y \
     curl build-essential netcat-openbsd git zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
+# Install Poetry (pin version to match local for reproducible builds)
+RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=2.3.2 python3 -
 
 # Install Taskfile binary and move to /usr/local/bin
 RUN curl -sL https://taskfile.dev/install.sh | sh && \
