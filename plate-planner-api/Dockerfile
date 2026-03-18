@@ -19,8 +19,8 @@ RUN curl -sL https://taskfile.dev/install.sh | sh && \
 # Set working directory
 WORKDIR /app
 
-# Copy dependency management files
-COPY pyproject.toml Taskfile.yml ./
+# Copy dependency management files (include lock file for reproducible builds)
+COPY pyproject.toml poetry.lock Taskfile.yml ./
 
 # Install main dependencies without virtualenv
 RUN poetry config virtualenvs.create false && poetry install --only main --no-root
@@ -61,8 +61,9 @@ COPY --from=builder /opt/poetry /opt/poetry
 
 WORKDIR /app
 
-# Expose FastAPI API port
+# Expose default API port (Railway overrides via $PORT at runtime)
 EXPOSE 8000
 
-# Wait for Neo4j, then serve FastAPI app directly (no poetry run needed)
-CMD /bin/sh -c "sleep 5 && until nc -z neo4j 7687; do echo '⏳ Waiting for Neo4j...'; sleep 2; done && echo '✅ Neo4j is up!' && task neo4j:bootstrap && task serve"
+# Default command: start uvicorn on $PORT (Railway injects PORT).
+# For docker-compose (local dev with Neo4j), override via docker-compose.yml command.
+CMD ["sh", "-c", "uvicorn src.api.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
