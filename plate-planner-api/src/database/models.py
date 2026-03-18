@@ -17,6 +17,7 @@ class User(Base):
     auth_provider = Column(String, default="email")  # "email" or "google"
     profile_photo_url = Column(String, nullable=True)
     is_premium = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)
     onboarding_complete = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -5,6 +5,7 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from src.config.paths import DataPaths
+from src.config.config import RECIPE_DB_PATH
 from src.utils.dietary_classifier import DietaryClassifier
 
 # -------------------------
@@ -16,7 +17,7 @@ FINETUNED_MODEL_PATH = "src/data/models/recipe_suggestion/finetuned-recipe-encod
 paths = DataPaths()
 
 # Optimized Paths (prefer fine-tuned index if available)
-DB_PATH = "src/data/models/recipe_suggestion/recipes.db"
+DB_PATH = RECIPE_DB_PATH
 FINETUNED_INDEX_PATH = "src/data/models/recipe_suggestion/recipe_index_finetuned_opt.faiss"
 BASE_INDEX_PATH = "src/data/models/recipe_suggestion/recipe_index_opt.faiss"
 

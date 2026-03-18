@@ -2,8 +2,8 @@
 
 import os
 
-from config.config import NEO4J_PASSWORD, NEO4J_URI, NEO4J_USER
-from config.paths import DataPaths
+from src.config.config import NEO4J_PASSWORD, NEO4J_URI, NEO4J_USER
+from src.config.paths import DataPaths
 from neo4j import GraphDatabase
 
 paths = DataPaths()

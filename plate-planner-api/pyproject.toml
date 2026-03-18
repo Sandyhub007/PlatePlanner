@@ -39,7 +39,6 @@ certifi = "^2025.4.26"
 wordninja = "^2.0.0"
 sentence-transformers = "^4.1.0"
 huggingface-hub = {extras = ["hf-xet"], version = "^0.30.2"}
-ranx = "^0.3.20"
 passlib = {extras = ["argon2"], version = "^1.7.4"}
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 sqlalchemy = "^2.0.23"
@@ -54,8 +53,11 @@ aiohttp = "^3.9.0"
 google-auth = "^2.48.0"
 vercel-blob = "^0.4.2"
 pydantic-settings = "^2.13.1"
+sqladmin = "^0.23.0"
+itsdangerous = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
+ranx = "^0.3.20"
 pytest = ">=8.3.5,<9.0.0"
 pytest-asyncio = "^0.23.6"
 black = "^24.3.0"

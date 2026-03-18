@@ -3,6 +3,7 @@ import { Box, Text, VStack, HStack, Input, InputField, InputSlot, InputIcon, Sea
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { apiRequest } from "../../src/api/client";
+import { useAuth } from "../../src/state/auth";
 import { LinearGradient } from "expo-linear-gradient";
 
 type RecipeResult = {
@@ -31,6 +32,7 @@ export default function RecipesScreen() {
   const [searched, setSearched] = useState(false);
   const [selectedCat, setSelectedCat] = useState("All");
   const router = useRouter();
+  const { user } = useAuth();
 
   const handleSearch = async () => {
     const ingredients = query.split(",").map((i) => i.trim()).filter(Boolean);
@@ -38,7 +40,16 @@ export default function RecipesScreen() {
     setLoading(true);
     setSearched(true);
     try {
-      const body: any = { ingredients, top_n: 5, rerank_weight: 0.6 };
+      const dietaryRestrictions = user?.preferences?.dietary_restrictions ?? [];
+      const body: any = {
+        ingredients,
+        top_n: 5,
+        rerank_weight: 0.6,
+        is_vegan: dietaryRestrictions.includes("vegan"),
+        is_vegetarian: dietaryRestrictions.includes("vegetarian"),
+        is_gluten_free: dietaryRestrictions.includes("gluten-free"),
+        is_dairy_free: dietaryRestrictions.includes("dairy-free"),
+      };
       if (selectedCat !== "All") {
         body.category = selectedCat.toLowerCase();
       }

@@ -1,13 +1,19 @@
 from neo4j import GraphDatabase
 
-from src.config.config import NEO4J_PASSWORD, NEO4J_URI, NEO4J_USER
+from src.config.config import NEO4J_PASSWORD, NEO4J_URI, NEO4J_USER, NEO4J_DRIVER_KWARGS
 from src.evaluation.hybrid_substitution import (
     get_direct_subs,
     get_hybrid_subs,
     normalize_ingredient,
 )
 
-driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
+# NEO4J_DRIVER_KWARGS is empty for local Docker (bolt://) and contains
+# encrypted=True + trust settings for AuraDB (neo4j+s://).
+driver = GraphDatabase.driver(
+    NEO4J_URI,
+    auth=(NEO4J_USER, NEO4J_PASSWORD),
+    **NEO4J_DRIVER_KWARGS,
+)
 
 
 class Neo4jService:

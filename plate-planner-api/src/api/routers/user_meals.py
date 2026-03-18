@@ -4,39 +4,53 @@ from typing import List, Optional
 import httpx
 import os
 import uuid
+import logging
 from datetime import date
+from pathlib import Path
 
 from src.database import session, models
 from src.schemas import user_meal as schemas
 from src.auth import security
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/user-meals",
     tags=["user_meals"],
 )
 
-import vercel_blob
 import asyncio
 
-async def upload_to_vercel_blob(filename: str, content: bytes, content_type: str) -> str:
-    blob_token = os.getenv("BLOB_READ_WRITE_TOKEN")
-    if not blob_token:
-        raise HTTPException(status_code=500, detail="Vercel Blob storage is not configured (BLOB_READ_WRITE_TOKEN missing).")
-    
-    # Run the synchronous vercel-blob library in a threadpool
-    def _upload():
-        resp = vercel_blob.put(
-            filename, 
-            content, 
-            options={"access": "public", "token": blob_token}
-        )
-        return resp.get("url")
+# Local upload directory (fallback when Vercel Blob is not configured)
+UPLOAD_DIR = Path(__file__).resolve().parent.parent.parent / "uploads" / "user_meals"
 
-    try:
-        url = await asyncio.to_thread(_upload)
-        return url
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to upload to Vercel Blob: {str(e)}")
+
+async def upload_file(filename: str, content: bytes, content_type: str) -> str:
+    """Upload to Vercel Blob if configured, otherwise store locally."""
+    blob_token = os.getenv("BLOB_READ_WRITE_TOKEN")
+
+    if blob_token:
+        try:
+            import vercel_blob
+
+            def _upload():
+                resp = vercel_blob.put(
+                    filename,
+                    content,
+                    options={"access": "public", "token": blob_token},
+                )
+                return resp.get("url")
+
+            url = await asyncio.to_thread(_upload)
+            return url
+        except Exception as e:
+            logger.warning(f"Vercel Blob upload failed, falling back to local storage: {e}")
+
+    # Fallback: save to local filesystem and return a relative URL
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    dest = UPLOAD_DIR / filename.replace("/", "_")
+    dest.write_bytes(content)
+    return f"/uploads/user_meals/{dest.name}"
 
 @router.post("/upload", response_model=schemas.UserMealResponse)
 async def upload_meal_photo(
@@ -61,9 +75,10 @@ async def upload_meal_photo(
     unique_filename = f"user_meals/{current_user.id}/{uuid.uuid4().hex}.{ext}"
     
     try:
-        image_url = await upload_to_vercel_blob(unique_filename, content, file.content_type)
+        image_url = await upload_file(unique_filename, content, file.content_type)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("File upload failed")
+        raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
     
     # Save to database
     db_meal = models.UserMeal(

@@ -156,6 +156,14 @@ def ensure_onboarding_schema() -> None:
         ))
 
 
+def ensure_admin_schema() -> None:
+    """Idempotent helper to add is_admin column to users table."""
+    with engine.begin() as connection:
+        connection.execute(text(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE"
+        ))
+
+
 def ensure_pantry_schema() -> None:
     """Idempotent helper to create the user_pantry_items table."""
     with engine.begin() as connection:

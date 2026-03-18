@@ -21,7 +21,7 @@ import sqlite3
 import json
 from src.api.routers import auth, users, meal_plans, shopping_lists, nutrition, recommendations, user_meals, pantry
 from src.database.session import engine, Base
-from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema, ensure_pantry_schema, ensure_meal_log_schema, ensure_onboarding_schema
+from src.database.schema_guards import ensure_phase_two_schema, ensure_phase_three_schema, ensure_pantry_schema, ensure_meal_log_schema, ensure_onboarding_schema, ensure_admin_schema
 from src.config.paths import DataPaths
 
 # ——— Database Initialization ———
@@ -31,6 +31,7 @@ ensure_phase_three_schema()  # Phase 3: Shopping Lists
 ensure_pantry_schema()        # Pantry
 ensure_meal_log_schema()      # Meal logging
 ensure_onboarding_schema()    # Onboarding flag
+ensure_admin_schema()         # Admin role flag
 
 # ——— FastAPI app setup ———
 app = FastAPI(
@@ -50,14 +51,14 @@ app = FastAPI(
 )
 
 # ——— CORS ———
-# Configure allowed origins via the CORS_ORIGINS environment variable.
-# In production, set a comma-separated list of allowed origins, e.g.:
-#   CORS_ORIGINS=https://plateplanner.vercel.app,https://www.plateplanner.com
-# When CORS_ORIGINS is not set, all origins are allowed (development default).
-_cors_origins_raw = os.getenv("CORS_ORIGINS", "*")
+# Configure allowed origins via the ALLOWED_ORIGINS (or legacy CORS_ORIGINS)
+# environment variable.  In production set a comma-separated list, e.g.:
+#   ALLOWED_ORIGINS=https://plateplanner.vercel.app,https://www.plateplanner.com
+# When not set, all origins are allowed (development default).
+from src.config.config import ALLOWED_ORIGINS as _allowed_origins_raw
 _cors_origins = (
-    ["*"] if _cors_origins_raw.strip() == "*"
-    else [origin.strip() for origin in _cors_origins_raw.split(",") if origin.strip()]
+    ["*"] if _allowed_origins_raw.strip() == "*"
+    else [origin.strip() for origin in _allowed_origins_raw.split(",") if origin.strip()]
 )
 app.add_middleware(
     CORSMiddleware,
@@ -76,6 +77,44 @@ app.include_router(nutrition.router)
 app.include_router(recommendations.router)
 app.include_router(user_meals.router)
 app.include_router(pantry.router)
+
+# ——— Admin Dashboard ———
+from sqladmin import Admin
+from src.admin.auth import AdminAuthBackend
+from src.admin.views import (
+    UserAdmin, UserPreferencesAdmin, MealPlanAdmin, MealPlanItemAdmin,
+    ShoppingListAdmin, ShoppingListItemAdmin, NutritionGoalAdmin,
+    NutritionLogAdmin, UserPantryItemAdmin, IngredientNutritionAdmin,
+    MealLogItemAdmin, UserMealAdmin,
+)
+from src.config.config import SECRET_KEY
+
+authentication_backend = AdminAuthBackend(secret_key=SECRET_KEY)
+admin = Admin(
+    app=app,
+    engine=engine,
+    authentication_backend=authentication_backend,
+    title="PlatePlanner Admin",
+)
+admin.add_view(UserAdmin)
+admin.add_view(UserPreferencesAdmin)
+admin.add_view(MealPlanAdmin)
+admin.add_view(MealPlanItemAdmin)
+admin.add_view(ShoppingListAdmin)
+admin.add_view(ShoppingListItemAdmin)
+admin.add_view(NutritionGoalAdmin)
+admin.add_view(NutritionLogAdmin)
+admin.add_view(UserPantryItemAdmin)
+admin.add_view(IngredientNutritionAdmin)
+admin.add_view(MealLogItemAdmin)
+admin.add_view(UserMealAdmin)
+
+# ——— Serve locally-uploaded meal photos ———
+from pathlib import Path as _Path
+_uploads_dir = _Path(__file__).resolve().parent.parent / "uploads" / "user_meals"
+_uploads_dir.mkdir(parents=True, exist_ok=True)
+from fastapi.staticfiles import StaticFiles
+app.mount("/uploads/user_meals", StaticFiles(directory=str(_uploads_dir)), name="user_meal_uploads")
 
 # ——— Logging ———
 logging.basicConfig(

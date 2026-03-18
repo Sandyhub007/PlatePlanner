@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import { apiFormRequest, apiRequest } from "../api/client";
+import { GOOGLE_REDIRECT_URI } from "../api/config";
 import type { TokenResponse, User } from "../api/types";
 
 // Complete auth session for native popup flow
@@ -12,10 +13,10 @@ WebBrowser.maybeCompleteAuthSession();
 // ——— Google OAuth Config ———
 const GOOGLE_WEB_CLIENT_ID =
   "110495970455-uoc1td1d7gdih9k38hho0vilkb6a4emt.apps.googleusercontent.com";
-// We use localhost for simulator compatibility.
-// This URL must be authorized in Google Cloud Console > Web Client > Authorized redirect URIs
-const GOOGLE_REDIRECT_URI_NATIVE = "http://localhost:8081/google-callback.html";
-const GOOGLE_REDIRECT_URI_WEB = "http://localhost:8081/google-callback.html";
+// Redirect URI is now set via EXPO_PUBLIC_GOOGLE_REDIRECT_URI env var.
+// See .env / .env.production. Must be authorized in Google Cloud Console.
+const GOOGLE_REDIRECT_URI_NATIVE = GOOGLE_REDIRECT_URI;
+const GOOGLE_REDIRECT_URI_WEB = GOOGLE_REDIRECT_URI;
 
 type AuthContextValue = {
   token: string | null;

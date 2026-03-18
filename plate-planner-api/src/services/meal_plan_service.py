@@ -412,11 +412,16 @@ class MealPlanEngine:
         preference_text = self._preference_text(profile)
         # Use semantic search via suggest_recipes
         # We pass preference_text as "ingredients" to trigger semantic search
+        restrictions = {r.lower() for r in profile.dietary_restrictions}
         suggestions = suggest_recipes(
             ingredients=[preference_text],
             top_n=CANDIDATE_POOL_TARGET,
             raw_k=1000, # search deeper
-            min_overlap=0 # disable overlap check for pure semantic preference search
+            min_overlap=0, # disable overlap check for pure semantic preference search
+            is_vegan="vegan" in restrictions,
+            is_vegetarian="vegetarian" in restrictions,
+            is_gluten_free="gluten-free" in restrictions,
+            is_dairy_free="dairy-free" in restrictions,
         )
         
         # Convert dictionary results to RecipeRecords

@@ -5,6 +5,7 @@ import numpy as np
 from ast import literal_eval
 from sentence_transformers import SentenceTransformer
 from src.config.paths import DataPaths
+from src.config.config import RECIPE_DB_PATH
 
 # -------------------------
 # Constants
@@ -14,7 +15,7 @@ BASE_MODEL_NAME = "all-MiniLM-L6-v2"
 FINETUNED_MODEL_PATH = "src/data/models/recipe_suggestion/finetuned-recipe-encoder"
 paths = DataPaths()
 
-DB_PATH = "src/data/models/recipe_suggestion/recipes.db"
+DB_PATH = RECIPE_DB_PATH
 FINETUNED_INDEX_PATH = "src/data/models/recipe_suggestion/recipe_index_finetuned_opt.faiss"
 BASE_INDEX_PATH = "src/data/models/recipe_suggestion/recipe_index_opt.faiss"
 
