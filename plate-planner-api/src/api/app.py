@@ -158,6 +158,9 @@ class RecipeRequest(BaseModel):
     is_gluten_free: bool = Field(False, description="Filter for gluten-free recipes")
     is_dairy_free: bool = Field(False, description="Filter for dairy-free recipes")
 
+    # Allergy filters
+    allergies: Optional[List[str]] = Field(None, description="List of allergens to exclude (e.g. ['peanuts', 'shellfish'])")
+
     # Category / meal type filter
     category: Optional[str] = Field(
         None,

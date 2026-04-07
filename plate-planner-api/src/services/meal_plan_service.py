@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from typing import Dict, Iterable, List, Optional, Sequence
 
+from sqlalchemy import text
 from sqlalchemy.orm import Session, selectinload
 
 from src.config.paths import DataPaths
@@ -809,6 +810,13 @@ def generate_meal_plan(
 
     profile = _build_preference_profile(user.preferences, preferences_override)
     plan = _ENGINE.build_plan(profile, week_start)
+
+    # Refresh the DB connection after the long FAISS computation.
+    # Neon's serverless proxy may close idle SSL connections.
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception:
+        db.rollback()
 
     meal_plan = models.MealPlan(
         user_id=user_id,

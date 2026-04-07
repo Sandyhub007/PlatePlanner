@@ -98,6 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setToken(null);
         }
       }
+
       setLoading(false);
     };
     load();

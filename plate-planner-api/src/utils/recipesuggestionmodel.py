@@ -62,11 +62,13 @@ def suggest_recipes(
     rerank_weight: float = 0.6,
     raw_k: int = 500,
     min_overlap: int = 2,
-    # Dietary filters (Not currently in DB, so ignored/false for now)
+    # Dietary filters
     is_vegan: bool = False,
     is_vegetarian: bool = False,
     is_gluten_free: bool = False,
-    is_dairy_free: bool = False
+    is_dairy_free: bool = False,
+    # Allergy filters — list of allergen keywords to exclude
+    allergies: list[str] | None = None,
 ) -> list[dict]:
     """Suggest recipes using Quantized Index + SQLite to minimize RAM usage."""
     if not index or not model:
@@ -178,6 +180,17 @@ def suggest_recipes(
             continue
         if is_dairy_free and not tags["dairy_free"]:
             continue
+
+        # Apply allergy filters -- skip recipes containing any allergen
+        if allergies:
+            ingredient_text = " ".join(ing.lower() for ing in unique_full_list)
+            has_allergen = False
+            for allergen in allergies:
+                if allergen.lower() in ingredient_text:
+                    has_allergen = True
+                    break
+            if has_allergen:
+                continue
 
         results.append({
             "title": row['title'],
