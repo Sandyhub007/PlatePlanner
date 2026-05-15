@@ -3,6 +3,7 @@ Nutrition API Router
 Endpoints for nutrition tracking, goals, and health insights
 """
 from typing import List, Optional
+from collections import defaultdict
 from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
@@ -1338,13 +1339,12 @@ def get_log_range(
     if end < start:
         raise HTTPException(status_code=400, detail="end must be after start")
 
-    logs = db.query(NutritionLog).filter(
-        NutritionLog.user_id == current_user.id,
-        NutritionLog.log_date >= start,
-        NutritionLog.log_date <= end,
-    ).order_by(NutritionLog.log_date).all()
+    meals = db.query(MealLogItem).filter(
+        MealLogItem.user_id == current_user.id,
+        MealLogItem.log_date >= start,
+        MealLogItem.log_date <= end,
+    ).order_by(MealLogItem.log_date).all()
 
-    # Also get active goal for context
     active_goal = db.query(NutritionGoal).filter(
         NutritionGoal.user_id == current_user.id,
         NutritionGoal.is_active == True,
@@ -1352,18 +1352,24 @@ def get_log_range(
 
     daily_calorie_target = active_goal.daily_calorie_target if active_goal else None
 
+    by_date = defaultdict(list)
+    for m in meals:
+        by_date[m.log_date].append(m)
+
     result = []
-    for log in logs:
+    for log_date in sorted(by_date.keys()):
+        day_meals = by_date[log_date]
+        total_cal = sum(m.calories or 0 for m in day_meals)
         result.append({
-            "date": log.log_date.isoformat(),
-            "calories": log.total_calories,
-            "protein_g": log.total_protein_g,
-            "carbs_g": log.total_carbs_g,
-            "fat_g": log.total_fat_g,
-            "meals_count": log.meals_count,
+            "date": log_date.isoformat(),
+            "calories": total_cal,
+            "protein_g": round(sum(m.protein_g or 0 for m in day_meals), 1),
+            "carbs_g": round(sum(m.carbs_g or 0 for m in day_meals), 1),
+            "fat_g": round(sum(m.fat_g or 0 for m in day_meals), 1),
+            "meals_count": len(day_meals),
             "on_track": (
-                abs(log.total_calories - daily_calorie_target) <= 200
-                if daily_calorie_target and log.total_calories > 0
+                abs(total_cal - daily_calorie_target) <= 200
+                if daily_calorie_target and total_cal > 0
                 else None
             ),
         })
@@ -1372,7 +1378,7 @@ def get_log_range(
         "start": start.isoformat(),
         "end": end.isoformat(),
         "daily_calorie_target": daily_calorie_target,
-        "days": result,
+        "daily": result,
     }
 
 
@@ -1410,10 +1416,10 @@ def get_today_summary(
     """Return today's macro totals + active goal targets for the home screen arc."""
     today = date.today()
 
-    log = db.query(NutritionLog).filter(
-        NutritionLog.user_id == current_user.id,
-        NutritionLog.log_date == today,
-    ).first()
+    meals = db.query(MealLogItem).filter(
+        MealLogItem.user_id == current_user.id,
+        MealLogItem.log_date == today,
+    ).all()
 
     active_goal = db.query(NutritionGoal).filter(
         NutritionGoal.user_id == current_user.id,
@@ -1421,11 +1427,11 @@ def get_today_summary(
     ).first()
 
     consumed = {
-        "calories": log.total_calories if log else 0,
-        "protein_g": log.total_protein_g if log else 0,
-        "carbs_g": log.total_carbs_g if log else 0,
-        "fat_g": log.total_fat_g if log else 0,
-        "meals_count": log.meals_count if log else 0,
+        "calories": sum(m.calories or 0 for m in meals),
+        "protein_g": round(sum(m.protein_g or 0 for m in meals), 1),
+        "carbs_g": round(sum(m.carbs_g or 0 for m in meals), 1),
+        "fat_g": round(sum(m.fat_g or 0 for m in meals), 1),
+        "meals_count": len(meals),
     }
 
     targets = {

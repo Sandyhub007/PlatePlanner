@@ -26,6 +26,7 @@ type AuthContextValue = {
   register: (email: string, password: string, fullName: string) => Promise<void>;
   loginWithGoogle: () => void;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -178,6 +179,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // ——— Refresh user data from backend ———
+  const refreshUser = async () => {
+    if (!token) return;
+    try {
+      const me = await apiRequest<User>("/users/me", { token });
+      setUser(me);
+    } catch {
+      if (__DEV__) console.log("[Auth] Failed to refresh user");
+    }
+  };
+
   // ——— Logout ———
   const logout = async () => {
     await AsyncStorage.removeItem(TOKEN_KEY);
@@ -186,7 +198,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value = useMemo(
-    () => ({ token, user, loading, login, register, loginWithGoogle, logout }),
+    () => ({ token, user, loading, login, register, loginWithGoogle, logout, refreshUser }),
     [token, user, loading]
   );
 

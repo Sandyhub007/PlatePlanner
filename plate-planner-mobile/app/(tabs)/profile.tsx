@@ -54,7 +54,7 @@ function prefsToRestrictions(prefs: Prefs): string[] {
 }
 
 export default function ProfileScreen() {
-  const { user, token, logout } = useAuth();
+  const { user, token, logout, refreshUser } = useAuth();
   const router = useRouter();
 
   const [preferences, setPreferences] = useState<Prefs>({
@@ -112,6 +112,7 @@ export default function ProfileScreen() {
         allergies: allergies,
       },
     })
+      .then(() => refreshUser())
       .catch(err => { if (__DEV__) console.log("Failed to save preferences:", err?.message); })
       .finally(() => setSavingPrefs(false));
   }, [preferences, cuisinePrefs, allergies]);
