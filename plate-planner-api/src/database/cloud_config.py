@@ -106,7 +106,7 @@ POSTGRES_ENGINE_KWARGS: dict = {
 
 NEO4J_URI: str = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 NEO4J_USER: str = os.getenv("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "12345678")
+NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "")
 
 # AuraDB uses neo4j+s:// which implies TLS.  For local Docker (bolt://)
 # encryption is disabled by default.
@@ -121,7 +121,7 @@ NEO4J_DRIVER_KWARGS: dict = {}
 # ---------------------------------------------------------------------------
 
 SECRET_KEY: str = os.getenv(
-    "SECRET_KEY", "supersecretkeychangeinproduction"
+    "SECRET_KEY", ""
 )
 ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES: int = int(

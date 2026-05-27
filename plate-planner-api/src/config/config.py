@@ -39,7 +39,7 @@ from src.database.cloud_config import (  # noqa: E402
 # ──────────────────────────────────────────────────────────────────────
 # JWT / Auth  (also available via cloud_config, re-read here for clarity)
 # ──────────────────────────────────────────────────────────────────────
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkeychangeinproduction")
+SECRET_KEY = os.getenv("SECRET_KEY", "")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 

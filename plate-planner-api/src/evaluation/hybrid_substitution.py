@@ -1,13 +1,14 @@
 import json
+import os
 
 import pandas as pd
 import spacy
 from neo4j import GraphDatabase
 
 # --- Config ---
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "12345678"
+NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "")
 TOP_K = 5
 
 # --- NLP Normalizer ---

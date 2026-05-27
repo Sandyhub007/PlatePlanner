@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 # ─── Config ───────────────────────────────────────────────────────────
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "12345678")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "")
 
 W2V_MODEL_PATH = Path("src/data/models/ingredient_substitution/ingredient_w2v.model")
 GNN_OUTPUT_DIR = Path("src/data/models/ingredient_substitution/gnn")

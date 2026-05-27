@@ -1,11 +1,12 @@
+import os
 
 from neo4j import GraphDatabase
 from tqdm import tqdm
 
 # --- Config ---
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "12345678"
+NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "")
 INGREDIENTS_TO_TEST = [
     "cognac", "espresso", "craisins", "jalapenos",
     "angel food cake", "dried apricots", "red chili",

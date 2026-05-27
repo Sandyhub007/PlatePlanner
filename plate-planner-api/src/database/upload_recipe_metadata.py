@@ -7,7 +7,7 @@ import os
 # === CONFIG ===
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "12345678")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "")
 
 CSV_PATH = "/Users/rangareddy/Development/OSS/plate-planner-api/src/data/raw/recipe_dataset_200k.csv"
 BATCH_SIZE = 500
