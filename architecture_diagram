@@ -1,0 +1,129 @@
+digraph "Plate Planner - System Architecture" {
+	graph [bgcolor=white dpi=200 fontcolor="#2D3436" fontname=Helvetica fontsize=20 label="Plate Planner - System Architecture" nodesep=0.8 pad=0.5 rankdir=TB ranksep=1.2 splines=spline]
+	node [fixedsize=true fontcolor="#2D3436" fontname=Helvetica fontsize=12 height=1.4 imagescale=true labelloc=b shape=box style=rounded width=1.4]
+	edge [color="#7B8894" fontname=Helvetica fontsize=10]
+	a66df97416604126b6a1a1bd286cd641 [label="Mobile App
+User" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/device/mobile.png" shape=none]
+	subgraph "cluster_Client Tier" {
+		graph [bgcolor="#E8F5E9" fontname="Sans-Serif" fontsize=16 label="Client Tier" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+		cd10e86276db4493ba061438704e0818 [label="React Native
++ Expo 54" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/framework/react.png" shape=none]
+		"60265eef69ca4e97819e7d999c2258e2" [label="Gluestack UI
+NativeWind" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/compute/rack.png" shape=none]
+		aeaee4391cce4f1f98302930a0631ba9 [label="Expo Router
+Navigation" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/compute/rack.png" shape=none]
+	}
+	subgraph "cluster_API Tier (FastAPI + Uvicorn)" {
+		graph [bgcolor="#E3F2FD" fontname="Sans-Serif" fontsize=16 label="API Tier (FastAPI + Uvicorn)" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+		subgraph cluster_Routers {
+			graph [bgcolor="#EBF3E7" fontname="Sans-Serif" fontsize=12 label=Routers labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+			"942266261583487b80bfa2d7d30909fd" [label="Auth
+Router" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+			d947cb69f26b476ea1348035249d5855 [label="Meal Plan
+Router" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+			"75c0894bcbb347ca900643731d7f0c38" [label="Shopping
+List Router" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+			"5d92b8c913a14340aa1d966ecc365266" [label="Recommend
+Router" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+			"2684dd3f687547a89721c3662470d5ee" [label="Nutrition
+Router" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+			"8c5166942c58473e82a4798170de2423" [label="Substitution
+Router" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+			d37259092afa4b4889b00ffc3580a15f [label="Pantry
+Router" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+		}
+		subgraph cluster_Middleware {
+			graph [bgcolor="#EBF3E7" fontname="Sans-Serif" fontsize=12 label=Middleware labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+			"0e1ab926ce7343b985e620f0f229ced0" [label="JWT Auth
+Middleware" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/compute/rack.png" shape=none]
+			c6d11830daa3485d8fe33d1ae078e1be [label="CORS
+Middleware" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/compute/rack.png" shape=none]
+			a892eb5f0927453ab77e11da852d159e [label="Pydantic
+Validation" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/compute/rack.png" shape=none]
+		}
+	}
+	subgraph "cluster_Service Tier (Business Logic)" {
+		graph [bgcolor="#FFF3E0" fontname="Sans-Serif" fontsize=16 label="Service Tier (Business Logic)" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+		a7f023fbc3c34da8925c10e93e31a0e8 [label="MealPlan
+Service" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+		"4263ca489fab4fde98cf63c9d845704b" [label="ShoppingList
+Service
+(730+ lines)" height=2.7 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+		"5511607a1d13465c90090c3fd45a3d5e" [label="Recommendation
+Service" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+		d92ad0c1b65b4106b69e5461b21fbcc6 [label="Substitution
+Service" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+		f307637bb2ac4f0d8ddedc26f8f51f25 [label="Nutrition
+Service" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/programming/language/python.png" shape=none]
+	}
+	subgraph "cluster_ML Inference Layer" {
+		graph [bgcolor="#F3E5F5" fontname="Sans-Serif" fontsize=16 label="ML Inference Layer" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+		"086edacb44e34733a00dc251eee2fbd8" [label="FAISS
+IVF-PQ Index" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/storage/storage.png" shape=none]
+		c19ef637ef4e4b058914cb76c0ee6214 [label="SentenceTransformer
+all-MiniLM-L6-v2" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/onprem/mlops/mlflow.png" shape=none]
+		ae867987f00b4593bbbb489ce70f8816 [label="SpaCy NER
+en_core_web_sm" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/onprem/mlops/mlflow.png" shape=none]
+		edcfd720c1c349bf9b7be6e6ccece385 [label="thefuzz
+Fuzzy Matching" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/compute/rack.png" shape=none]
+	}
+	subgraph "cluster_Data Persistence Tier" {
+		graph [bgcolor="#FFEBEE" fontname="Sans-Serif" fontsize=16 label="Data Persistence Tier" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+		"83d896acba52451b9a6b6ca40a4aeb99" [label="PostgreSQL 15
+(Users, Plans,
+Shopping Lists)" height=2.7 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/onprem/database/postgresql.png" shape=none]
+		abdeeed5e7aa4ee68a5155a69960fe96 [label="Neo4j 5.x
+(Ingredient Graph,
+Substitutions)" height=2.7 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/onprem/database/neo4j.png" shape=none]
+		"50ae004aa4b84594814c80776fabd3a2" [label="Redis 7
+(Cache,
+Sessions)" height=2.7 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/onprem/inmemory/redis.png" shape=none]
+		"27148815e15443228e8746c599f7cfd7" [label="SQLite
+(Recipe Metadata
+100K+ recipes)" height=2.7 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/storage/storage.png" shape=none]
+	}
+	subgraph "cluster_Deployment (Railway)" {
+		graph [bgcolor="#F5F5F5" fontname="Sans-Serif" fontsize=16 label="Deployment (Railway)" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+		"0646161797eb4ac688025b0b58df7d97" [label="Docker
+Multi-Stage" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/onprem/container/docker.png" shape=none]
+		cb63f1a10dee4b8e9479f9a2cfe3078d [label="Neon
+(Serverless PG)" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/compute/rack.png" shape=none]
+		"2e9fbe247cb74282b8c3347960c36041" [label="Neo4j
+AuraDB" height=2.3 image="/Users/sandilyachimalamarri/Library/Python/3.9/lib/python/site-packages/resources/generic/compute/rack.png" shape=none]
+	}
+	a66df97416604126b6a1a1bd286cd641 -> cd10e86276db4493ba061438704e0818 [label="HTTPS/REST" color="#2E7D32" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13 style=bold]
+	cd10e86276db4493ba061438704e0818 -> "60265eef69ca4e97819e7d999c2258e2" [color="#1565C0" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	cd10e86276db4493ba061438704e0818 -> aeaee4391cce4f1f98302930a0631ba9 [color="#1565C0" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	cd10e86276db4493ba061438704e0818 -> "0e1ab926ce7343b985e620f0f229ced0" [label="JWT + JSON" color="#1565C0" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13 style=bold]
+	"0e1ab926ce7343b985e620f0f229ced0" -> c6d11830daa3485d8fe33d1ae078e1be [dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	c6d11830daa3485d8fe33d1ae078e1be -> a892eb5f0927453ab77e11da852d159e [dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	a892eb5f0927453ab77e11da852d159e -> "942266261583487b80bfa2d7d30909fd" [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	a892eb5f0927453ab77e11da852d159e -> d947cb69f26b476ea1348035249d5855 [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	a892eb5f0927453ab77e11da852d159e -> "75c0894bcbb347ca900643731d7f0c38" [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	a892eb5f0927453ab77e11da852d159e -> "5d92b8c913a14340aa1d966ecc365266" [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	a892eb5f0927453ab77e11da852d159e -> "2684dd3f687547a89721c3662470d5ee" [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	a892eb5f0927453ab77e11da852d159e -> "8c5166942c58473e82a4798170de2423" [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	a892eb5f0927453ab77e11da852d159e -> d37259092afa4b4889b00ffc3580a15f [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	d947cb69f26b476ea1348035249d5855 -> a7f023fbc3c34da8925c10e93e31a0e8 [color="#E65100" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"75c0894bcbb347ca900643731d7f0c38" -> "4263ca489fab4fde98cf63c9d845704b" [color="#E65100" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"5d92b8c913a14340aa1d966ecc365266" -> "5511607a1d13465c90090c3fd45a3d5e" [color="#E65100" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"8c5166942c58473e82a4798170de2423" -> d92ad0c1b65b4106b69e5461b21fbcc6 [color="#E65100" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"2684dd3f687547a89721c3662470d5ee" -> f307637bb2ac4f0d8ddedc26f8f51f25 [color="#E65100" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"5511607a1d13465c90090c3fd45a3d5e" -> "086edacb44e34733a00dc251eee2fbd8" [label="Semantic
+Search" color="#7B1FA2" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"5511607a1d13465c90090c3fd45a3d5e" -> c19ef637ef4e4b058914cb76c0ee6214 [label="Encode
+Query" color="#7B1FA2" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"4263ca489fab4fde98cf63c9d845704b" -> ae867987f00b4593bbbb489ce70f8816 [color="#7B1FA2" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"4263ca489fab4fde98cf63c9d845704b" -> edcfd720c1c349bf9b7be6e6ccece385 [color="#7B1FA2" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	a7f023fbc3c34da8925c10e93e31a0e8 -> "83d896acba52451b9a6b6ca40a4aeb99" [color="#C62828" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"4263ca489fab4fde98cf63c9d845704b" -> "83d896acba52451b9a6b6ca40a4aeb99" [color="#C62828" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	f307637bb2ac4f0d8ddedc26f8f51f25 -> "83d896acba52451b9a6b6ca40a4aeb99" [color="#C62828" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	d92ad0c1b65b4106b69e5461b21fbcc6 -> abdeeed5e7aa4ee68a5155a69960fe96 [label="Cypher
+Queries" color="#C62828" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"5511607a1d13465c90090c3fd45a3d5e" -> abdeeed5e7aa4ee68a5155a69960fe96 [label="Dietary
+Filtering" color="#C62828" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"5511607a1d13465c90090c3fd45a3d5e" -> "27148815e15443228e8746c599f7cfd7" [color="#C62828" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"5511607a1d13465c90090c3fd45a3d5e" -> "50ae004aa4b84594814c80776fabd3a2" [color="#C62828" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13]
+	"0646161797eb4ac688025b0b58df7d97" -> cb63f1a10dee4b8e9479f9a2cfe3078d [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13 style=dashed]
+	"0646161797eb4ac688025b0b58df7d97" -> "2e9fbe247cb74282b8c3347960c36041" [color="#666" dir=forward fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13 style=dashed]
+}

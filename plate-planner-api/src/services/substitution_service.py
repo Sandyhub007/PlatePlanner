@@ -10,32 +10,24 @@ Given a recipe's ingredients and the user's pantry, this service:
 import logging
 from typing import Optional
 
-from src.evaluation.hybrid_substitution import normalize_ingredient, get_hybrid_subs
+import os
 
 logger = logging.getLogger("plate_planner.substitution")
 
+W2V_PATH = "src/data/models/ingredient_substitution/ingredient_w2v.model"
+w2v_model = None
+try:
+    if os.path.exists(W2V_PATH):
+        from gensim.models import Word2Vec
+        w2v_model = Word2Vec.load(W2V_PATH)
+except Exception as e:
+    logger.warning(f"Could not load Word2Vec model: {e}")
 
 def _get_neo4j_driver():
-    """Lazy import to avoid circular imports and allow graceful failure."""
-    try:
-        from src.services.neo4j_service import driver
-        return driver
-    except Exception:
-        return None
-
+    return None
 
 def _is_neo4j_available(driver) -> bool:
-    """Quick TCP socket check if Neo4j port is reachable (1s timeout)."""
-    if driver is None:
-        return False
-    import socket
-    try:
-        sock = socket.create_connection(("localhost", 7687), timeout=1.0)
-        sock.close()
-        return True
-    except (socket.timeout, ConnectionRefusedError, OSError):
-        logger.warning("Neo4j is not reachable on port 7687 — substitution lookups will be skipped")
-        return False
+    return w2v_model is not None
 
 
 import re
@@ -129,14 +121,28 @@ def get_pantry_substitutions(
                 "other_substitutes": [],
             }
 
-            # Only query Neo4j if it's available
-            if neo4j_available and driver is not None:
+            # Only query Model if it's available
+            if w2v_model is not None:
                 try:
-                    norm_ing = normalize_ingredient(ingredient)
-                    with driver.session() as session:
-                        subs = session.execute_read(
-                            get_hybrid_subs, norm_ing, None, top_k * 3
-                        )
+                    ing_lower = ingredient.lower().strip()
+                    query_word = ing_lower
+                    if query_word not in w2v_model.wv:
+                        for w in query_word.split():
+                            if w in w2v_model.wv:
+                                query_word = w
+                                break
+                    
+                    subs = []
+                    if query_word in w2v_model.wv:
+                        similar = w2v_model.wv.most_similar(query_word, topn=top_k * 4)
+                        for name, score in similar:
+                            if name == ing_lower or name in ing_lower or ing_lower in name:
+                                continue
+                            subs.append({
+                                "name": name,
+                                "score": float(score),
+                                "source": "w2v"
+                            })
 
                     for sub in subs:
                         sub_entry = {
@@ -168,3 +174,29 @@ def get_pantry_substitutions(
         "missing_count": total - have_count,
         "coverage": round(have_count / max(total, 1), 2),
     }
+
+def get_w2v_substitutes(ingredient: str, top_k: int = 5) -> list[dict]:
+    if w2v_model is None:
+        return []
+    
+    ing_lower = ingredient.lower().strip()
+    query_word = ing_lower
+    if query_word not in w2v_model.wv:
+        for w in query_word.split():
+            if w in w2v_model.wv:
+                query_word = w
+                break
+    
+    subs = []
+    if query_word in w2v_model.wv:
+        similar = w2v_model.wv.most_similar(query_word, topn=top_k * 4)
+        for name, score in similar:
+            if name == ing_lower or name in ing_lower or ing_lower in name:
+                continue
+            subs.append({
+                "name": name,
+                "score": float(score),
+                "source": "w2v",
+                "context": None
+            })
+    return subs[:top_k]

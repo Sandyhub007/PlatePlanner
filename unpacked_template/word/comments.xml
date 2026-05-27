@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<w:comments xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 w15 wp14">
+  <w:comment w:id="1" w:author="harkey" w:date="2015-06-29T07:19:00Z" w:initials="h">
+    <w:p w14:paraId="638844FC" w14:textId="38B1E6F4" w:rsidR="00AA33C9" w:rsidRDefault="00AA33C9">
+      <w:pPr>
+        <w:pStyle w:val="CommentText"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="CommentReference"/>
+        </w:rPr>
+        <w:annotationRef/>
+      </w:r>
+      <w:r>
+        <w:t>Remove all square brackets and</w:t>
+      </w:r>
+      <w:r w:rsidR="00753E3A">
+        <w:t xml:space="preserve"> reviewer</w:t>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve"> comments in your </w:t>
+      </w:r>
+      <w:r w:rsidR="00753E3A">
+        <w:t xml:space="preserve">final </w:t>
+      </w:r>
+      <w:r>
+        <w:t>project report.</w:t>
+      </w:r>
+    </w:p>
+  </w:comment>
+  <w:comment w:id="2" w:author="harkey" w:date="2015-06-29T07:30:00Z" w:initials="h">
+    <w:p w14:paraId="4D407169" w14:textId="59EDB6B7" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="CommentText"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="CommentReference"/>
+        </w:rPr>
+        <w:annotationRef/>
+      </w:r>
+      <w:r>
+        <w:t>Remove this row if no students are from MS Computer Engineering</w:t>
+      </w:r>
+    </w:p>
+  </w:comment>
+  <w:comment w:id="3" w:author="harkey" w:date="2015-06-29T07:30:00Z" w:initials="h">
+    <w:p w14:paraId="3D4548E2" w14:textId="4DD26180" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="CommentText"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="CommentReference"/>
+        </w:rPr>
+        <w:annotationRef/>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve">Remove this row if no students are from MS </w:t>
+      </w:r>
+      <w:proofErr w:type="spellStart"/>
+      <w:r>
+        <w:t>Sotware</w:t>
+      </w:r>
+      <w:proofErr w:type="spellEnd"/>
+      <w:r>
+        <w:t xml:space="preserve"> Engineering</w:t>
+      </w:r>
+    </w:p>
+  </w:comment>
+  <w:comment w:id="4" w:author="harkey" w:date="2015-06-29T07:28:00Z" w:initials="h">
+    <w:p w14:paraId="760252A8" w14:textId="2B1BF74B" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="CommentText"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="CommentReference"/>
+        </w:rPr>
+        <w:annotationRef/>
+      </w:r>
+      <w:r>
+        <w:t>Remove this row if no students are from MS Computer Engineering</w:t>
+      </w:r>
+    </w:p>
+  </w:comment>
+  <w:comment w:id="5" w:author="harkey" w:date="2015-06-29T07:29:00Z" w:initials="h">
+    <w:p w14:paraId="6AEAB8AF" w14:textId="1F07CF68" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="CommentText"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="CommentReference"/>
+        </w:rPr>
+        <w:annotationRef/>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve">Remove this row if no students are from MS </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Software</w:t>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve"> Engineering</w:t>
+      </w:r>
+    </w:p>
+  </w:comment>
+  <w:comment w:id="6" w:author="harkey" w:date="2015-06-29T07:35:00Z" w:initials="h">
+    <w:p w14:paraId="594D8796" w14:textId="79ABE084" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="CommentText"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="CommentReference"/>
+        </w:rPr>
+        <w:annotationRef/>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve">Consult with your advisor and CMPE 295B instructor if you have concerns about the </w:t>
+      </w:r>
+      <w:r w:rsidR="00053552">
+        <w:t xml:space="preserve">outline and </w:t>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve">content </w:t>
+      </w:r>
+      <w:r w:rsidR="00053552">
+        <w:t>of this report.</w:t>
+      </w:r>
+    </w:p>
+  </w:comment>
+</w:comments>

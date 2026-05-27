@@ -358,7 +358,16 @@ def _fetch_random_recipes(limit: int) -> List[RecipeRecord]:
     try:
         with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
-            cursor = conn.execute(f"SELECT * FROM recipes ORDER BY RANDOM() LIMIT {limit}")
+            cursor = conn.execute("SELECT MAX(id) FROM recipes")
+            max_id = cursor.fetchone()[0]
+            if not max_id:
+                return []
+            
+            import random
+            random_ids = [random.randint(1, max_id) for _ in range(limit * 3)]
+            placeholders = ",".join("?" for _ in random_ids)
+            
+            cursor = conn.execute(f"SELECT * FROM recipes WHERE id IN ({placeholders}) LIMIT ?", (*random_ids, limit))
             rows = cursor.fetchall()
             for row in rows:
                 rec = _convert_row_to_record(row)
@@ -803,57 +812,68 @@ def generate_meal_plan(
     week_start_date: date | str,
     preferences_override: Optional[MealPlanPreferencesOverride] = None,
 ) -> models.MealPlan:
+    from src.database.session import SessionLocal
+
     week_start = _coerce_week_start(week_start_date)
+
+    # ── Phase 1: Read user prefs (fast, ~1s) ────────────────────────────────
     user = _load_user_with_preferences(db, user_id)
     if not user:
         raise ValueError("User not found")
-
     profile = _build_preference_profile(user.preferences, preferences_override)
+
+    # ── Phase 2: FAISS semantic search (slow, ~60s) ──────────────────────────
+    # We deliberately do NOT touch the DB here.  Neon serverless drops idle
+    # connections after ~30 s, so we close the injected session before the
+    # long computation and open a fresh one afterwards.
+    db.close()  # release the stale connection back to the pool
     plan = _ENGINE.build_plan(profile, week_start)
 
-    # Refresh the DB connection after the long FAISS computation.
-    # Neon's serverless proxy may close idle SSL connections.
+    # ── Phase 3: Write to DB with a brand-new connection ────────────────────
+    fresh_db = SessionLocal()
     try:
-        db.execute(text("SELECT 1"))
-    except Exception:
-        db.rollback()
-
-    meal_plan = models.MealPlan(
-        user_id=user_id,
-        week_start_date=week_start,
-        week_end_date=week_start + timedelta(days=6),
-        status="active",
-        total_calories=plan.total_calories,
-        total_protein=plan.total_protein,
-        total_carbs=plan.total_carbs,
-        total_fat=plan.total_fat,
-        total_estimated_cost=plan.total_cost,
-    )
-    db.add(meal_plan)
-    db.flush()
-
-    for assignment in plan.assignments:
-        record = assignment.recipe
-        db.add(
-            models.MealPlanItem(
-                plan_id=meal_plan.id,
-                day_of_week=assignment.day_of_week,
-                meal_type=assignment.meal_type,
-                recipe_id=record.recipe_id,
-                recipe_title=record.title,
-                servings=assignment.servings,
-                calories=record.nutrition.calories,
-                protein=record.nutrition.protein,
-                carbs=record.nutrition.carbs,
-                fat=record.nutrition.fat,
-                estimated_cost=round(record.estimated_cost * assignment.servings, 2),
-                prep_time_minutes=record.prep_time_minutes,
-            )
+        meal_plan = models.MealPlan(
+            user_id=user_id,
+            week_start_date=week_start,
+            week_end_date=week_start + timedelta(days=6),
+            status="active",
+            total_calories=plan.total_calories,
+            total_protein=plan.total_protein,
+            total_carbs=plan.total_carbs,
+            total_fat=plan.total_fat,
+            total_estimated_cost=plan.total_cost,
         )
+        fresh_db.add(meal_plan)
+        fresh_db.flush()
 
-    _refresh_plan_state(db, meal_plan, profile)
-    db.commit()
-    return get_meal_plan(db, meal_plan.id)
+        for assignment in plan.assignments:
+            record = assignment.recipe
+            fresh_db.add(
+                models.MealPlanItem(
+                    plan_id=meal_plan.id,
+                    day_of_week=assignment.day_of_week,
+                    meal_type=assignment.meal_type,
+                    recipe_id=record.recipe_id,
+                    recipe_title=record.title,
+                    servings=assignment.servings,
+                    calories=record.nutrition.calories,
+                    protein=record.nutrition.protein,
+                    carbs=record.nutrition.carbs,
+                    fat=record.nutrition.fat,
+                    estimated_cost=round(record.estimated_cost * assignment.servings, 2),
+                    prep_time_minutes=record.prep_time_minutes,
+                )
+            )
+
+        _refresh_plan_state(fresh_db, meal_plan, profile)
+        fresh_db.commit()
+        return get_meal_plan(fresh_db, meal_plan.id)
+    except Exception:
+        fresh_db.rollback()
+        raise
+    finally:
+        fresh_db.close()
+
 
 def get_meal_plan(db: Session, plan_id: str) -> Optional[models.MealPlan]:
     return (

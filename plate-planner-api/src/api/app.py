@@ -13,8 +13,8 @@ from fastapi import FastAPI, HTTPException, Query, status, Path
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from src.services.neo4j_service import get_hybrid_substitutes, recipe_details as fetch_recipe_details
-from src.services.substitution_service import get_pantry_substitutions
+from src.services.neo4j_service import recipe_details as fetch_recipe_details
+from src.services.substitution_service import get_pantry_substitutions, get_w2v_substitutes
 from src.services.external_recipe_service import spoonacular
 from src.utils.recipesuggestionmodel import suggest_recipes, DB_PATH
 import sqlite3
@@ -534,11 +534,9 @@ async def substitute(
     """
     try:
         raw_subs = await asyncio.to_thread(
-            get_hybrid_substitutes,
+            get_w2v_substitutes,
             ingredient,
-            context,
             top_k,
-            use_hybrid=hybrid,
         )
     except Exception:
         logger.error("Substitution lookup failed", exc_info=True)

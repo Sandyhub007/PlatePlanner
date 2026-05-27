@@ -1,0 +1,203 @@
+digraph PlatePlanner {
+    // Global settings
+    rankdir=TB;
+    fontname="Helvetica";
+    fontsize=16;
+    bgcolor="white";
+    pad=0.5;
+    splines=spline;
+    nodesep=0.6;
+    ranksep=0.8;
+    dpi=200;
+    label="Plate Planner — System Architecture";
+    labelloc=t;
+    fontsize=28;
+    fontcolor="#1a1a1a";
+
+    // Node defaults
+    node [fontname="Helvetica", fontsize=11, style="filled,rounded", shape=box, penwidth=1.5];
+    edge [fontname="Helvetica", fontsize=9];
+
+    // ===== USER =====
+    user [label="📱 Mobile User", shape=oval, fillcolor="#E8EAF6", color="#3F51B5", fontsize=13, fontcolor="#1A237E", penwidth=2];
+
+    // ===== CLIENT TIER =====
+    subgraph cluster_client {
+        label="Client Tier";
+        style="rounded,filled";
+        fillcolor="#E8F5E9";
+        color="#4CAF50";
+        fontsize=14;
+        fontcolor="#1B5E20";
+        penwidth=2;
+
+        rn [label="React Native 0.81\n+ Expo 54", fillcolor="#C8E6C9", color="#388E3C"];
+        ui [label="Gluestack UI\nNativeWind / TailwindCSS", fillcolor="#C8E6C9", color="#388E3C"];
+        nav [label="Expo Router 6.0\nFile-Based Navigation", fillcolor="#C8E6C9", color="#388E3C"];
+        auth_client [label="Expo Auth Session\nGoogle OAuth + JWT", fillcolor="#C8E6C9", color="#388E3C"];
+    }
+
+    // ===== API TIER =====
+    subgraph cluster_api {
+        label="API Tier — FastAPI + Uvicorn (ASGI)";
+        style="rounded,filled";
+        fillcolor="#E3F2FD";
+        color="#1976D2";
+        fontsize=14;
+        fontcolor="#0D47A1";
+        penwidth=2;
+
+        subgraph cluster_middleware {
+            label="Middleware";
+            style="rounded,dashed";
+            fillcolor="#BBDEFB";
+            color="#1565C0";
+            fontsize=11;
+
+            jwt [label="JWT\nAuthentication", fillcolor="#90CAF9", color="#1565C0"];
+            cors [label="CORS\nPolicy", fillcolor="#90CAF9", color="#1565C0"];
+            pydantic [label="Pydantic v2\nValidation", fillcolor="#90CAF9", color="#1565C0"];
+        }
+
+        subgraph cluster_routers {
+            label="REST API Routers";
+            style="rounded,dashed";
+            fillcolor="#BBDEFB";
+            color="#1565C0";
+            fontsize=11;
+
+            r_auth [label="/auth\nRegister, Login\nRefresh, Logout", fillcolor="#E3F2FD", color="#1976D2"];
+            r_meals [label="/meal-plans\nGenerate, CRUD\nValidate", fillcolor="#E3F2FD", color="#1976D2"];
+            r_shop [label="/shopping-lists\nGenerate, Items\nPurchase Track", fillcolor="#E3F2FD", color="#1976D2"];
+            r_rec [label="/recommend\nHybrid, Search\nRandom", fillcolor="#E3F2FD", color="#1976D2"];
+            r_nutr [label="/nutrition\nGoals, Log\nInsights", fillcolor="#E3F2FD", color="#1976D2"];
+            r_sub [label="/substitute\nGraph, Hybrid\nCo-occurrence", fillcolor="#E3F2FD", color="#1976D2"];
+            r_pantry [label="/pantry\nItems CRUD\nCoverage", fillcolor="#E3F2FD", color="#1976D2"];
+        }
+    }
+
+    // ===== SERVICE TIER =====
+    subgraph cluster_service {
+        label="Service Tier — Domain Business Logic";
+        style="rounded,filled";
+        fillcolor="#FFF3E0";
+        color="#F57C00";
+        fontsize=14;
+        fontcolor="#E65100";
+        penwidth=2;
+
+        s_meal [label="MealPlan Service\nConstraint-Based\nRecipe Selection", fillcolor="#FFE0B2", color="#F57C00"];
+        s_shop [label="ShoppingList Service\n730+ Lines\nFuzzy Match + Unit Convert\n+ NER + Categorize", fillcolor="#FFE0B2", color="#F57C00"];
+        s_rec [label="Recommendation Service\n4-Stage Hybrid Pipeline\n40% Semantic + 60% Overlap", fillcolor="#FFE0B2", color="#F57C00"];
+        s_sub [label="Substitution Service\nHybrid Scoring\nα=0.9 Direct + 0.1 CoOccur", fillcolor="#FFE0B2", color="#F57C00"];
+        s_nutr [label="Nutrition Service\nGoal Tracking\nInsights Engine", fillcolor="#FFE0B2", color="#F57C00"];
+    }
+
+    // ===== ML INFERENCE LAYER =====
+    subgraph cluster_ml {
+        label="ML Inference Layer";
+        style="rounded,filled";
+        fillcolor="#F3E5F5";
+        color="#9C27B0";
+        fontsize=14;
+        fontcolor="#4A148C";
+        penwidth=2;
+
+        faiss [label="FAISS IVF-PQ Index\n256 Voronoi Cells\n<200MB Memory\n10-20ms Latency", fillcolor="#E1BEE7", color="#8E24AA", shape=cylinder];
+        transformer [label="SentenceTransformer\nall-MiniLM-L6-v2\n384-dim Vectors", fillcolor="#E1BEE7", color="#8E24AA"];
+        spacy [label="SpaCy NER\nen_core_web_sm\n87% Precision", fillcolor="#E1BEE7", color="#8E24AA"];
+        fuzzy [label="thefuzz + Pint\nFuzzy Matching\nUnit Conversion", fillcolor="#E1BEE7", color="#8E24AA"];
+    }
+
+    // ===== DATA PERSISTENCE TIER =====
+    subgraph cluster_data {
+        label="Data Persistence Tier — Polyglot Architecture";
+        style="rounded,filled";
+        fillcolor="#FFEBEE";
+        color="#D32F2F";
+        fontsize=14;
+        fontcolor="#B71C1C";
+        penwidth=2;
+
+        pg [label="PostgreSQL 15\n(Neon Serverless)\nUsers, MealPlans\nShoppingLists, Nutrition\n3NF Normalized", fillcolor="#FFCDD2", color="#C62828", shape=cylinder];
+        neo [label="Neo4j 5.x\n(AuraDB Managed)\nIngredient Graph\nSUBSTITUTES_WITH\nHAS_INGREDIENT\nSIMILAR_TO", fillcolor="#FFCDD2", color="#C62828", shape=cylinder];
+        redis [label="Redis 7\nAPI Cache\nSession Tokens\nPagination Cursors", fillcolor="#FFCDD2", color="#C62828", shape=cylinder];
+        sqlite [label="SQLite\nRecipe Metadata\n100K+ Recipes\nFAISS Companion", fillcolor="#FFCDD2", color="#C62828", shape=cylinder];
+    }
+
+    // ===== DEPLOYMENT =====
+    subgraph cluster_deploy {
+        label="Deployment — Railway + Docker";
+        style="rounded,filled";
+        fillcolor="#F5F5F5";
+        color="#616161";
+        fontsize=14;
+        fontcolor="#212121";
+        penwidth=2;
+
+        docker [label="Docker\nMulti-Stage Build\nPoetry + Uvicorn", fillcolor="#E0E0E0", color="#616161"];
+        railway [label="Railway PaaS\nAuto-Deploy\nfrom Git", fillcolor="#E0E0E0", color="#616161"];
+        alembic [label="Alembic\nSchema Migrations", fillcolor="#E0E0E0", color="#616161"];
+        taskfile [label="Taskfile.yml\nDev Automation", fillcolor="#E0E0E0", color="#616161"];
+    }
+
+    // ===== EDGES =====
+
+    // User -> Client
+    user -> rn [label="HTTPS", color="#2E7D32", penwidth=2, style=bold];
+
+    // Client internal
+    rn -> ui [color="#388E3C", style=dashed];
+    rn -> nav [color="#388E3C", style=dashed];
+    rn -> auth_client [color="#388E3C", style=dashed];
+
+    // Client -> API
+    rn -> jwt [label="REST + JWT", color="#1565C0", penwidth=2, style=bold];
+
+    // Middleware flow
+    jwt -> cors [color="#1565C0"];
+    cors -> pydantic [color="#1565C0"];
+
+    // Pydantic -> Routers
+    pydantic -> r_auth [color="#42A5F5"];
+    pydantic -> r_meals [color="#42A5F5"];
+    pydantic -> r_shop [color="#42A5F5"];
+    pydantic -> r_rec [color="#42A5F5"];
+    pydantic -> r_nutr [color="#42A5F5"];
+    pydantic -> r_sub [color="#42A5F5"];
+    pydantic -> r_pantry [color="#42A5F5"];
+
+    // Routers -> Services
+    r_meals -> s_meal [color="#EF6C00", penwidth=1.5];
+    r_shop -> s_shop [color="#EF6C00", penwidth=1.5];
+    r_rec -> s_rec [color="#EF6C00", penwidth=1.5];
+    r_sub -> s_sub [color="#EF6C00", penwidth=1.5];
+    r_nutr -> s_nutr [color="#EF6C00", penwidth=1.5];
+
+    // Services -> ML
+    s_rec -> faiss [label="Vector\nSearch", color="#7B1FA2", penwidth=1.5, style=bold];
+    s_rec -> transformer [label="Encode\nQuery", color="#7B1FA2", penwidth=1.5];
+    s_shop -> spacy [label="Ingredient\nExtraction", color="#7B1FA2", penwidth=1.5];
+    s_shop -> fuzzy [label="Match &\nConvert", color="#7B1FA2", penwidth=1.5];
+
+    // Services -> Data
+    s_meal -> pg [label="CRUD", color="#C62828", penwidth=1.5];
+    s_shop -> pg [color="#C62828", penwidth=1.5];
+    s_nutr -> pg [color="#C62828", penwidth=1.5];
+    s_sub -> neo [label="Cypher\nQueries", color="#C62828", penwidth=1.5, style=bold];
+    s_rec -> neo [label="Dietary\nFilter", color="#C62828", penwidth=1.5];
+    s_rec -> sqlite [label="Recipe\nMetadata", color="#C62828", penwidth=1.5];
+    s_rec -> redis [label="Cache", color="#C62828", penwidth=1.5];
+
+    // ML -> Data
+    faiss -> sqlite [label="ID\nLookup", color="#6A1B9A", style=dashed];
+
+    // Deployment connections
+    docker -> railway [color="#757575", style=dashed];
+    alembic -> pg [color="#757575", style=dashed];
+
+    // Performance annotations
+    perf [label="Performance Metrics\n━━━━━━━━━━━━━━━━\n• API p95 Latency: <80ms\n• Throughput: 100+ req/sec\n• FAISS: 60× compression\n• Neo4j p95: <10ms\n• Recommendation Recall: +23%\n• Substitution Satisfaction: 92%\n• Shopping List Accuracy: 95%+\n• Test Suite: 267 assertions",
+          shape=note, fillcolor="#FFFDE7", color="#F9A825", fontsize=10,
+          fontcolor="#33691E"];
+}

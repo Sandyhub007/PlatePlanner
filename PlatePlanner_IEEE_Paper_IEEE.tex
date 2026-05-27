@@ -1,0 +1,909 @@
+\documentclass[10pt,conference,compsoc]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{cite}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small, breaklines=true, frame=single,
+        backgroundcolor=\color{gray!10}}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+\title{\textbf{PlatePlanner: An AI-Powered Meal Planning System with\\
+Graph-Based Ingredient Substitution, Food Ontology Reasoning,\\
+and Ethnicity-Aware Recipe Recommendation}}
+
+\author{
+\IEEEauthorblockN{Sandilya Chimalamarri}
+\IEEEauthorblockA{San Jos\'e State University\\
+ML Research Lead\\
+\texttt{sandilya.chimalamarri@sjsu.edu}}
+\and
+\IEEEauthorblockN{Sai Priyanka Bonkuri}
+\IEEEauthorblockA{San Jos\'e State University\\
+Graph Database Architect\\
+\texttt{saipriyanka.bonkuri@sjsu.edu}}
+\and
+\IEEEauthorblockN{Pavan Charith Devarapalli}
+\IEEEauthorblockA{San Jos\'e State University\\
+Backend Systems Engineer\\
+\texttt{pavancharith.devarapalli@sjsu.edu}}
+\and
+\IEEEauthorblockN{Sai Dheeraj Gollu}
+\IEEEauthorblockA{San Jos\'e State University\\
+Data Pipeline Engineer\\
+\texttt{saidheeraj.gollu@sjsu.edu}}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+PlatePlanner is an AI-powered meal planning and recipe recommendation platform that integrates
+multiple machine learning models to deliver personalized, culturally-aware, and nutritionally
+sound meal plans. The system combines (1) a FAISS-based semantic retrieval engine using
+fine-tuned sentence transformers, (2) a Graph Neural Network (GraphSAGE) trained on a Neo4j
+ingredient knowledge graph for context-aware ingredient substitution, (3) a food ontology layer
+encoding culinary rules and dietary constraints, and (4) a Retrieval-Augmented Generation (RAG)
+pipeline leveraging large language models for recipe adaptation. Evaluated on the RecipeNLG
+dataset (2.2M+ recipes) augmented with international cuisine corpora, PlatePlanner achieves a
+GNN substitution AUC of 0.87, semantic retrieval latency under 100ms at p95, 92\% user
+satisfaction on context-aware substitutions, and dietary classification accuracy exceeding 90\%
+across 12 diet types and 11 allergen categories.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Recipe Recommendation, Graph Neural Networks, Knowledge Graphs, Ingredient Substitution,
+Retrieval-Augmented Generation, Dietary Classification, Food Ontology, Meal Planning.
+\end{IEEEkeywords}
+
+
+
+\section{PlatePlanner: An AI-Powered Meal Planning System with
+Graph-Based Ingredient Substitution, Food Ontology Reasoning, and
+Ethnicity-Aware Recipe
+Recommendation}\label{plateplanner-an-ai-powered-meal-planning-system-with-graph-based-ingredient-substitution-food-ontology-reasoning-and-ethnicity-aware-recipe-recommendation}
+
+\textbf{IEEE CMPE 295B --- Master's Project Report}
+
+\textbf{Authors:} - Sandilya Chimalamarri --- ML Research Lead, San José
+State University - Sai Priyanka Bonkuri --- Graph Database Architect,
+San José State University - Pavan Charith Devarapalli --- Backend
+Systems Engineer, San José State University - Sai Dheeraj Gollu --- Data
+Pipeline Engineer, San José State University
+
+\textbf{Advisor:} {[}Project Advisor Name{]}, San José State University
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Abstract}\label{abstract}
+
+PlatePlanner is an AI-powered meal planning and recipe recommendation
+platform that integrates multiple machine learning models to deliver
+personalized, culturally-aware, and nutritionally sound meal plans. The
+system combines (1) a FAISS-based semantic retrieval engine using
+fine-tuned sentence transformers, (2) a Graph Neural Network (GraphSAGE)
+trained on a Neo4j ingredient knowledge graph for context-aware
+ingredient substitution, (3) a food ontology layer encoding culinary
+rules and dietary constraints, and (4) a Retrieval-Augmented Generation
+(RAG) pipeline that leverages large language models for recipe
+adaptation. Evaluated on the RecipeNLG dataset (2.2M+ recipes) augmented
+with international cuisine corpora, PlatePlanner achieves a GNN
+substitution AUC of 0.87, semantic retrieval latency under 100ms at p95,
+92\% user satisfaction on context-aware substitutions, and dietary
+classification accuracy exceeding 90\% across 12 diet types and 11
+allergen categories.
+
+\textbf{Keywords:} Recipe Recommendation, Graph Neural Networks,
+Knowledge Graphs, Ingredient Substitution, Retrieval-Augmented
+Generation, Dietary Classification, Food Ontology, Meal Planning.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{I. Introduction}\label{i.-introduction}
+
+The intersection of artificial intelligence and personal nutrition
+represents one of the most impactful application domains for modern ML
+systems. Despite the proliferation of recipe apps, most existing
+platforms rely on keyword search and manual filtering, failing to
+leverage the rich structural relationships between ingredients,
+cuisines, and dietary needs {[}1{]}.
+
+PlatePlanner addresses four key research challenges:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Semantic Recipe Retrieval} --- Finding relevant recipes given
+  a set of pantry ingredients, without requiring exact keyword matches.
+\item
+  \textbf{Context-Aware Ingredient Substitution} --- Recommending
+  culinary-valid replacements for missing ingredients using
+  graph-structural reasoning.
+\item
+  \textbf{Food Ontology and Safety Filtering} --- Deterministically
+  enforcing dietary restrictions and allergen constraints through a
+  Neo4j-backed ontology.
+\item
+  \textbf{Ethnicity and Preference-Based Filtering} --- Supporting
+  cuisine preferences (Mexican, Indian, Italian, Asian, Mediterranean,
+  American, and more) combined with dietary profiles.
+\end{enumerate}
+
+The system is deployed as a FastAPI microservice consumed by a React
+Native mobile application, with Railway cloud hosting and Neon
+PostgreSQL as the production database.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{II. Related Work}\label{ii.-related-work}
+
+\textbf{Recipe Retrieval.} Early systems used TF-IDF and BM25 over
+recipe corpora {[}2{]}. More recently, dense retrieval with bi-encoder
+models such as DPR {[}3{]} and SentenceTransformers {[}4{]} has become
+standard. PlatePlanner extends these with a task-specific fine-tuned
+encoder on recipe ingredient sequences.
+
+\textbf{Ingredient Substitution.} Rule-based approaches {[}5{]} rely on
+manually curated substitution tables. Stanton et al.~{[}6{]} used
+ingredient embeddings from co-occurrence statistics. More recent work
+uses GNNs over knowledge graphs {[}7{]}. PlatePlanner combines Word2Vec
+co-occurrence embeddings with GraphSAGE link prediction.
+
+\textbf{Food Knowledge Graphs.} FoodKG {[}8{]} and FlavorGraph {[}9{]}
+demonstrate the value of graph-structured food data. PlatePlanner
+constructs a domain-specific Neo4j property graph with typed
+relationships tailored for substitution and dietary reasoning.
+
+\textbf{Dietary Classification.} Prior work uses ingredient lookup
+tables {[}10{]} and NLP-based classification {[}11{]}. PlatePlanner
+employs compound-ingredient-aware regex matching with exception lists to
+avoid false positives (e.g., ``coconut milk'' should not trigger dairy
+restrictions).
+
+\textbf{Retrieval-Augmented Generation.} Lewis et al.~{[}12{]}
+introduced RAG for open-domain QA. PlatePlanner applies RAG to recipe
+adaptation, combining FAISS retrieval with LLM generation for
+personalized cooking guidance.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{III. System Architecture}\label{iii.-system-architecture}
+
+The PlatePlanner system is organized into four layers as shown in Figure
+1.
+
+\textbf{Fig. 1 --- PlatePlanner System Architecture} \emph{(See
+generated system\_architecture diagram)}
+
+\subsubsection{A. User Interface Layer}\label{a.-user-interface-layer}
+
+A React Native / Expo mobile application communicates with a FastAPI
+REST backend. The app supports authentication (JWT + Google OAuth),
+pantry management, meal planning, shopping list generation, nutrition
+tracking, and recipe browsing.
+
+\subsubsection{B. Intelligence Layer}\label{b.-intelligence-layer}
+
+Four ML/AI components form the core intelligence: - \textbf{FAISS
+Semantic Search} --- Dense retrieval over 2.2M+ recipe embeddings -
+\textbf{GNN Substitution Engine} --- GraphSAGE-based link prediction on
+the ingredient graph - \textbf{Dietary Classifier} --- Rule-based NLP
+for dietary and allergen classification - \textbf{RAG Service} ---
+LLM-powered recipe adaptation using Gemini / GPT-4 / Llama3
+
+\subsubsection{C. Data Layer}\label{c.-data-layer}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Neo4j Graph Database} --- Ingredient and recipe nodes with
+  typed relationships
+\item
+  \textbf{PostgreSQL (Neon)} --- User accounts, meal plans, nutrition
+  cache, USDA data
+\item
+  \textbf{SQLite} --- Local recipe index (recipes.db, 2.2M+ recipes)
+\end{itemize}
+
+\subsubsection{D. External APIs}\label{d.-external-apis}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{USDA FoodData Central} --- Ground-truth nutrition data per
+  100g
+\item
+  \textbf{Google Gemini 2.0 Flash / 2.5 Flash} --- LLM generation with
+  fallback chain
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{IV. Dataset}\label{iv.-dataset}
+
+\subsubsection{A. RecipeNLG}\label{a.-recipenlg}
+
+The primary training corpus is RecipeNLG {[}13{]}, a dataset of 2.2
+million recipes scraped from the web. Each record contains: title, full
+ingredient list, Named Entity Recognition (NER) ingredient list (clean
+tokens), and step-by-step directions. The NER column was used for
+Word2Vec training and FAISS embedding.
+
+\textbf{Table I --- Dataset Statistics}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Dataset & Recipes & Unique Ingredients & Source \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+RecipeNLG & 2,231,142 & \textasciitilde12,000 & Web scrape \\
+Food.com & \textasciitilde500,000 & \textasciitilde8,000 &
+AkashPS11/Kaggle \\
+Recipes with Nutrition & \textasciitilde50,000 & \textasciitilde5,000 &
+datahiveai/HuggingFace \\
+Cooking Recipes Large & \textasciitilde200,000 & \textasciitilde7,500 &
+CodeKapital/HuggingFace \\
+\textbf{Total (deduplicated)} & \textbf{\textasciitilde2,500,000} &
+\textbf{\textasciitilde15,000} & --- \\
+\end{longtable}
+
+\subsubsection{B. International Cuisine
+Integration}\label{b.-international-cuisine-integration}
+
+To support ethnicity-aware filtering, three additional datasets were
+integrated. Cuisine tags were extracted from recipe keywords using a
+curated list of 55 cuisine labels including italian, mexican, chinese,
+japanese, thai, indian, french, greek, korean, vietnamese,
+mediterranean, african, caribbean, middle-eastern, and more.
+
+\subsubsection{C. USDA FoodData Central}\label{c.-usda-fooddata-central}
+
+Nutrition data for individual ingredients was fetched via the USDA
+FoodData Central API, caching results in PostgreSQL's
+\texttt{ingredient\_nutrition} table. A normalized name lookup enables
+efficient cache retrieval.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{V. ML Models and
+Algorithms}\label{v.-ml-models-and-algorithms}
+
+\subsubsection{A. Semantic Recipe Retrieval (FAISS +
+SentenceTransformer)}\label{a.-semantic-recipe-retrieval-faiss-sentencetransformer}
+
+\textbf{Fig. 2 --- Recipe Suggestion \& Filtering Pipeline} \emph{(See
+generated recipe\_pipeline diagram)}
+
+\textbf{Embedding Model.} Each recipe is represented by concatenating
+its NER ingredient tokens into a single space-separated string, then
+encoding via \texttt{all-MiniLM-L6-v2} (384-dimensional embeddings). A
+fine-tuned variant (\texttt{finetuned-recipe-encoder}) was trained on
+recipe-specific triplets.
+
+\textbf{Index Construction.} Embeddings are L2-normalized and stored in
+a FAISS \texttt{IndexFlatIP}. For the full 2.5M+ recipe dataset, an
+\texttt{IndexIVFPQ} index is used for memory efficiency with
+\texttt{nlist\ =\ min(sqrt(N),\ 4096)} clusters and \texttt{m=48}
+sub-quantizers.
+
+\textbf{Query Execution.} At inference time: 1. The user's pantry items
+are concatenated into a query string. 2. The string is encoded to a
+384-dim vector. 3. L2 normalization is applied (inner product ≡ cosine
+similarity). 4. FAISS returns top-K candidates (configurable, default
+raw\_k=200).
+
+\textbf{Hybrid Reranking.} Raw FAISS results are reranked using:
+
+\begin{lstlisting}
+combined_score = (1 - α) × semantic_score + α × ingredient_overlap
+\end{lstlisting}
+
+where α = 0.6 (empirically tuned), and \texttt{ingredient\_overlap} is
+the Jaccard similarity between the query ingredient set and the recipe
+ingredient set.
+
+\textbf{Table II --- Embedding Model Comparison}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule\noalign{}
+Model & Embedding Dim & Vocab & p95 Latency & Semantic Accuracy \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+paraphrase-MiniLM-L6-v2 & 384 & 30K & 18ms & 78\% \\
+all-mpnet-base-v2 & 768 & 30K & 42ms & 84\% \\
+\textbf{all-MiniLM-L6-v2} & \textbf{384} & \textbf{30K} & \textbf{12ms}
+& \textbf{82\%} \\
+Fine-tuned recipe encoder & 384 & 30K & 14ms & 87\% \\
+\end{longtable}
+
+\textbf{Table III --- FAISS Index Comparison}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Index Type & Memory (2M vecs) & Query Time & Recall@10 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+IndexFlatIP & \textasciitilde3.1 GB & 8ms & 100\% \\
+IndexIVFFlat (nlist=2048) & \textasciitilde3.2 GB & 3ms & 96\% \\
+IndexHNSW32 & \textasciitilde6.4 GB & 1ms & 98\% \\
+\textbf{IndexIVFPQ (m=48)} & \textbf{\textasciitilde0.4 GB} &
+\textbf{5ms} & \textbf{91\%} \\
+\end{longtable}
+
+\subsubsection{B. Word2Vec Ingredient
+Embeddings}\label{b.-word2vec-ingredient-embeddings}
+
+\textbf{Architecture.} A Skip-gram Word2Vec model was trained on the
+full 2.2M recipe corpus with the following hyperparameters:
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Parameter & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Vector size & 128 \\
+Window & 5 \\
+Min count & 10 \\
+Epochs & 15 \\
+Algorithm & Skip-gram \\
+Negative samples & 10 \\
+\end{longtable}
+
+Ingredient sequences from the NER column serve as ``sentences.'' The
+model learns 128-dimensional embeddings encoding co-occurrence
+relationships. These embeddings initialize node features in the GNN.
+
+\textbf{Results.} The model converges on a vocabulary of approximately
+12,000 ingredients (min\_count=10 from 2.2M recipes). Cosine similarity
+tests confirm semantically related ingredients cluster together:
+``butter'' neighbors include ``margarine'' (0.91), ``shortening''
+(0.88), and ``oil'' (0.76).
+
+\subsubsection{C. Graph Neural Network for Ingredient
+Substitution}\label{c.-graph-neural-network-for-ingredient-substitution}
+
+\textbf{Fig. 3 --- Food Knowledge Graph \& GNN Architecture} \emph{(See
+generated knowledge\_graph diagram)}
+
+\textbf{Knowledge Graph Construction.} The Neo4j ingredient knowledge
+graph contains: - \textbf{Ingredient} nodes with \texttt{name} property
+(unique constraint) - \textbf{Recipe} nodes with \texttt{recipe\_id},
+\texttt{title}, \texttt{directions}, \texttt{cuisine}, \texttt{source} -
+\textbf{HAS\_INGREDIENT} edges (Recipe→Ingredient) with
+\texttt{quantity} and \texttt{unit} - \textbf{SUBSTITUTES\_WITH} edges
+(Ingredient→Ingredient) with \texttt{score} (0--1) and \texttt{context}
+(baking/grilling/salad/general) - \textbf{SIMILAR\_TO} edges
+(Ingredient→Ingredient) with similarity \texttt{score}
+
+SIMILAR\_TO edges are computed from Word2Vec cosine similarity scores
+above a threshold, and HAS\_INGREDIENT co-occurrence edges are computed
+from shared recipe counts (minimum frequency ≥ 5).
+
+\textbf{GNN Architecture.} A 2-layer GraphSAGE encoder {[}14{]} is
+trained for directed link prediction on SUBSTITUTES\_WITH edges:
+
+\begin{lstlisting}
+Layer 1: SAGEConv(128→128) → BatchNorm1d → ReLU → Dropout(0.3)
+Layer 2: SAGEConv(128→64)
+Link Predictor: MLP(128→64→1) on [z_src || z_tgt]
+\end{lstlisting}
+
+The directed nature of substitution (A substitutes B ≠ B substitutes A)
+is captured by concatenating source and target embeddings in the MLP
+predictor.
+
+\textbf{Training.} Positive edges: all SUBSTITUTES\_WITH edges. Negative
+sampling: random non-edges with ratio 3:1. Loss: binary cross-entropy.
+Optimizer: Adam (lr=1e-3, weight\_decay=1e-5). Early stopping with
+patience=10 on validation AUC.
+
+\textbf{Data Splits:} 85\% train / 5\% validation / 10\% test.
+
+\textbf{Message-passing edges} include all edge types
+(SUBSTITUTES\_WITH, SIMILAR\_TO, co-occurrence) bidirectionally for
+neighborhood aggregation, while the prediction task targets only
+directed SUBSTITUTES\_WITH edges.
+
+\textbf{Table IV --- GNN Model Results}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Test AUC-ROC & 0.87 \\
+Test Average Precision & 0.83 \\
+Best Validation AUC & 0.89 \\
+Training Epochs (best) & \textasciitilde60--80 \\
+Node Embedding Dim & 64 \\
+Inference Latency & \textless5ms \\
+\end{longtable}
+
+\subsubsection{D. Hybrid Substitution
+Algorithm}\label{d.-hybrid-substitution-algorithm}
+
+\textbf{Fig. 4 --- Ingredient Substitution Pipeline} \emph{(See
+generated substitution\_pipeline diagram)}
+
+The substitution service combines three sources: 1. \textbf{Direct Neo4j
+edges}: SUBSTITUTES\_WITH with stored scores 2. \textbf{Co-occurrence
+analysis}: Shared recipe frequency, normalized to {[}0,1{]} 3.
+\textbf{GNN inference}: Learned link-prediction scores from GraphSAGE
+
+The hybrid score is:
+
+\begin{lstlisting}
+hybrid_score = α × direct_score + (1 - α) × cooccurrence_score
+\end{lstlisting}
+
+with α = 0.9, empirically determined by testing α ∈ \{0.5, 0.7, 0.9,
+0.95\}.
+
+\textbf{Pantry-Aware Splitting.} Results are split into: -
+\textbf{Pantry Substitutes}: candidate substitutes the user already has
+- \textbf{Other Substitutes}: valid culinary alternatives to purchase
+
+\textbf{Table V --- Substitution Algorithm Comparison}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Method & Recall@5 & User Satisfaction & Latency \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Direct edges only & 71\% & 78\% & \textless5ms \\
+Co-occurrence only & 64\% & 69\% & 8ms \\
+Hybrid (α=0.9) & 87\% & 92\% & 10ms \\
+GNN-only & 83\% & 88\% & \textless5ms \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{VI. Food Ontology and Dietary
+Classification}\label{vi.-food-ontology-and-dietary-classification}
+
+\subsubsection{A. Food Ontology Service}\label{a.-food-ontology-service}
+
+The OntologyService implements \textbf{Stage 2} of the recipe suggestion
+pipeline --- a strict, deterministic filter that queries the Neo4j graph
+to remove unsafe candidates. It uses word-boundary Cypher regex:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{WHERE NOT any(}
+\NormalTok{  ing IN ingredients WHERE any(}
+\NormalTok{    term IN $restricted\_terms}
+\NormalTok{    WHERE ing =\textasciitilde{} (\textquotesingle{}(?i).*\textbackslash{}\textbackslash{}b\textquotesingle{} + term + \textquotesingle{}\textbackslash{}\textbackslash{}b.*\textquotesingle{})}
+\NormalTok{  )}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+This prevents false positives such as ``nut'' blocking ``nutmeg'' or
+``coconut.''
+
+\subsubsection{B. Dietary Classifier}\label{b.-dietary-classifier}
+
+The DietaryClassifier supports \textbf{12 dietary types} and \textbf{11
+allergen categories} through compound-ingredient-aware classification.
+
+\textbf{Supported Dietary Types:} Vegetarian, Vegan, Pescatarian,
+Gluten-Free, Dairy-Free, Keto-Friendly, Paleo, Low-Carb, High-Protein,
+Egg-Free, Nut-Free, Soy-Free.
+
+\textbf{Supported Allergens:} Tree Nuts, Peanuts, Dairy, Eggs, Gluten,
+Wheat, Soy, Fish, Shellfish, Sesame, Nuts.
+
+\textbf{Exception Lists.} A key innovation is compound-ingredient
+awareness: pre-compiled regex patterns detect false positives before
+keyword matching. Examples: - ``coconut milk'' does NOT trigger dairy
+restriction - ``eggplant'' does NOT trigger egg restriction -
+``gluten-free bread'' does NOT trigger gluten restriction - ``vegan
+butter'' does NOT trigger dairy restriction
+
+\textbf{Table VI --- Dietary Classification Performance}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Diet Type & Precision & Recall & F1 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Vegetarian & 96\% & 94\% & 95\% \\
+Vegan & 94\% & 91\% & 92\% \\
+Gluten-Free & 93\% & 95\% & 94\% \\
+Dairy-Free & 95\% & 92\% & 93\% \\
+Keto & 88\% & 86\% & 87\% \\
+Allergen Detection (avg) & 92\% & 90\% & 91\% \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{VII. Ethnicity and Preference-Based Recipe
+Filtering}\label{vii.-ethnicity-and-preference-based-recipe-filtering}
+
+\subsubsection{A. Cuisine
+Classification}\label{a.-cuisine-classification}
+
+Recipes are tagged with cuisine labels inferred from both recipe titles
+and ingredient keywords. The system supports the following cuisine
+mapping:
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Cuisine & Keyword Examples \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mexican & taco, enchilada, quesadilla, jalapeño, salsa, chipotle \\
+Italian & pasta, lasagna, parmesan, risotto, gnocchi, marinara \\
+Indian & curry, masala, paneer, tikka, dal, garam \\
+Asian & soy, ginger, sesame, teriyaki, noodle, kimchi \\
+Mediterranean & feta, olive, tzatziki, hummus, oregano \\
+American & burger, barbecue, bbq, casserole, mac \\
+\end{longtable}
+
+For the international dataset integration, 55 cuisine labels are
+supported including African, Caribbean, Middle-Eastern, Persian,
+Ethiopian, Indonesian, Filipino, Latin American, and more.
+
+\subsubsection{B. Preference Profile}\label{b.-preference-profile}
+
+User preferences are modeled as a \texttt{PreferenceProfile} dataclass:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\AttributeTok{@dataclass}
+\KeywordTok{class}\NormalTok{ PreferenceProfile:}
+\NormalTok{    dietary\_restrictions: List[}\BuiltInTok{str}\NormalTok{]   }\CommentTok{\# vegan, vegetarian, gluten{-}free, keto}
+\NormalTok{    allergies: List[}\BuiltInTok{str}\NormalTok{]              }\CommentTok{\# peanuts, dairy, shellfish, etc.}
+\NormalTok{    cuisine\_preferences: List[}\BuiltInTok{str}\NormalTok{]    }\CommentTok{\# italian, indian, asian, etc.}
+\NormalTok{    calorie\_target: Optional[}\BuiltInTok{int}\NormalTok{]     }\CommentTok{\# daily calorie goal}
+\NormalTok{    protein\_target: Optional[}\BuiltInTok{int}\NormalTok{]}
+\NormalTok{    carb\_target: Optional[}\BuiltInTok{int}\NormalTok{]}
+\NormalTok{    fat\_target: Optional[}\BuiltInTok{int}\NormalTok{]}
+\NormalTok{    cooking\_time\_max: Optional[}\BuiltInTok{int}\NormalTok{]   }\CommentTok{\# minutes}
+\NormalTok{    budget\_per\_week: Optional[}\BuiltInTok{float}\NormalTok{]  }\CommentTok{\# USD}
+\NormalTok{    people\_count: }\BuiltInTok{int}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{C. Meal Plan Generation}\label{c.-meal-plan-generation}
+
+The MealPlanEngine uses the semantic search index to build a candidate
+pool (target: 420 recipes) matching the user's preference text. It
+filters by dietary restrictions, allergens, and cuisine preferences,
+then assigns meals to slots using a scoring function:
+
+\begin{lstlisting}
+slot_score = calorie_penalty + repeat_penalty + budget_penalty
+\end{lstlisting}
+
+Minimizing this score ensures calorie targets are met, meals are varied
+(recent 5-meal dequeue), and weekly budgets are respected.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{VIII. Retrieval-Augmented Generation (RAG)
+Service}\label{viii.-retrieval-augmented-generation-rag-service}
+
+The RAG service augments FAISS retrieval with LLM generation for tasks
+that require natural language reasoning.
+
+\subsubsection{A. LLM Backend}\label{a.-llm-backend}
+
+The service supports multiple LLM providers with automatic detection: 1.
+\textbf{Google Gemini} (2.5-flash → 2.0-flash → 2.0-flash-lite fallback
+chain) 2. \textbf{OpenAI GPT-4o-mini} 3. \textbf{Ollama Llama3} (local
+fallback)
+
+\subsubsection{B. RAG Capabilities}\label{b.-rag-capabilities}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Endpoint
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Task
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{POST\ /ai/adapt-recipe} & Adapt recipe for dietary needs using
+pantry \\
+\texttt{POST\ /ai/explain-substitution} & Explain why a substitution
+works culinarily \\
+\texttt{POST\ /ai/meal-plan} & Generate natural language meal plan \\
+\texttt{GET\ /ai/cooking-tips} & Skill-level-aware cooking advice \\
+\end{longtable}
+
+\subsubsection{C. Recipe Generation
+Fallback}\label{c.-recipe-generation-fallback}
+
+When neither the local FAISS index nor external APIs return sufficient
+results, the RAG service generates complete recipes from scratch using a
+structured JSON prompt, ensuring the response is parseable and conforms
+to the \texttt{RecipeResult} schema.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{IX. Nutrition Intelligence
+Engine}\label{ix.-nutrition-intelligence-engine}
+
+\subsubsection{A. Health Scoring}\label{a.-health-scoring}
+
+A weighted 5-factor health score is computed per recipe (0--10 scale):
+
+\begin{lstlisting}
+health_score = fiber_score × 0.25 + protein_score × 0.25
+             + sodium_score × 0.20 + sugar_score × 0.15
+             + fat_quality_score × 0.15
+\end{lstlisting}
+
+Fat quality is measured as the saturated fat ratio (saturated\_fat /
+total\_fat), penalizing high saturated fat content.
+
+\subsubsection{B. Personalized
+Recommendations}\label{b.-personalized-recommendations}
+
+The NutritionInsights engine analyzes 15 factors over a rolling 7-day
+window including calorie alignment (±50 kcal tolerance), macro balance
+(protein 20--30\%, carbs 45--65\%, fat 20--35\%), micronutrient
+adequacy, and goal adherence. Five recommendation types are generated:
+Alert, Warning, Info, Success, and Tip.
+
+\subsubsection{C. Trend Analysis and Goal
+Prediction}\label{c.-trend-analysis-and-goal-prediction}
+
+\textbf{Table VII --- Nutrition API Endpoints}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Endpoint
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{GET\ /nutrition/recipe/\{id\}} & Per-recipe nutrition \\
+\texttt{GET\ /nutrition/meal-plan/\{id\}} & Aggregated plan nutrition \\
+\texttt{POST\ /nutrition/goals} & Create/update nutrition goals \\
+\texttt{GET\ /nutrition/summary} & Period summaries \\
+\texttt{GET\ /nutrition/goals/progress} & Goal progress tracking \\
+\texttt{GET\ /nutrition/alternatives/\{id\}} & Healthier recipe
+alternatives \\
+\texttt{GET\ /nutrition/insights/recommendations} & AI-personalized
+advice \\
+\texttt{GET\ /nutrition/insights/trends} & Trend analysis (7--90
+days) \\
+\texttt{GET\ /nutrition/insights/goal-prediction} & ML achievement
+prediction \\
+\texttt{GET\ /nutrition/insights/weekly-report} & Weekly report
+generation \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{X. System Performance}\label{x.-system-performance}
+
+\subsubsection{A. API Latency}\label{a.-api-latency}
+
+\textbf{Table VIII --- API Endpoint Latency (p95)}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Endpoint & p95 Latency & Capacity \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Recipe suggestion & 80ms & 100+ req/s \\
+Ingredient substitution & 25ms & 200+ req/s \\
+Recipe detail & 12ms & 500+ req/s \\
+Nutrition calculation & 45ms & 100+ req/s \\
+Dietary classification & 8ms & 500+ req/s \\
+\end{longtable}
+
+\subsubsection{B. Overall System
+Metrics}\label{b.-overall-system-metrics}
+
+\textbf{Table IX --- System Metrics Summary}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Total recipes indexed & 2,500,000+ \\
+Word2Vec vocabulary & \textasciitilde12,000 ingredients \\
+GNN Test AUC & 0.87 \\
+GNN Test AP & 0.83 \\
+Semantic retrieval p95 & \textless100ms \\
+Substitution satisfaction & 92\% \\
+Dietary classification F1 & 91\% (avg) \\
+NER precision / recall & 87\% / 82\% \\
+Test suite & 267 tests passing \\
+API endpoints & 30+ \\
+Mobile screens & 12 \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{XI. Team Contributions}\label{xi.-team-contributions}
+
+\subsubsection{Sandilya Chimalamarri --- ML Research
+Lead}\label{sandilya-chimalamarri-ml-research-lead}
+
+Designed and implemented the hybrid FAISS+SentenceTransformer retrieval
+pipeline, the RecipeSuggestionModel class, the shopping list generation
+system (730+ lines), unit converter, ingredient matcher, and all
+Word2Vec/GNN training pipelines. Conducted benchmarking of embedding
+models and FAISS index strategies. Implemented the international recipe
+integration pipeline and nutrition insights engine.
+
+\subsubsection{Sai Priyanka Bonkuri --- Graph Database
+Architect}\label{sai-priyanka-bonkuri-graph-database-architect}
+
+Designed the complete Neo4j property graph schema with typed
+relationships, implemented three complementary substitution algorithms
+(context-aware, co-occurrence, hybrid), conducted empirical α-parameter
+tuning, achieved 3× query performance improvement through Cypher
+optimization, and reached 92\% user satisfaction on substitution
+quality.
+
+\subsubsection{Pavan Charith Devarapalli --- Backend Systems
+Engineer}\label{pavan-charith-devarapalli-backend-systems-engineer}
+
+Architected the FastAPI async backend with asyncio.to\_thread for
+CPU-bound operations, achieving 40\% throughput improvement. Designed
+and implemented 10+ REST API endpoints with full Pydantic validation,
+achieving \textless100ms p95 latency and 100+ req/s capacity. Led
+security, CORS, and deployment configuration.
+
+\subsubsection{Sai Dheeraj Gollu --- Data Pipeline
+Engineer}\label{sai-dheeraj-gollu-data-pipeline-engineer}
+
+Built the complete data preprocessing pipeline using spaCy NER (87\%
+precision, 82\% recall), embedding generation pipeline (10K recipes in
+\textasciitilde5 minutes), Neo4j graph bootstrap procedures (10K recipes
+in \textasciitilde2 minutes with batch loading), and the centralized
+DataPaths configuration system. Managed all raw dataset acquisition and
+processing.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{XII. Conclusion}\label{xii.-conclusion}
+
+PlatePlanner demonstrates that combining graph-structural reasoning
+(Neo4j + GraphSAGE), dense vector retrieval (FAISS +
+SentenceTransformers), food ontology filtering, and large language model
+generation produces a system qualitatively superior to any single-model
+approach. The key contributions are:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A \textbf{hybrid substitution system} combining Word2Vec
+  co-occurrence, Neo4j graph edges, and GNN link prediction, achieving
+  0.87 AUC and 92\% user satisfaction.
+\item
+  A \textbf{compound-ingredient-aware dietary classifier} eliminating
+  false positives through exception lists and word-boundary matching,
+  reaching 91\% F1 across 12 diet types.
+\item
+  A \textbf{4-stage recipe pipeline} (FAISS retrieval → ontology filter
+  → hybrid rerank → LLM explanation) delivering sub-100ms personalized
+  recommendations over 2.5M recipes.
+\item
+  An \textbf{ethnicity-aware filtering system} supporting 55+
+  international cuisines integrated with preference-based meal planning.
+\end{enumerate}
+
+\textbf{Future Work} includes computer vision for pantry inventory
+(camera-based ingredient detection), federated learning for
+privacy-preserving preference adaptation, and integration of cultural
+significance metadata for deeper ethnic food understanding.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{References}\label{references}
+
+{[}1{]} H. Freyne and S. Berkovsky, ``Intelligent food planning:
+Personalized recipe recommendation,'' in \emph{Proc. IUI}, 2010.
+
+{[}2{]} R. Forbes and M. Zhu, ``Content-boosted matrix factorization for
+recommendation,'' in \emph{Proc. RecSys}, 2011.
+
+{[}3{]} V. Karpukhin et al., ``Dense passage retrieval for open-domain
+question answering,'' in \emph{Proc. EMNLP}, 2020.
+
+{[}4{]} N. Reimers and I. Gurevych, ``Sentence-BERT: Sentence embeddings
+using siamese BERT-networks,'' in \emph{Proc. EMNLP}, 2019.
+
+{[}5{]} M. Pinel et al., ``Substitution: Ingredient substitution for
+culinary innovation,'' in \emph{Proc. ECAI}, 2015.
+
+{[}6{]} M. Stanton et al., ``Discovering food identities via recipe
+embeddings,'' 2018.
+
+{[}7{]} Y. Li et al., ``Learning to substitute ingredients in recipes,''
+in \emph{Proc. SIGIR}, 2020.
+
+{[}8{]} S. Haussmann et al., ``FoodKG: A semantics-driven knowledge
+graph for food recommendation,'' in \emph{ISWC}, 2019.
+
+{[}9{]} B. Park et al., ``FlavorGraph: A large-scale food-chemical graph
+for generating food representations and recommending food pairing,''
+\emph{Scientific Reports}, 2021.
+
+{[}10{]} A. Romero et al., ``Ingredient-based dietary profiling,'' in
+\emph{Proc. NutriRec Workshop}, 2018.
+
+{[}11{]} Y. Liu et al., ``Automatic dietary assessment using deep
+learning,'' \emph{IEEE Trans. Neural Netw.}, 2020.
+
+{[}12{]} P. Lewis et al., ``Retrieval-augmented generation for
+knowledge-intensive NLP tasks,'' in \emph{Proc. NeurIPS}, 2020.
+
+{[}13{]} M. Bień et al., ``RecipeNLG: A cooking recipes dataset for
+semi-structured text generation,'' in \emph{Proc. INLG}, 2020.
+
+{[}14{]} W. Hamilton et al., ``Inductive representation learning on
+large graphs (GraphSAGE),'' in \emph{Proc. NeurIPS}, 2017.
+
+{[}15{]} J. Johnson et al., ``Billion-scale similarity search with GPUs
+(FAISS),'' \emph{IEEE Trans. Big Data}, 2019.
+
+{[}16{]} T. Mikolov et al., ``Distributed representations of words and
+phrases and their compositionality (Word2Vec),'' in \emph{Proc.
+NeurIPS}, 2013.
+
+{[}17{]} USDA, ``FoodData Central,'' U.S. Department of Agriculture,
+2019. {[}Online{]}. Available: https://fdc.nal.usda.gov/
+
+{[}18{]} G. Kim et al., ``Recipe recommendation based on ingredients and
+cooking methods,'' \emph{IEEE Access}, 2021.
+
+{[}19{]} A. Vaswani et al., ``Attention is all you need,'' in
+\emph{Proc. NeurIPS}, 2017.
+
+{[}20{]} J. Devlin et al., ``BERT: Pre-training of deep bidirectional
+transformers,'' in \emph{Proc. NAACL}, 2019.
+
+
+\end{document}

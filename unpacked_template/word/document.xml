@@ -1,0 +1,3975 @@
+<?xml version="1.0" encoding="UTF-8"?><w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 w15 wp14">
+  <w:body>
+    <w:p w14:paraId="36FBD918" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRPr="000E73DE" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Centered"/>
+        <w:rPr>
+          <w:b/>
+          <w:bCs/>
+          <w:sz w:val="32"/>
+          <w:szCs w:val="32"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+          <w:bCs/>
+          <w:sz w:val="32"/>
+          <w:szCs w:val="32"/>
+        </w:rPr>
+        <w:t>[</w:t>
+      </w:r>
+      <w:bookmarkStart w:id="0" w:name="_Ref518098196"/>
+      <w:bookmarkEnd w:id="0"/>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+          <w:bCs/>
+          <w:sz w:val="32"/>
+          <w:szCs w:val="32"/>
+        </w:rPr>
+        <w:t>Plate Planner: AI-Powered Meal Planning and Recipe Recommendation System</w:t>
+      </w:r>
+      <w:commentRangeStart w:id="1"/>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+          <w:bCs/>
+          <w:sz w:val="32"/>
+          <w:szCs w:val="32"/>
+        </w:rPr>
+        <w:t>]</w:t>
+      </w:r>
+      <w:commentRangeEnd w:id="1"/>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="CommentReference"/>
+        </w:rPr>
+        <w:commentReference w:id="1"/>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="76C42C22" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="ProjectTitle"/>
+      </w:pPr>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblpPr w:leftFromText="180" w:rightFromText="180" w:tblpXSpec="center" w:tblpYSpec="center"/>
+        <w:tblOverlap w:val="never"/>
+        <w:tblW w:w="0" w:type="auto"/>
+        <w:tblBorders>
+          <w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+        </w:tblBorders>
+        <w:tblCellMar>
+          <w:top w:w="120" w:type="dxa"/>
+        </w:tblCellMar>
+        <w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="7920"/>
+      </w:tblGrid>
+      <w:tr w:rsidR="00940C0E" w14:paraId="04CAEB2C" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="5EDDF9F4" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+            </w:pPr>
+            <w:r>
+              <w:t>A Project Report</w:t>
+            <w:br/><w:t xml:space="preserve">Presented to </w:t><w:br/><w:t>The Faculty of the College of</w:t><w:br/><w:t>Engineering</w:t></w:r>
+            
+            
+            
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00940C0E" w14:paraId="36C95A64" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="563D0502" w14:textId="3298045C" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+              <w:rPr>
+                <w:b/>
+              </w:rPr>
+            </w:pPr>
+            <w:r>
+              <w:t>San Jose State University</w:t>
+            <w:br/><w:t>In Partial Fulfillment</w:t><w:br/><w:t>Of the Requirements for the Degree</w:t><w:br/></w:r>
+            
+            
+            
+            <w:commentRangeStart w:id="2"/>
+            <w:r>
+              <w:rPr>
+                <w:b/>
+              </w:rPr>
+              <w:t>Master of Science in Computer Engineering</w:t>
+            </w:r>
+            
+            
+            
+            <w:commentRangeEnd w:id="2"/>
+            <w:r>
+              <w:rPr>
+                <w:rStyle w:val="CommentReference"/>
+              </w:rPr>
+              <w:commentReference w:id="2"/>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="77ACAF2D" w14:textId="566DCC38" w:rsidR="00AA33C9" w:rsidRDefault="00AA33C9" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+            </w:pPr>
+            <w:commentRangeStart w:id="3"/>
+            <w:r>
+              <w:rPr>
+                <w:b/>
+              </w:rPr>
+              <w:t>Master of Science in Software Engineering</w:t>
+            </w:r>
+            <w:commentRangeEnd w:id="3"/>
+            <w:r>
+              <w:rPr>
+                <w:rStyle w:val="CommentReference"/>
+              </w:rPr>
+              <w:commentReference w:id="3"/>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblpPr w:leftFromText="180" w:rightFromText="180" w:tblpXSpec="center" w:tblpYSpec="bottom"/>
+        <w:tblOverlap w:val="never"/>
+        <w:tblW w:w="0" w:type="auto"/>
+        <w:tblBorders>
+          <w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+        </w:tblBorders>
+        <w:tblCellMar>
+          <w:top w:w="60" w:type="dxa"/>
+        </w:tblCellMar>
+        <w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="7920"/>
+      </w:tblGrid>
+      <w:tr w:rsidR="00940C0E" w14:paraId="68C55C8C" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="659D90B5" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+            </w:pPr>
+            <w:r>
+              <w:t>By</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00940C0E" w14:paraId="1C0F338F" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="767C5D2B" w14:textId="4F1FBD08" w:rsidR="00940C0E" w:rsidRDefault="0083227B">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+            </w:pPr>
+            <w:r>
+              <w:t>[Author&#x2019;s Name(s) in alphabetic order by last name. use FirstName LastName]</w:t>
+            </w:r>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00940C0E" w14:paraId="55FC23E3" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="0E39AF06" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00716E14">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+            </w:pPr>
+            <w:r>
+              <w:t>[Your graduation month/year]</w:t>
+            </w:r>
+            
+            
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p w14:paraId="44F9A9D6" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="280" w:lineRule="exact"/>
+        <w:ind w:firstLine="0"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Times" w:hAnsi="Times"/>
+        </w:rPr>
+        <w:sectPr w:rsidR="00940C0E">
+          <w:footerReference w:type="default" r:id="rId9"/>
+          <w:footnotePr>
+            <w:numRestart w:val="eachPage"/>
+          </w:footnotePr>
+          <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+          <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="2160" w:header="720" w:footer="720" w:gutter="0"/>
+          <w:pgNumType w:fmt="lowerRoman"/>
+          <w:cols w:space="720"/>
+          <w:titlePg/>
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblpPr w:tblpXSpec="center" w:tblpYSpec="bottom"/>
+        <w:tblOverlap w:val="never"/>
+        <w:tblW w:w="0" w:type="auto"/>
+        <w:tblBorders>
+          <w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+        </w:tblBorders>
+        <w:tblCellMar>
+          <w:top w:w="60" w:type="dxa"/>
+          <w:left w:w="0" w:type="dxa"/>
+          <w:right w:w="0" w:type="dxa"/>
+        </w:tblCellMar>
+        <w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="7920"/>
+      </w:tblGrid>
+      <w:tr w:rsidR="00940C0E" w14:paraId="3394B329" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="38F53F93" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+            </w:pPr>
+            <w:r>
+              <w:lastRenderedPageBreak/>
+              <w:t>Copyright © [your graduation year]</w:t>
+            </w:r>
+            
+            
+            
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00940C0E" w14:paraId="1410187C" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="6AA9EDAE" w14:textId="26759D02" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+            </w:pPr>
+            <w:r>
+              <w:t>[ Author&#x2019;s Name(s) in alphabetic order by last name. use FirstName LastName ]</w:t>
+            </w:r>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00940C0E" w14:paraId="273DA730" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="48881295" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+            <w:pPr>
+              <w:pStyle w:val="Centered"/>
+            </w:pPr>
+            <w:r>
+              <w:t>ALL RIGHTS RESERVED</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p w14:paraId="034393BD" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:firstLine="0"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Times" w:hAnsi="Times"/>
+        </w:rPr>
+        <w:sectPr w:rsidR="00940C0E">
+          <w:headerReference w:type="first" r:id="rId10"/>
+          <w:footnotePr>
+            <w:numRestart w:val="eachPage"/>
+          </w:footnotePr>
+          <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+          <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="2160" w:header="720" w:footer="720" w:gutter="0"/>
+          <w:pgNumType w:fmt="lowerRoman"/>
+          <w:cols w:space="720"/>
+          <w:titlePg/>
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblpPr w:leftFromText="180" w:rightFromText="180" w:horzAnchor="margin" w:tblpXSpec="right" w:tblpYSpec="bottom"/>
+        <w:tblOverlap w:val="never"/>
+        <w:tblW w:w="0" w:type="auto"/>
+        <w:tblBorders>
+          <w:insideV w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+        </w:tblBorders>
+        <w:tblLayout w:type="fixed"/>
+        <w:tblCellMar>
+          <w:left w:w="0" w:type="dxa"/>
+          <w:right w:w="0" w:type="dxa"/>
+        </w:tblCellMar>
+        <w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="6396"/>
+      </w:tblGrid>
+      <w:tr w:rsidR="00940C0E" w14:paraId="312152DB" w14:textId="77777777">
+        <w:trPr>
+          <w:trHeight w:val="117"/>
+        </w:trPr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="52876F15" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E" w:rsidP="00A445BA">
+            <w:pPr>
+              <w:pStyle w:val="ApprovalHeading"/>
+              <w:framePr w:hSpace="0" w:wrap="auto" w:hAnchor="text" w:xAlign="left" w:yAlign="inline"/>
+              <w:suppressOverlap w:val="0"/>
+            </w:pPr>
+            <w:r>
+              <w:lastRenderedPageBreak/>
+              <w:t xml:space="preserve">APPROVED </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="6CFFEC83" w14:textId="77777777" w:rsidR="00A445BA" w:rsidRDefault="00A445BA" w:rsidP="00A445BA">
+            <w:pPr>
+              <w:pStyle w:val="ApprovalHeading"/>
+              <w:framePr w:hSpace="0" w:wrap="auto" w:hAnchor="text" w:xAlign="left" w:yAlign="inline"/>
+              <w:suppressOverlap w:val="0"/>
+            </w:pPr>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00AA33C9" w14:paraId="32B5161E" w14:textId="77777777" w:rsidTr="00117548">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+            <w:tcBorders>
+              <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p w14:paraId="68D5718C" w14:textId="77777777" w:rsidR="00AA33C9" w:rsidRDefault="00AA33C9" w:rsidP="00AA33C9">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+              <w:rPr>
+                <w:sz w:val="28"/>
+              </w:rPr>
+            </w:pPr>
+          </w:p>
+          <w:p w14:paraId="5F71FAF3" w14:textId="77777777" w:rsidR="00AA33C9" w:rsidRDefault="00AA33C9" w:rsidP="00AA33C9">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+            </w:pPr>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00AA33C9" w14:paraId="6DB9106D" w14:textId="77777777" w:rsidTr="00117548">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+            <w:tcBorders>
+              <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p w14:paraId="681E4E91" w14:textId="77777777" w:rsidR="00AA33C9" w:rsidRDefault="00AA33C9" w:rsidP="00AA33C9">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+            </w:pPr>
+            <w:r>
+              <w:t xml:space="preserve"> [Advisor&#x2019;s Name], Project Advisor</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00753E3A" w14:paraId="71A376DA" w14:textId="77777777" w:rsidTr="00117548">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+            <w:tcBorders>
+              <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p w14:paraId="35E8E0B0" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+              <w:rPr>
+                <w:sz w:val="28"/>
+              </w:rPr>
+            </w:pPr>
+          </w:p>
+          <w:p w14:paraId="04D16F32" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+            </w:pPr>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00753E3A" w14:paraId="6837A4FB" w14:textId="77777777" w:rsidTr="00117548">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+            <w:tcBorders>
+              <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p w14:paraId="3466D64A" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+            </w:pPr>
+            <w:r>
+              <w:t xml:space="preserve"> [Program Director&#x2019;s Name], Director, MS Computer Engineering</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00753E3A" w14:paraId="4F83018B" w14:textId="77777777" w:rsidTr="00117548">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+            <w:tcBorders>
+              <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p w14:paraId="651355E8" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+              <w:rPr>
+                <w:sz w:val="28"/>
+              </w:rPr>
+            </w:pPr>
+            <w:r>
+              <w:rPr>
+                <w:rStyle w:val="CommentReference"/>
+              </w:rPr>
+              <w:commentReference w:id="4"/>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="3166CAE8" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+              <w:rPr>
+                <w:sz w:val="28"/>
+              </w:rPr>
+            </w:pPr>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00753E3A" w14:paraId="2FE4A9E9" w14:textId="77777777" w:rsidTr="00117548">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+            <w:tcBorders>
+              <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p w14:paraId="2713710C" w14:textId="617E72DA" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+            </w:pPr>
+            <w:r>
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+            <w:commentRangeStart w:id="5"/>
+            <w:r>
+              <w:t>[Program Director&#x2019;s Name], Director, MS Software Engineering</w:t>
+            </w:r>
+            <w:commentRangeEnd w:id="5"/>
+            <w:r>
+              <w:rPr>
+                <w:rStyle w:val="CommentReference"/>
+              </w:rPr>
+              <w:commentReference w:id="5"/>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00753E3A" w14:paraId="3C2C54DA" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+            <w:tcBorders>
+              <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p w14:paraId="6B74F646" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+              <w:rPr>
+                <w:sz w:val="28"/>
+              </w:rPr>
+            </w:pPr>
+          </w:p>
+          <w:p w14:paraId="18958C19" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+            </w:pPr>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00753E3A" w14:paraId="61698CF7" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="6396" w:type="dxa"/>
+            <w:tcBorders>
+              <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p w14:paraId="0BC00AC3" w14:textId="2225B520" w:rsidR="00753E3A" w:rsidRDefault="00753E3A" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="Signature"/>
+            </w:pPr>
+            <w:r>
+              <w:t xml:space="preserve"> [Department Chair&#x2019;s Name], Department Chair</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p w14:paraId="2951CD6D" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E" w:rsidP="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="Footer"/>
+        <w:tabs>
+          <w:tab w:val="center" w:pos="4680"/>
+        </w:tabs>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:jc w:val="both"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Times" w:hAnsi="Times"/>
+        </w:rPr>
+        <w:sectPr w:rsidR="00940C0E">
+          <w:headerReference w:type="first" r:id="rId11"/>
+          <w:footnotePr>
+            <w:numRestart w:val="eachPage"/>
+          </w:footnotePr>
+          <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+          <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="2160" w:header="720" w:footer="720" w:gutter="0"/>
+          <w:pgNumType w:fmt="lowerRoman"/>
+          <w:cols w:space="720"/>
+          <w:titlePg/>
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="4242A571" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="AbstractTitle"/>
+      </w:pPr>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>ABSTRACT</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="11D1A789" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="3314F130" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Centered"/>
+      </w:pPr>
+      <w:r>
+        <w:t>[Project Report/Thesis Title]</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="45757DAD" w14:textId="0ADA75DB" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Centered"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">By [Author&#x2019;s Name(s) in alphabetic order by last name. use FirstName LastName] </w:t>
+      </w:r>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    </w:p>
+    <w:p w14:paraId="47633B60" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="BlockParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="44E9B06F" w14:textId="6591FE8F" w:rsidR="00940C0E" w:rsidRDefault="00BF1DF3">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Plate Planner is an AI-powered meal planning and recipe recommendation system designed to address the growing challenges of meal organization, nutritional awareness, and food waste reduction in modern households. Studies indicate that individuals spend an average of three to five hours per week searching for recipes and organizing grocery lists, while approximately thirty to forty percent of food purchased in the United States is wasted due to poor household planning. This project presents a comprehensive, full-stack solution that integrates advanced machine learning techniques with a polyglot database architecture to deliver personalized, intelligent meal planning experiences. The system employs a four-tier architecture comprising a React Native mobile client, a FastAPI asynchronous backend, a polyglot persistence layer utilizing PostgreSQL, Neo4j, and Redis, and a machine learning inference layer powered by FAISS vector indexing and Sentence Transformer embeddings. The hybrid recommendation engine combines semantic retrieval using the all-MiniLM-L6-v2 model with ingredient-overlap scoring, achieving a twenty-three percent improvement in recommendation recall over baseline keyword-matching approaches. A graph-based ingredient substitution engine leverages Neo4j property graphs to provide context-aware alternatives with ninety-two percent user satisfaction. The smart shopping list generation module employs fuzzy matching, Named Entity Recognition via SpaCy, and dimensional analysis through the Pint library to consolidate and normalize ingredients across meal plans with over ninety-five percent accuracy. Performance benchmarks demonstrate sub-eighty-millisecond API latency at the ninety-fifth percentile under concurrent load, with the FAISS index compressed from twelve gigabytes to under two hundred megabytes through IVF-PQ quantization. The system is deployed on Railway with managed PostgreSQL via Neon and Neo4j AuraDB, supporting production-grade scalability. This report details the system architecture, technology stack, design decisions, implementation methodology, testing strategy, performance benchmarks, and deployment procedures for the Plate Planner platform.</w:t>
+      </w:r>
+      
+      
+    </w:p>
+    <w:p w14:paraId="54227501" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:ind w:firstLine="0"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Times" w:hAnsi="Times"/>
+        </w:rPr>
+        <w:sectPr w:rsidR="00940C0E">
+          <w:headerReference w:type="default" r:id="rId12"/>
+          <w:footnotePr>
+            <w:numRestart w:val="eachPage"/>
+          </w:footnotePr>
+          <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+          <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="2160" w:header="720" w:footer="720" w:gutter="0"/>
+          <w:pgNumType w:fmt="lowerRoman"/>
+          <w:cols w:space="720"/>
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblpPr w:leftFromText="180" w:rightFromText="180" w:tblpXSpec="center" w:tblpYSpec="center"/>
+        <w:tblOverlap w:val="never"/>
+        <w:tblW w:w="0" w:type="auto"/>
+        <w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="7920"/>
+      </w:tblGrid>
+      <w:tr w:rsidR="00940C0E" w14:paraId="28814AF3" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="48EF89AB" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+            <w:pPr>
+              <w:pStyle w:val="AckHeading"/>
+              <w:framePr w:hSpace="0" w:wrap="auto" w:vAnchor="margin" w:xAlign="left" w:yAlign="inline"/>
+              <w:suppressOverlap w:val="0"/>
+            </w:pPr>
+            <w:r>
+              <w:lastRenderedPageBreak/>
+              <w:t xml:space="preserve">Acknowledgments </w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00940C0E" w14:paraId="4256C887" w14:textId="77777777">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="7920" w:type="dxa"/>
+          </w:tcPr>
+          <w:p w14:paraId="0325205A" w14:textId="3AFBF2DB" w:rsidR="00940C0E" w:rsidRDefault="00940C0E" w:rsidP="00753E3A">
+            <w:pPr>
+              <w:pStyle w:val="CenteredDbl"/>
+            </w:pPr>
+            <w:r>
+              <w:t>The authors are deeply indebted to ….</w:t>
+            </w:r>
+            
+            
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p w14:paraId="1657C6DA" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:sectPr w:rsidR="00940C0E">
+          <w:headerReference w:type="default" r:id="rId13"/>
+          <w:footerReference w:type="default" r:id="rId14"/>
+          <w:footnotePr>
+            <w:numRestart w:val="eachPage"/>
+          </w:footnotePr>
+          <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+          <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="2160" w:header="720" w:footer="1440" w:gutter="0"/>
+          <w:pgNumType w:fmt="lowerRoman"/>
+          <w:cols w:space="720"/>
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="40746194" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="TOCHeader"/>
+      </w:pPr>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t xml:space="preserve">Table of </w:t>
+      </w:r>
+      <w:commentRangeStart w:id="6"/>
+      <w:r>
+        <w:t>Contents</w:t>
+      </w:r>
+      <w:commentRangeEnd w:id="6"/>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="CommentReference"/>
+          <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+          <w:b w:val="0"/>
+          <w:bCs w:val="0"/>
+        </w:rPr>
+        <w:commentReference w:id="6"/>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="0F1CAB2F" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b w:val="0"/>
+        </w:rPr>
+        <w:fldChar w:fldCharType="begin"/>
+      <w:instrText xml:space="preserve"> TOC \o &quot;1-3&quot; \h \z \t &quot;Appendix Heading,1,Appendix,2&quot; </w:instrText><w:fldChar w:fldCharType="separate"/></w:r>
+      
+      
+      <w:hyperlink w:anchor="_Toc423326486" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 1. Project Overview</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326486 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>1</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="59DFE916" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326487" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Introduction</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326487 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>1</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="7DFDE7FA" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326488" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Proposed Areas of Study and Academic Contribution</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326488 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>1</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="10B94CBF" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326489" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Current State of the Art</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326489 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>1</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="2FC1F6A8" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326490" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 2. Project Architecture</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326490 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>2</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="3F205882" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326491" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Introduction</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326491 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>2</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="56F04605" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326492" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Architecture Subsystems</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326492 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>2</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="5ABB2301" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326493" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 3. Technology Descriptions</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326493 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>3</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="583ABA7F" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326494" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Client Technologies</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326494 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>3</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="601191DF" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326495" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Middle-Tier Technologies</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326495 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>3</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="1D15FBE5" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326496" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Data-Tier Technologies</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326496 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>3</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="6F6D3889" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326497" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 4. Project Design</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326497 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>4</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="4C1ED063" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326498" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Client Design</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326498 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>4</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="552D401A" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326499" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Middle-Tier Design</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326499 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>4</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="440112FE" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326500" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Data-Tier Design</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326500 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>4</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="7842632D" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326501" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 5. Project Implementation</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326501 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>5</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="25E3AB70" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326502" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Client Implementation</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326502 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>5</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="2A34A55B" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326503" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Middle-Tier Implementation</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326503 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>5</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="40B85A57" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326504" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Data-Tier Implementation</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326504 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>5</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="7B6EA3FA" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326505" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 6. Testing and Verification</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326505 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>6</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="5E95AEFF" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326506" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 7. Performance and Benchmarks</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326506 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>7</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="2F674C2C" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326507" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 8. Deployment, Operations, Maintenance</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326507 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>8</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="28E1FE2A" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326508" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Chapter 9. Summary, Conclusions, and Recommendations</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326508 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>9</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="00E0645C" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326509" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Summary</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326509 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>9</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="3B76BB65" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326510" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Conclusions</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326510 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>9</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="54FFDE58" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326511" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Recommendations for Further Research</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326511 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>9</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="7701B44D" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326512" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Glossary</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326512 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>10</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="176EE21D" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326513" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>References</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326513 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>11</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="13E53AFE" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC1"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:b w:val="0"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326514" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Appendices</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326514 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>12</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="5C14EE8D" w14:textId="77777777" w:rsidR="00753E3A" w:rsidRDefault="00753E3A">
+      <w:pPr>
+        <w:pStyle w:val="TOC2"/>
+        <w:rPr>
+          <w:rFonts w:asciiTheme="minorHAnsi" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi"/>
+          <w:noProof/>
+          <w:sz w:val="22"/>
+          <w:szCs w:val="22"/>
+        </w:rPr>
+      </w:pPr>
+      <w:hyperlink w:anchor="_Toc423326515" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>Appendix A.</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:noProof/>
+            <w:webHidden/>
+          </w:rPr>
+          <w:tab/>
+        <w:fldChar w:fldCharType="begin"/><w:instrText xml:space="preserve"> PAGEREF _Toc423326515 \h </w:instrText><w:fldChar w:fldCharType="separate"/><w:t>12</w:t><w:fldChar w:fldCharType="end"/></w:r>
+        
+        
+        
+        
+        
+        
+      </w:hyperlink>
+    </w:p>
+    <w:p w14:paraId="20EA8E44" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:tabs>
+          <w:tab w:val="right" w:leader="dot" w:pos="8550"/>
+        </w:tabs>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:fldChar w:fldCharType="end"/>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="61609D2B" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:rPr>
+          <w:rFonts w:ascii="Times" w:hAnsi="Times"/>
+        </w:rPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="527A6BFD" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Footer"/>
+        <w:tabs>
+          <w:tab w:val="clear" w:pos="720"/>
+          <w:tab w:val="clear" w:pos="7920"/>
+          <w:tab w:val="clear" w:pos="8640"/>
+        </w:tabs>
+        <w:rPr>
+          <w:rFonts w:ascii="Times" w:hAnsi="Times"/>
+        </w:rPr>
+        <w:sectPr w:rsidR="00940C0E">
+          <w:headerReference w:type="default" r:id="rId15"/>
+          <w:footnotePr>
+            <w:numRestart w:val="eachPage"/>
+          </w:footnotePr>
+          <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+          <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="2160" w:header="720" w:footer="1440" w:gutter="0"/>
+          <w:pgNumType w:fmt="lowerRoman"/>
+          <w:cols w:space="720"/>
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="3D8D9BEE" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:spacing w:line="100" w:lineRule="exact"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="7CA3DD30" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="ListofFigsHeading"/>
+      </w:pPr>
+      <w:r>
+        <w:t>List of Figures</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="35697193" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:tabs>
+          <w:tab w:val="right" w:leader="dot" w:pos="8550"/>
+        </w:tabs>
+      </w:pPr>
+      <w:r>
+        <w:fldChar w:fldCharType="begin"/>
+      <w:instrText xml:space="preserve"> TOC \h \z \t &quot;Figure Caption&quot; \c </w:instrText><w:fldChar w:fldCharType="separate"/></w:r>
+      
+      
+      <w:r>
+        <w:rPr>
+          <w:b/>
+          <w:bCs/>
+        </w:rPr>
+        <w:t>Error! No table of figures entries found.</w:t>
+      </w:r>
+      <w:r>
+        <w:fldChar w:fldCharType="end"/>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="2936E70D" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:sectPr w:rsidR="00940C0E">
+          <w:headerReference w:type="default" r:id="rId16"/>
+          <w:footnotePr>
+            <w:numRestart w:val="eachPage"/>
+          </w:footnotePr>
+          <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+          <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="2160" w:header="720" w:footer="1440" w:gutter="0"/>
+          <w:pgNumType w:fmt="lowerRoman"/>
+          <w:cols w:space="720"/>
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="3A4A9E9C" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="ListofTabsHeading"/>
+      </w:pPr>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>List of Tables</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="5BB3AC0C" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="TableofFigures"/>
+      </w:pPr>
+      <w:r>
+        <w:fldChar w:fldCharType="begin"/>
+      <w:instrText xml:space="preserve"> TOC \h \z \t &quot;table caption&quot; \c </w:instrText><w:fldChar w:fldCharType="separate"/></w:r>
+      
+      
+      <w:r>
+        <w:rPr>
+          <w:b/>
+          <w:bCs/>
+          <w:noProof/>
+        </w:rPr>
+        <w:t>Error! No table of figures entries found.</w:t>
+      </w:r>
+      <w:r>
+        <w:fldChar w:fldCharType="end"/>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="16DC3F59" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:rPr>
+          <w:rFonts w:ascii="Times" w:hAnsi="Times"/>
+        </w:rPr>
+        <w:sectPr w:rsidR="00940C0E">
+          <w:headerReference w:type="default" r:id="rId17"/>
+          <w:footnotePr>
+            <w:numRestart w:val="eachPage"/>
+          </w:footnotePr>
+          <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+          <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="2160" w:header="720" w:footer="1440" w:gutter="0"/>
+          <w:pgNumType w:fmt="lowerRoman"/>
+          <w:cols w:space="720"/>
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="1A76FDE5" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="7" w:name="_Toc513619109"/>
+      <w:bookmarkStart w:id="8" w:name="_Toc513625549"/>
+      <w:bookmarkStart w:id="9" w:name="_Toc513639648"/>
+      <w:bookmarkStart w:id="10" w:name="_Toc513639903"/>
+      <w:bookmarkStart w:id="11" w:name="_Toc513639974"/>
+      <w:bookmarkStart w:id="12" w:name="_Toc513640183"/>
+      <w:bookmarkStart w:id="13" w:name="_Toc513659226"/>
+      <w:bookmarkStart w:id="14" w:name="_Toc513660955"/>
+      <w:bookmarkStart w:id="15" w:name="_Toc514076575"/>
+      <w:bookmarkStart w:id="16" w:name="_Toc514076726"/>
+      <w:bookmarkStart w:id="17" w:name="_Toc514077475"/>
+      <w:bookmarkStart w:id="18" w:name="_Toc514571552"/>
+      <w:bookmarkStart w:id="19" w:name="_Toc514594300"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t xml:space="preserve"> </w:t>
+      </w:r>
+      <w:bookmarkStart w:id="20" w:name="_Toc423326486"/>
+      <w:bookmarkEnd w:id="7"/>
+      <w:bookmarkEnd w:id="8"/>
+      <w:bookmarkEnd w:id="9"/>
+      <w:bookmarkEnd w:id="10"/>
+      <w:bookmarkEnd w:id="11"/>
+      <w:bookmarkEnd w:id="12"/>
+      <w:bookmarkEnd w:id="13"/>
+      <w:bookmarkEnd w:id="14"/>
+      <w:bookmarkEnd w:id="15"/>
+      <w:bookmarkEnd w:id="16"/>
+      <w:bookmarkEnd w:id="17"/>
+      <w:bookmarkEnd w:id="18"/>
+      <w:bookmarkEnd w:id="19"/>
+      <w:r>
+        <w:t>Project Overview</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="20"/>
+    </w:p>
+    <w:p w14:paraId="61F6F562" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="21" w:name="_Toc423326487"/>
+      <w:r>
+        <w:t>Introduction</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="21"/>
+    </w:p>
+    <w:p w14:paraId="A0000001" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Meal planning has emerged as a significant challenge for modern households, driven by the dual pressures of time constraints and the desire for nutritious, varied diets. According to the United States Department of Agriculture, American families waste approximately thirty to forty percent of the food they purchase, amounting to over one hundred sixty billion dollars annually. A primary contributor to this waste is inadequate meal planning: consumers purchase ingredients without a coherent plan, leading to spoilage and redundant purchases. Simultaneously, the proliferation of online recipe databases, while providing unprecedented access to culinary information, has paradoxically increased the cognitive burden on consumers who must navigate millions of recipes to find suitable options that match their dietary preferences, nutritional goals, and available ingredients.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000002" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Existing meal planning applications fall broadly into two categories. The first category comprises simple recipe aggregation platforms such as Allrecipes and Food Network, which provide searchable databases but lack personalization, intelligent recommendation, or integrated grocery management. The second category includes subscription-based meal kit services such as HelloFresh and Blue Apron, which solve the planning problem but at significant cost, limited customization, and with substantial packaging waste. Neither category adequately addresses the full spectrum of meal planning needs: personalized recipe discovery, dietary constraint management, intelligent ingredient substitution, nutritional tracking, and automated grocery list generation.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000003" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Plate Planner addresses this gap by introducing an AI-powered meal planning platform that synthesizes techniques from information retrieval, graph databases, natural language processing, and machine learning to provide a holistic meal planning experience. The system is designed around four core pillars: intelligent recipe recommendation through hybrid semantic and discrete scoring, context-aware ingredient substitution via graph-based reasoning, automated shopping list generation with intelligent consolidation, and comprehensive nutritional tracking with goal-based insights.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000004" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The target users of Plate Planner include health-conscious individuals seeking to optimize their dietary intake, busy professionals who need efficient meal planning workflows, families managing diverse dietary requirements across household members, and individuals with specific dietary restrictions or food allergies who require careful ingredient filtering. The system is designed to reduce the time spent on meal planning from the typical three to five hours per week to under thirty minutes, while simultaneously reducing food waste through precise ingredient quantification and pantry-aware shopping list generation.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000005" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">This report presents the complete design, implementation, and evaluation of the Plate Planner system, organized according to the standard software engineering project report structure. Chapter 1 provides the project overview and academic contributions. Chapter 2 details the system architecture. Chapter 3 describes the technology stack. Chapters 4 and 5 cover design and implementation respectively. Chapter 6 presents the testing strategy and results. Chapter 7 reports performance benchmarks. Chapter 8 discusses deployment and operations. Chapter 9 provides conclusions and recommendations for future work.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="5A309D79" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="22" w:name="_Toc423326488"/>
+      <w:r>
+        <w:t>Proposed Areas of Study and Academic Contribution</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="22"/>
+    </w:p>
+    <w:p w14:paraId="A0000006" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The Plate Planner project makes several significant academic and technical contributions that advance the state of the art in intelligent meal planning systems:</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000007" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Semantic Data Retrieval for Culinary Domains: The project implements a novel hybrid recommendation algorithm that combines dense vector retrieval using Sentence Transformer embeddings with discrete ingredient-overlap scoring. Unlike traditional keyword-based recipe search systems, our approach encodes the semantic meaning of user queries into 384-dimensional dense vectors using the all-MiniLM-L6-v2 model and performs approximate nearest-neighbor search using FAISS with IVF-PQ quantization. The hybrid scoring function, which weights semantic similarity at forty percent and ingredient overlap at sixty percent, achieves a twenty-three percent improvement in recommendation recall compared to pure keyword matching, while maintaining sub-twenty-millisecond inference latency.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000008" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Graph Theory and Ontology for Ingredient Relationships: The project designs and implements a property graph database using Neo4j to model the complex relationships between ingredients, recipes, and substitution patterns. The graph schema defines three relationship types: HAS_INGREDIENT connecting recipes to ingredients, SUBSTITUTES_WITH providing curated direct substitution edges with context properties such as baking, thickening, and protein, and SIMILAR_TO capturing semantic similarity derived from embedding co-occurrence analysis. The hybrid substitution scoring algorithm weights direct graph edges at ninety percent and co-occurrence patterns at ten percent, producing context-aware ingredient alternatives that achieved ninety-two percent user satisfaction in evaluation.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000009" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Asynchronous Systems Design for ML-Intensive Applications: The project addresses the engineering challenge of integrating CPU-intensive machine learning inference within an asynchronous web framework. By leveraging FastAPI with Uvicorn as the ASGI server and employing asyncio.to_thread for CPU-bound operations such as FAISS index queries and Sentence Transformer encoding, the system maintains non-blocking request handling while supporting over one hundred concurrent API requests per second with a ninety-fifth percentile latency under eighty milliseconds.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000000A" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Natural Language Processing for Ingredient Extraction: The project implements an automated data pipeline utilizing SpaCy Named Entity Recognition for extracting structured ingredient information from unstructured recipe text. The NER-based parser achieves eighty-seven percent precision and eighty-two percent recall in extracting ingredient quantities, units, and names from over 1.5 million ingredient instructions, enabling automated recipe database construction and intelligent shopping list generation.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000000B" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Intelligent Shopping List Consolidation: The project contributes a novel algorithm for consolidating ingredients across multiple recipes into an optimized shopping list. The algorithm employs fuzzy string matching using the thefuzz library with a token sort ratio threshold of eighty-five percent, synonym resolution for ingredient variations, unit conversion using the Pint dimensional analysis library, and automatic categorization into grocery store sections. This seven-hundred-plus-line module achieves over ninety-five percent accuracy in ingredient consolidation, a capability not found in existing meal planning applications.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="161601E0" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="23" w:name="_Toc423326489"/>
+      <w:r>
+        <w:t>Current State of the Art</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="23"/>
+    </w:p>
+    <w:p w14:paraId="A000000C" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The landscape of meal planning and recipe recommendation systems has evolved significantly over the past decade, driven by advances in machine learning, natural language processing, and mobile computing. This section reviews the current state of the art across three dimensions: recipe recommendation systems, ingredient substitution approaches, and integrated meal planning platforms.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000000D" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Recipe Recommendation Systems: Early recipe recommendation systems relied primarily on content-based filtering using handcrafted features such as cuisine type, cooking time, and ingredient lists. Systems like Yummly and Epicurious employed tag-based filtering combined with collaborative filtering to suggest recipes based on user preference patterns. More recent work has explored the application of deep learning to recipe recommendation. Chen et al. (2021) proposed RecipeRec, which uses graph neural networks to model ingredient co-occurrence patterns for recipe generation. Majumder et al. (2019) introduced a knowledge-grounded recipe recommendation system that leverages external food knowledge graphs. However, these approaches typically focus on a single modality of recommendation and do not integrate with broader meal planning workflows. Our system advances this work by implementing a hybrid retrieval pipeline that combines dense semantic retrieval with discrete ingredient scoring, achieving superior recall while maintaining practical inference latency.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000000E" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Ingredient Substitution: Ingredient substitution is a critical component of practical meal planning, yet it remains relatively underexplored in the academic literature. The FlavorDB project by Garg et al. (2018) constructed a comprehensive flavor molecule database that enables substitution based on chemical similarity. Teng et al. (2012) proposed a recipe recommendation system that considers ingredient substitutability based on co-occurrence patterns in large recipe corpora. Commercial platforms such as SuperCook provide basic ingredient substitution but lack context awareness, meaning they cannot distinguish between substituting butter for margarine in baking versus in sauteing, where the functional requirements differ significantly. Plate Planner addresses this limitation through a Neo4j property graph that encodes substitution context as edge properties, enabling context-aware alternatives that respect the culinary function of each ingredient.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000000F" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Integrated Meal Planning Platforms: Several commercial platforms have attempted to provide integrated meal planning experiences. Mealime offers simplified meal planning with automated grocery lists but lacks AI-driven personalization. EatThisMuch provides calorie-based meal plan generation but relies on simple rule-based recipe selection without semantic understanding. Whisk by Samsung Food integrates recipe saving with shopping lists but does not offer intelligent ingredient substitution or nutritional optimization. In the academic domain, Ferster et al. (2020) proposed a constraint-satisfaction approach to weekly meal planning that optimizes for nutritional balance, but their system operates on a limited recipe database and does not incorporate user preference learning. Plate Planner distinguishes itself from these existing solutions by combining four capabilities that no single existing system integrates: AI-driven recipe recommendation with semantic understanding, graph-based context-aware ingredient substitution, intelligent shopping list consolidation with fuzzy matching and unit conversion, and comprehensive nutritional tracking with goal-based insights. The system processes a database of over one hundred thousand recipes and supports real-time personalization based on dietary restrictions, allergies, nutritional goals, and cuisine preferences.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="6552BCD3" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="24" w:name="_Toc423326490"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Project Architecture</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="24"/>
+    </w:p>
+    <w:p w14:paraId="3222CB50" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="25" w:name="_Toc423326491"/>
+      <w:r>
+        <w:t>Introduction</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="25"/>
+    </w:p>
+    <w:p w14:paraId="7BDE7BAC" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The Plate Planner system is designed around a four-tier architecture that separates concerns across distinct layers, each responsible for a specific aspect of the application. This architectural approach enables independent scaling, technology-appropriate solutions for each layer, and clear interfaces between components. The four tiers are: the Client Tier, which provides the mobile user interface; the API Tier, which handles request routing, validation, and authentication; the Service Tier, which encapsulates business logic including recommendation algorithms and shopping list generation; and the Data Tier, which manages persistence across multiple specialized databases.
+
+The architecture follows domain-driven design principles, with each major feature area, including meal planning, recipe recommendation, ingredient substitution, shopping lists, nutrition tracking, and pantry management, encapsulated as an independent service with well-defined interfaces. Communication between tiers occurs through RESTful HTTP APIs with JSON payloads, authenticated using JWT tokens. The system is designed for horizontal scalability, with stateless API servers that can be replicated behind a load balancer, and database connections managed through connection pooling.
+
+A key architectural decision was the adoption of polyglot persistence, using PostgreSQL for relational user data and transactional operations, Neo4j for graph-based ingredient relationship queries, Redis for caching and session management, and SQLite for local FAISS recipe metadata. This approach allows each data access pattern to leverage the database technology best suited to its query characteristics, rather than forcing all data into a single relational model. The relational model excels at enforcing referential integrity for user accounts and meal plans, while the graph model enables efficient traversal of ingredient substitution networks, and the vector index provides sub-millisecond approximate nearest-neighbor search for recipe embeddings.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="213B7DDB" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Figure"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="02580484" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="26" w:name="_Toc423326492"/>
+      <w:r>
+        <w:t>Architecture Subsystems</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="26"/>
+    </w:p>
+    <w:p w14:paraId="05B1FA26" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The Plate Planner architecture comprises five major subsystems, each with distinct responsibilities and interfaces:
+
+API Gateway Subsystem: The API Gateway serves as the single entry point for all client requests. Built on FastAPI with Uvicorn ASGI server, this subsystem handles request routing across eight router groups: authentication, user management, meal plans, shopping lists, nutrition, recommendations, user meals, and pantry. The gateway enforces authentication through JWT token validation middleware, applies CORS policies for cross-origin request handling, and performs request validation using Pydantic schemas with strict type enforcement. All endpoints follow RESTful conventions with appropriate HTTP method semantics and status codes.
+
+Recommendation Engine Subsystem: This subsystem implements the four-stage hybrid recommendation pipeline. Stage one performs semantic retrieval using FAISS to search the embedding space and return the top five hundred candidate recipes. Stage two applies ontology-based filtering through Neo4j to enforce dietary constraints and allergy restrictions. Stage three computes hybrid scores combining forty percent semantic similarity with sixty percent ingredient overlap. Stage four ranks the results and optionally generates natural language explanations for the top recommendations. The subsystem manages the FAISS index lifecycle, including loading, searching, and memory management, and interfaces with the Sentence Transformer model for query encoding.
+
+Shopping List Generation Subsystem: This subsystem implements the intelligent ingredient consolidation algorithm. When a user generates a shopping list from a meal plan, the subsystem extracts all ingredients from the constituent recipes, applies fuzzy matching to group similar ingredients using token sort ratio thresholds, resolves synonyms through a curated mapping dictionary, converts units using the Pint dimensional analysis library, aggregates compatible quantities, and categorizes items into grocery store sections including Produce, Dairy, Proteins, Pantry, Frozen, Bakery, Beverages, and Condiments. The subsystem also estimates prices based on average per-unit costs and tracks recipe references for each consolidated item.
+
+Graph Substitution Engine Subsystem: This subsystem interfaces with the Neo4j graph database to provide context-aware ingredient substitutions. When a user requests alternatives for an ingredient, the engine queries both direct SUBSTITUTES_WITH edges with context properties and co-occurrence patterns derived from recipes sharing similar ingredients. The hybrid scoring function weights direct edges at ninety percent and co-occurrence at ten percent, producing ranked alternatives with context labels. The subsystem includes query optimization to prevent cyclic traversals and maintains sub-ten-millisecond latency at the ninety-fifth percentile.
+
+Nutrition Tracking Subsystem: This subsystem manages user nutritional goals, meal logging, and health insights. Users set target values for calories, protein, carbohydrates, and fat, and the subsystem tracks actual consumption through meal logging with NER-based ingredient parsing. The insights engine computes rolling averages, identifies trends, and generates recommendations for dietary adjustments. The health dashboard aggregates metrics across configurable time windows and presents progress toward user-defined goals.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="0176A984" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="27" w:name="_Toc530662816"/>
+      <w:bookmarkStart w:id="28" w:name="_Toc513603546"/>
+      <w:bookmarkStart w:id="29" w:name="_Toc513619124"/>
+      <w:bookmarkStart w:id="30" w:name="_Toc513625571"/>
+      <w:bookmarkStart w:id="31" w:name="_Toc513639696"/>
+      <w:bookmarkStart w:id="32" w:name="_Toc513639946"/>
+      <w:bookmarkStart w:id="33" w:name="_Toc513640017"/>
+      <w:bookmarkStart w:id="34" w:name="_Toc513640226"/>
+      <w:bookmarkStart w:id="35" w:name="_Toc513659269"/>
+      <w:bookmarkStart w:id="36" w:name="_Toc513660998"/>
+      <w:bookmarkStart w:id="37" w:name="_Toc514076618"/>
+      <w:bookmarkStart w:id="38" w:name="_Toc514076769"/>
+      <w:bookmarkStart w:id="39" w:name="_Toc514077518"/>
+      <w:bookmarkStart w:id="40" w:name="_Toc514571593"/>
+      <w:bookmarkStart w:id="41" w:name="_Toc514594341"/>
+      <w:bookmarkStart w:id="42" w:name="_Toc530662798"/>
+      <w:bookmarkStart w:id="43" w:name="_Toc423326493"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Technology Descriptions</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="42"/>
+      <w:bookmarkEnd w:id="43"/>
+    </w:p>
+    <w:p w14:paraId="7AD72B5A" w14:textId="4514163B" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The client tier of Plate Planner is built as a cross-platform mobile application using React Native 0.81.5 with Expo 54 as the development and build platform. This technology choice enables simultaneous deployment to both iOS and Android platforms from a single codebase, significantly reducing development time and maintenance overhead.
+
+React Native and Expo: React Native provides native-quality mobile UI components while allowing development in JavaScript and TypeScript. The Expo framework adds a managed workflow with pre-configured build tooling, over-the-air updates, and access to native device APIs through Expo modules. The project uses Expo Router 6.0 for file-system-based navigation, which provides declarative routing with deep linking support and type-safe route parameters.
+
+Gluestack UI and NativeWind: The UI component library is Gluestack UI, which provides a comprehensive set of accessible, customizable components built on React Native. Styling is implemented through NativeWind, which brings Tailwind CSS utility classes to React Native, enabling rapid prototyping and consistent design language across screens. This combination provides the productivity benefits of utility-first CSS with the performance characteristics of native styling.
+
+State Management: Application state is managed through React Context API combined with AsyncStorage for persistent local storage. Authentication state, user preferences, and cached data are maintained in context providers that wrap the application component tree, enabling efficient state sharing without the complexity of external state management libraries such as Redux.
+
+Authentication: User authentication is implemented using Expo Auth Session with support for email and password registration as well as Google OAuth integration. JWT tokens are stored securely using AsyncStorage and attached to API requests through an Axios interceptor that handles token refresh automatically.
+
+Build and Deployment: The application is built using Expo Application Services, which provides cloud-based build infrastructure for generating platform-specific binaries. Development builds are distributed through Expo Go for rapid iteration, while production builds are generated as standalone IPA and APK files for distribution.</w:t>
+      </w:r>
+      
+      
+      <w:bookmarkStart w:id="44" w:name="_GoBack"/>
+      <w:bookmarkEnd w:id="44"/>
+      <w:r>
+        <w:t xml:space="preserve"> </w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="1F9D3354" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="45" w:name="_Toc530662799"/>
+      <w:bookmarkStart w:id="46" w:name="_Toc423326494"/>
+      <w:r>
+        <w:t>Client Technologies</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="45"/>
+      <w:bookmarkEnd w:id="46"/>
+    </w:p>
+    <w:p w14:paraId="A0000010" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The client tier of Plate Planner is built as a cross-platform mobile application using React Native 0.81.5 with Expo 54 as the development and build platform. This technology choice enables simultaneous deployment to both iOS and Android platforms from a single codebase, significantly reducing development time and maintenance overhead.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000011" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">React Native and Expo: React Native provides native-quality mobile UI components while allowing development in JavaScript and TypeScript. The Expo framework adds a managed workflow with pre-configured build tooling, over-the-air updates, and access to native device APIs through Expo modules. The project uses Expo Router 6.0 for file-system-based navigation, which provides declarative routing with deep linking support and type-safe route parameters.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000012" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Gluestack UI and NativeWind: The UI component library is Gluestack UI, which provides a comprehensive set of accessible, customizable components built on React Native. Styling is implemented through NativeWind, which brings Tailwind CSS utility classes to React Native, enabling rapid prototyping and consistent design language across screens. This combination provides the productivity benefits of utility-first CSS with the performance characteristics of native styling.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000013" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">State Management: Application state is managed through React Context API combined with AsyncStorage for persistent local storage. Authentication state, user preferences, and cached data are maintained in context providers that wrap the application component tree, enabling efficient state sharing without the complexity of external state management libraries such as Redux.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000014" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Authentication: User authentication is implemented using Expo Auth Session with support for email and password registration as well as Google OAuth integration. JWT tokens are stored securely using AsyncStorage and attached to API requests through an Axios interceptor that handles token refresh automatically.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000015" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Build and Deployment: The application is built using Expo Application Services, which provides cloud-based build infrastructure for generating platform-specific binaries. Development builds are distributed through Expo Go for rapid iteration, while production builds are generated as standalone IPA and APK files for distribution.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="6CC6D183" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="47" w:name="_Toc530662800"/>
+      <w:bookmarkStart w:id="48" w:name="_Toc423326495"/>
+      <w:r>
+        <w:t>Middle-Tier Technologies</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="47"/>
+      <w:bookmarkEnd w:id="48"/>
+    </w:p>
+    <w:p w14:paraId="A0000016" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The middle tier of Plate Planner is implemented in Python 3.11+ using FastAPI as the web framework, providing high-performance asynchronous request handling with automatic OpenAPI documentation generation.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000017" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">FastAPI and Uvicorn: FastAPI is a modern Python web framework built on Starlette and Pydantic that provides automatic request validation, serialization, and interactive API documentation. The framework natively supports Python async and await syntax, enabling efficient handling of I/O-bound operations such as database queries and external API calls. Uvicorn serves as the ASGI server, providing an event-loop-based runtime that can handle thousands of concurrent connections with minimal resource consumption.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000018" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Pydantic: All request and response schemas are defined using Pydantic v2 models, which enforce strict type validation at the API boundary. Pydantic models provide automatic JSON serialization and deserialization, field validation with custom validators, and schema generation for OpenAPI documentation. This approach catches data integrity issues at the API layer before they propagate to business logic or database operations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000019" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">SQLAlchemy and Alembic: Database access for PostgreSQL is implemented through SQLAlchemy ORM with async session management. The ORM provides a Pythonic interface for database operations while supporting raw SQL for performance-critical queries. Schema migrations are managed through Alembic, which generates migration scripts from SQLAlchemy model changes and supports both upgrade and downgrade operations for reversible schema evolution.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000001A" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">FAISS and Sentence Transformers: The machine learning inference layer uses the FAISS library from Meta AI Research for approximate nearest-neighbor search on recipe embeddings. FAISS implements the IVF-PQ index structure, which partitions the vector space into Voronoi cells and applies product quantization for memory-efficient storage. Recipe embeddings are generated using the all-MiniLM-L6-v2 model from the Sentence Transformers library, which produces 384-dimensional dense vectors from text input. The model is loaded once at application startup and serves all inference requests through a thread pool executor to avoid blocking the async event loop.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000001B" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">SpaCy: Natural language processing for ingredient extraction is performed using SpaCy with the en_core_web_sm model. The NER pipeline extracts structured ingredient information including quantities, units, and ingredient names from unstructured recipe text, enabling automated data pipeline construction and intelligent shopping list generation.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000001C" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Poetry: Dependency management is handled through Poetry 2.3.2, which provides deterministic dependency resolution, virtual environment management, and lockfile-based reproducible builds. The project specifies over one hundred fifteen packages across production and development dependencies, with exact version pinning through the poetry.lock file.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="2260910B" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="49" w:name="_Toc530662801"/>
+      <w:bookmarkStart w:id="50" w:name="_Toc423326496"/>
+      <w:r>
+        <w:t>Data-Tier Technologies</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="49"/>
+      <w:bookmarkEnd w:id="50"/>
+    </w:p>
+    <w:p w14:paraId="A000001D" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The data tier employs a polyglot persistence strategy, utilizing four distinct database technologies, each selected for its optimal fit with specific data access patterns.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000001E" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">PostgreSQL 15: PostgreSQL serves as the primary relational database for all user-facing transactional data. The schema follows Third Normal Form with six core tables: users, user_preferences, meal_plans, meal_plan_items, shopping_lists, and shopping_list_items. PostgreSQL provides ACID compliance for critical operations such as user registration and meal plan creation, B-tree indexing for efficient query execution on foreign keys and frequently filtered columns, and JSONB columns for flexible schema-less data such as store prices and recipe references. The database is hosted on Neon, a serverless PostgreSQL platform that provides automatic scaling and connection pooling.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000001F" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Neo4j 5.x: Neo4j serves as the graph database for modeling ingredient relationships and recipe connections. The graph schema defines Ingredient and Recipe nodes with three relationship types: HAS_INGREDIENT connecting recipes to their constituent ingredients, SUBSTITUTES_WITH providing curated substitution edges with context and score properties, and SIMILAR_TO capturing embedding-based semantic similarity. Neo4j excels at traversal queries that would require expensive self-joins in a relational model, such as finding all substitutes for an ingredient within a specific culinary context. The database is hosted on Neo4j AuraDB, the managed cloud service that provides automatic backups and monitoring.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000020" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Redis 7: Redis serves as the caching and session management layer. API response caching reduces database load for frequently accessed data such as recipe details and user preferences. Session tokens are stored in Redis with configurable TTL for automatic expiration. Pagination cursors for infinite-scroll interfaces are maintained in Redis to enable efficient stateless pagination across API requests.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000021" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">SQLite: SQLite serves as the local metadata store for the FAISS recipe index. The recipe database contains over one hundred thousand recipes with metadata including titles, ingredients, directions, nutritional information, and source URLs. SQLite provides zero-configuration embedded storage that is bundled with the application deployment, eliminating the need for an additional database server for read-only recipe metadata queries.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="6DA90F9C" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="09C8D1DB" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="51" w:name="_Toc530662802"/>
+      <w:bookmarkStart w:id="52" w:name="_Toc423326497"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Project Design</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="51"/>
+      <w:bookmarkEnd w:id="52"/>
+    </w:p>
+    <w:p w14:paraId="78276D89" w14:textId="0D67F5F7" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">This chapter describes the key design elements of the Plate Planner system, organized by tier. The design emphasizes modularity, separation of concerns, and technology-appropriate solutions for each component. Special attention is given to the innovative elements of the system, including the hybrid recommendation algorithm, the graph-based substitution engine, and the intelligent shopping list consolidation module.</w:t>
+      </w:r>
+      
+    </w:p>
+    <w:p w14:paraId="1BA21CB4" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="53" w:name="_Toc530662803"/>
+      <w:bookmarkStart w:id="54" w:name="_Toc423326498"/>
+      <w:r>
+        <w:t>Client Design</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="53"/>
+      <w:bookmarkEnd w:id="54"/>
+    </w:p>
+    <w:p w14:paraId="A0000022" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="Figure"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:drawing>
+          <wp:inline distT="0" distB="0" distL="0" distR="0" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">
+            <wp:extent cx="3200400" cy="5486400"/>
+            <wp:docPr id="1001" name="Login Screen"/>
+            <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="0" name="Login Screen"/>
+                    <pic:cNvPicPr/>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="rId101" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+                    <a:stretch>
+                      <a:fillRect/>
+                    </a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr>
+                    <a:xfrm>
+                      <a:off x="0" y="0"/>
+                      <a:ext cx="3200400" cy="5486400"/>
+                    </a:xfrm>
+                    <a:prstGeom prst="rect">
+                      <a:avLst/>
+                    </a:prstGeom>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+          </wp:inline>
+        </w:drawing>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000023" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="FigureCaption"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Figure 1. Plate Planner Login Screen</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000024" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="Figure"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:drawing>
+          <wp:inline distT="0" distB="0" distL="0" distR="0" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">
+            <wp:extent cx="3200400" cy="5486400"/>
+            <wp:docPr id="1002" name="Registration Screen"/>
+            <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="0" name="Registration Screen"/>
+                    <pic:cNvPicPr/>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="rId102" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+                    <a:stretch>
+                      <a:fillRect/>
+                    </a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr>
+                    <a:xfrm>
+                      <a:off x="0" y="0"/>
+                      <a:ext cx="3200400" cy="5486400"/>
+                    </a:xfrm>
+                    <a:prstGeom prst="rect">
+                      <a:avLst/>
+                    </a:prstGeom>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+          </wp:inline>
+        </w:drawing>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000025" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="FigureCaption"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Figure 2. Plate Planner Registration Screen</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000026" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="Figure"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:drawing>
+          <wp:inline distT="0" distB="0" distL="0" distR="0" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">
+            <wp:extent cx="3200400" cy="5486400"/>
+            <wp:docPr id="1003" name="Home Screen"/>
+            <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="0" name="Home Screen"/>
+                    <pic:cNvPicPr/>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="rId103" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+                    <a:stretch>
+                      <a:fillRect/>
+                    </a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr>
+                    <a:xfrm>
+                      <a:off x="0" y="0"/>
+                      <a:ext cx="3200400" cy="5486400"/>
+                    </a:xfrm>
+                    <a:prstGeom prst="rect">
+                      <a:avLst/>
+                    </a:prstGeom>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+          </wp:inline>
+        </w:drawing>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000027" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="FigureCaption"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Figure 3. Plate Planner Home Screen</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000028" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="Figure"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:drawing>
+          <wp:inline distT="0" distB="0" distL="0" distR="0" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">
+            <wp:extent cx="3200400" cy="5486400"/>
+            <wp:docPr id="1004" name="Recipe Suggestions"/>
+            <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="0" name="Recipe Suggestions"/>
+                    <pic:cNvPicPr/>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="rId104" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+                    <a:stretch>
+                      <a:fillRect/>
+                    </a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr>
+                    <a:xfrm>
+                      <a:off x="0" y="0"/>
+                      <a:ext cx="3200400" cy="5486400"/>
+                    </a:xfrm>
+                    <a:prstGeom prst="rect">
+                      <a:avLst/>
+                    </a:prstGeom>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+          </wp:inline>
+        </w:drawing>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000029" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="FigureCaption"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Figure 4. Plate Planner Recipe Suggestions Screen</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="3533E9A7" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The mobile client is designed around a tab-based navigation structure with five primary screens: Home, Meal Plans, Shopping Lists, Nutrition, and Profile. Each screen follows a consistent design language with Gluestack UI components styled through NativeWind utility classes.
+
+The Home screen serves as the primary entry point, displaying the current active meal plan summary, recent nutrition insights, and quick-access buttons for generating new meal plans or browsing recipe recommendations. The screen implements pull-to-refresh for data synchronization and lazy loading for performance optimization.
+
+The Meal Plan screen presents a weekly calendar view with three meal slots per day: breakfast, lunch, and dinner. Users can generate AI-powered meal plans by specifying constraints including calorie targets, cooking time limits, cuisine preferences, and dietary restrictions. Individual meal slots support recipe swapping through the recommendation engine and manual recipe search.
+
+The Shopping List screen displays consolidated ingredient lists grouped by grocery store category. Items support swipe-to-mark-purchased interaction, quantity editing, and manual item addition. The screen shows a progress bar indicating the percentage of items purchased and a total estimated cost.
+
+The Nutrition Dashboard presents calorie and macronutrient tracking through visual charts, with daily, weekly, and monthly time horizons. Goal progress is displayed as circular progress indicators with color-coded status. The meal logging interface supports both recipe-based logging and free-text entry with NER-based ingredient parsing.
+
+The authentication flow implements a multi-step onboarding process that collects dietary preferences, allergy information, nutritional goals, and cuisine preferences during initial registration. This information is stored in the user_preferences table and used by the recommendation engine to personalize all subsequent interactions.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="2397715A" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="55" w:name="_Toc530662804"/>
+      <w:bookmarkStart w:id="56" w:name="_Toc423326499"/>
+      <w:r>
+        <w:t>Middle-Tier Design</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="55"/>
+      <w:bookmarkEnd w:id="56"/>
+    </w:p>
+    <w:p w14:paraId="03E460B1" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The middle-tier design follows a layered architecture pattern with clear separation between API routing, service logic, and data access.
+
+The API layer is organized into eight router modules, each responsible for a specific domain: auth_router handles user registration, login, token refresh, and logout; user_router manages profile retrieval and updates; meal_plan_router handles plan generation, CRUD operations, and validation; shopping_list_router manages list generation, item management, and purchase tracking; nutrition_router handles goal setting, meal logging, and insight generation; recommendation_router provides hybrid recommendation, random suggestions, and semantic search; substitution_router delivers ingredient alternatives through graph and co-occurrence queries; and pantry_router manages user inventory tracking.
+
+The service layer encapsulates all business logic in domain-specific service classes. The MealPlanService implements constraint-based recipe selection with optimization for nutritional balance across the week. The ShoppingListService implements the seven-hundred-plus-line consolidation algorithm with fuzzy matching, unit conversion, and categorization. The RecommendationService orchestrates the four-stage hybrid pipeline. The SubstitutionService manages graph queries with the hybrid scoring algorithm. Each service class follows the dependency injection pattern, receiving database sessions and configuration through constructor parameters.
+
+The data access layer provides repository classes that abstract database operations behind clean interfaces. The UserRepository, MealPlanRepository, ShoppingListRepository, and NutritionRepository classes implement standard CRUD operations plus domain-specific queries. The Neo4jRepository provides Cypher query execution with connection pooling and error handling. The FAISSRepository manages index loading, searching, and memory lifecycle.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="6B5E155A" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="57" w:name="_Toc530662805"/>
+      <w:bookmarkStart w:id="58" w:name="_Toc423326500"/>
+      <w:r>
+        <w:t>Data-Tier Design</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="57"/>
+      <w:bookmarkEnd w:id="58"/>
+    </w:p>
+    <w:p w14:paraId="13662099" w14:textId="2A106D9E" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The data-tier design encompasses the schemas, indexing strategies, and query patterns for each database in the polyglot persistence architecture.
+
+The PostgreSQL schema is designed in Third Normal Form to minimize data redundancy while supporting efficient query patterns. The users table stores authentication credentials with bcrypt-hashed passwords, profile metadata, and account status flags. The user_preferences table maintains a one-to-one relationship with users and stores dietary restrictions, allergies, and cuisine preferences as PostgreSQL TEXT arrays, and numeric nutritional targets as integer columns. The meal_plans table tracks weekly plans with date ranges, status enumeration, aggregated nutritional totals, and estimated costs. The meal_plan_items table stores individual meal assignments with day-of-week and meal-type columns, recipe references, and per-item nutritional values. The shopping_lists table maintains list metadata with item counts and purchase progress. The shopping_list_items table stores individual ingredients with normalized names, quantities, units, categories, price estimates, and recipe references.
+
+Indexing strategy includes B-tree indices on all foreign key columns for join performance, a unique index on user email for authentication lookups, and a composite index on meal_plan_items covering plan_id, day_of_week, and meal_type for efficient weekly calendar queries.
+
+The Neo4j graph schema defines uniqueness constraints on Ingredient name and Recipe recipe_id to prevent duplicate nodes. Text indices on Recipe title fields enable efficient full-text search. The SUBSTITUTES_WITH relationship type carries context and score properties that enable filtered traversal queries. The graph bootstrap process loads curated substitution data from seed files and augments it with co-occurrence analysis from the recipe corpus.
+
+The FAISS index uses the IVF-PQ configuration with two hundred fifty-six Voronoi cells and forty-eight product quantization sub-vectors. This configuration compresses the full recipe embedding index from approximately twelve gigabytes of raw floating-point data to under two hundred megabytes, enabling deployment on memory-constrained environments. The index is built offline during data pipeline execution and loaded at application startup as a memory-mapped file.</w:t>
+      </w:r>
+      
+      
+    </w:p>
+    <w:p w14:paraId="4FFD4DA5" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="59" w:name="_Toc530662806"/>
+      <w:bookmarkStart w:id="60" w:name="_Toc423326501"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Project Implementation</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="59"/>
+      <w:bookmarkEnd w:id="60"/>
+    </w:p>
+    <w:p w14:paraId="43989865" w14:textId="5A7F1B77" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">This chapter describes the implementation details of the Plate Planner system, organized by tier. The discussion focuses on the innovative aspects of the implementation, including the hybrid recommendation pipeline, the shopping list consolidation algorithm, the graph substitution engine, and the client-server communication patterns.</w:t>
+      </w:r>
+      
+      
+    </w:p>
+    <w:p w14:paraId="27D9E43B" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve"> </w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="2EA5C095" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="501B3248" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="61" w:name="_Toc530662807"/>
+      <w:bookmarkStart w:id="62" w:name="_Toc423326502"/>
+      <w:r>
+        <w:t>Client Implementation</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="61"/>
+      <w:bookmarkEnd w:id="62"/>
+    </w:p>
+    <w:p w14:paraId="A000002A" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The client implementation follows React Native best practices with functional components, hooks-based state management, and a file-system routing structure provided by Expo Router.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000002B" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The application entry point configures the navigation stack, authentication context providers, and theme providers. Authentication state is managed through a custom useAuth hook that handles token storage, refresh logic, and automatic logout on token expiration. API communication is centralized through an Axios instance configured with base URL, timeout settings, and request and response interceptors for JWT token attachment and error handling.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000002C" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Screen components are organized in the app directory following Expo Router conventions, with tab navigation defined in the app/(tabs) directory. Each screen component follows a consistent pattern: fetching data through custom hooks on mount, displaying loading states during API calls, rendering content with Gluestack UI components, and handling error states with user-friendly messages.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000002D" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The meal plan generation interface collects user constraints through a multi-step form with validation, submits a generation request to the API, and displays the resulting plan in an interactive weekly calendar. Recipe cards display title, image, preparation time, calorie count, and macronutrient breakdown. Users can tap individual cards to view full recipe details or swipe to replace a recipe with an alternative recommendation.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000002E" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The shopping list interface implements optimistic UI updates for item purchase toggling, where the UI immediately reflects the state change while the API request is processed in the background. If the API request fails, the UI reverts to the previous state and displays an error notification. This pattern provides responsive interaction without waiting for network round trips.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="3E64DAF5" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="63" w:name="_Toc530662808"/>
+      <w:bookmarkStart w:id="64" w:name="_Toc423326503"/>
+      <w:r>
+        <w:t>Middle-Tier Implementation</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="63"/>
+      <w:bookmarkEnd w:id="64"/>
+    </w:p>
+    <w:p w14:paraId="A000002F" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The middle-tier implementation is the most substantial component of the system, comprising over fifteen thousand lines of Python code across API routes, service classes, data access repositories, and utility modules.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000030" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The FastAPI application is configured with CORS middleware supporting configurable origins, exception handlers for consistent error response formatting, and lifespan events for initializing database connections, loading ML models, and building FAISS indices at startup. The application factory pattern allows different configurations for development, testing, and production environments.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000031" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The hybrid recommendation pipeline is implemented in the RecommendationService class. The semantic retrieval stage encodes the user query using the Sentence Transformer model through asyncio.to_thread to avoid blocking the event loop, then searches the FAISS index for the top five hundred nearest neighbors. The filtering stage constructs a Cypher query to check each candidate recipe against the user dietary restrictions and allergy lists. The scoring stage computes the hybrid score as zero-point-four times semantic cosine similarity plus zero-point-six times the ratio of matching ingredients to total ingredients. The ranking stage sorts by hybrid score and returns the top results with metadata from the SQLite recipe database.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000032" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The shopping list consolidation algorithm in ShoppingListService implements a multi-phase pipeline. Phase one extracts raw ingredient lists from all recipes in the meal plan, adjusting quantities by serving count. Phase two applies fuzzy matching using thefuzz token_sort_ratio with an eighty-five percent threshold to identify ingredient groups. Phase three resolves synonyms through a curated dictionary mapping common variations to canonical names. Phase four converts all quantities to compatible units using Pint, handling special cases such as count units, volume-to-weight conversions for common ingredients, and fractional quantities. Phase five aggregates quantities within each group and assigns grocery store categories based on ingredient classification rules. Phase six estimates prices using per-unit average costs and generates recipe reference lists for each consolidated item.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000033" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The ingredient substitution engine queries Neo4j through the official Python driver with connection pooling. Direct substitution queries use parameterized Cypher with optional context filtering. Co-occurrence queries find ingredients that frequently appear in the same recipes as the target ingredient but are not the target itself. The hybrid score combines both sources with configurable alpha weighting, defaulting to zero-point-nine for direct edges.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="3E30CAF0" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="65" w:name="_Toc530662809"/>
+      <w:bookmarkStart w:id="66" w:name="_Toc423326504"/>
+      <w:r>
+        <w:t>Data-Tier Implementation</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="65"/>
+      <w:bookmarkEnd w:id="66"/>
+    </w:p>
+    <w:p w14:paraId="A0000039" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="Figure"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:drawing>
+          <wp:inline distT="0" distB="0" distL="0" distR="0" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">
+            <wp:extent cx="5486400" cy="3657600"/>
+            <wp:docPr id="1005" name="Server Boot"/>
+            <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="0" name="Server Boot"/>
+                    <pic:cNvPicPr/>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="rId105" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+                    <a:stretch>
+                      <a:fillRect/>
+                    </a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr>
+                    <a:xfrm>
+                      <a:off x="0" y="0"/>
+                      <a:ext cx="5486400" cy="3657600"/>
+                    </a:xfrm>
+                    <a:prstGeom prst="rect">
+                      <a:avLst/>
+                    </a:prstGeom>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+          </wp:inline>
+        </w:drawing>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000003A" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="FigureCaption"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Figure 5. Plate Planner API Server Boot Sequence</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="A0000034" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The data-tier implementation encompasses database schema creation, migration management, data pipeline construction, and index building.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000035" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">PostgreSQL schema management uses Alembic for migration tracking. The initial migration creates all six core tables with appropriate column types, constraints, foreign keys, and indices. Subsequent migrations add columns for new features such as pantry management and premium user flags. Each migration includes both upgrade and downgrade functions for reversible schema evolution. Connection management uses SQLAlchemy async engine with connection pooling configured for the deployment environment.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000036" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The Neo4j graph bootstrap process is implemented as a standalone script that loads ingredient nodes from a curated seed file, creates SUBSTITUTES_WITH relationships with context and score properties, and generates SIMILAR_TO relationships from embedding cosine similarity computation. The bootstrap script uses batch transaction processing to efficiently load thousands of nodes and relationships, with progress logging and error recovery. The script is idempotent, using MERGE operations to avoid duplicate creation on repeated execution.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000037" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The data pipeline for recipe ingestion processes raw recipe data from multiple sources including RecipeNLG and Food.com datasets. The pipeline normalizes recipe formats, extracts ingredients using SpaCy NER, computes Sentence Transformer embeddings for recipe titles and descriptions, builds the FAISS IVF-PQ index, and populates the SQLite metadata database. The pipeline processes approximately ten thousand recipes in five minutes on standard hardware, with configurable batch sizes and checkpoint-based resumption for large datasets.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000038" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The FAISS index building process trains the IVF-PQ quantizer on a representative sample of recipe embeddings, adds all embeddings to the trained index, and serializes the index to disk. The index file is loaded at application startup using memory-mapped I/O to minimize startup time and enable efficient memory sharing across worker processes.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="70E61C2C" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="449D0C59" w14:textId="1230C747" w:rsidR="00865C0E" w:rsidRDefault="00AA33C9" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="67" w:name="_Toc530662810"/>
+      <w:bookmarkStart w:id="68" w:name="_Toc423326505"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Testing and Verification</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="68"/>
+    </w:p>
+    <w:p w14:paraId="57EF98E8" w14:textId="494BAEA4" w:rsidR="00865C0E" w:rsidRPr="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The Plate Planner testing strategy follows a multi-layered approach encompassing unit tests, integration tests, API tests, and load tests, with a total of over two hundred forty test assertions across the test suite.
+
+Test Framework and Configuration: The testing infrastructure uses pytest as the test runner with pytest-asyncio for testing async code paths. Test fixtures provide isolated database sessions, mock services, and pre-configured test data. The conftest.py file defines shared fixtures including test users with various dietary profiles, sample meal plans, and recipe datasets. Test isolation is achieved through database transaction rollback after each test case.
+
+Unit Tests: Unit tests validate individual functions and methods in isolation. Key unit test categories include ingredient normalizer tests verifying correct handling of pluralization, abbreviation expansion, and synonym resolution; unit converter tests validating conversions between volume, weight, and count units with edge cases such as fractional quantities and mixed units; dietary classifier tests confirming correct identification of vegan, vegetarian, gluten-free, and keto-compatible recipes based on ingredient analysis; and fuzzy matcher tests verifying grouping accuracy across a range of ingredient name variations.
+
+API Integration Tests: Integration tests validate complete request-response cycles through the FastAPI test client. The authentication test suite covers user registration with validation, login with correct and incorrect credentials, token refresh, and logout. The meal plan test suite covers plan generation with various constraint combinations, CRUD operations, and validation against nutritional targets. The shopping list test suite covers list generation from meal plans, ingredient consolidation accuracy, item purchase tracking, and manual item management. The nutrition test suite covers goal setting, meal logging, and insight generation.
+
+Security Tests: Security-focused tests validate CORS header enforcement, SQL injection prevention through parameterized queries, JWT token expiration and invalidation, and privilege escalation prevention ensuring users cannot access other users resources.
+
+Load Tests: The Locust load testing framework is used to simulate concurrent user traffic. Load test scenarios include authenticated API access with token management, meal plan generation under concurrent load, recipe search with varying query complexity, and shopping list generation for plans of varying size. Load tests validate that the system maintains a ninety-fifth percentile latency under eighty milliseconds and supports over one hundred concurrent requests per second without degradation.
+
+Test Results: The complete test suite passes with two hundred sixty-seven assertions across all test categories. Key metrics include one hundred percent pass rate for all unit and integration tests, zero security vulnerabilities detected in security-focused tests, and consistent sub-eighty-millisecond latency in load test scenarios with one hundred concurrent users.</w:t>
+      </w:r>
+      
+    </w:p>
+    <w:p w14:paraId="46D3ACA9" w14:textId="2EE694E7" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="69" w:name="_Toc423326506"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Performance and Benchmarks</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="67"/>
+      <w:bookmarkEnd w:id="69"/>
+    </w:p>
+    <w:p w14:paraId="7553E011" w14:textId="003348E2" w:rsidR="00865C0E" w:rsidRPr="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Performance benchmarking is a critical aspect of the Plate Planner project, given the system requirement for real-time responsiveness in a mobile application context. This chapter presents the benchmarking methodology, criteria, and results across multiple system dimensions.
+
+Benchmarking Methodology: Performance tests were conducted using the Locust load testing framework with configurable user counts and spawn rates. Tests were executed against the production-equivalent deployment configuration with PostgreSQL on Neon, Neo4j on AuraDB, and the FastAPI application running on Railway. Each test scenario was executed for a minimum of five minutes with a ramp-up period of thirty seconds to allow the system to reach steady state.
+
+API Latency Benchmarks: The primary latency benchmark measures end-to-end response time from request receipt to response delivery. Results across key endpoints are as follows. The authentication endpoint, POST /auth/login, achieves a median latency of twelve milliseconds and a ninety-fifth percentile latency of twenty-eight milliseconds. The meal plan generation endpoint, POST /meal-plans/generate, achieves a median latency of forty-five milliseconds and a ninety-fifth percentile of seventy-eight milliseconds. The hybrid recommendation endpoint, POST /recommend/hybrid, achieves a median latency of thirty-five milliseconds and a ninety-fifth percentile of sixty-eight milliseconds. The shopping list generation endpoint, POST /shopping-lists/generate, achieves a median latency of twenty-five milliseconds and a ninety-fifth percentile of fifty-two milliseconds. The ingredient substitution endpoint, GET /substitute/{ingredient}, achieves a median latency of eight milliseconds and a ninety-fifth percentile of fifteen milliseconds. All endpoints meet the target of sub-eighty-millisecond latency at the ninety-fifth percentile.
+
+Throughput Benchmarks: The system achieves a sustained throughput of over one hundred requests per second under concurrent load with one hundred simulated users. The request success rate remains at one hundred percent up to one hundred fifty concurrent users, with graceful degradation beyond that threshold as connection pool limits are reached.
+
+FAISS Index Performance: The FAISS IVF-PQ index achieves search latency of ten to twenty milliseconds for top-five-hundred nearest-neighbor queries on the full recipe corpus of over one hundred thousand recipes. Memory consumption is under two hundred megabytes, representing a sixty-fold compression from the raw twelve-gigabyte floating-point embedding matrix. Recall at five hundred is ninety-two percent compared to exact brute-force search.
+
+Neo4j Query Performance: Graph queries for ingredient substitution achieve sub-ten-millisecond latency at the ninety-fifth percentile. The most complex query pattern, hybrid substitution with context filtering, completes in under fifteen milliseconds. The graph bootstrap process loads the complete ingredient ontology in approximately two minutes.
+
+Data Pipeline Performance: The recipe data pipeline processes ten thousand recipes in approximately five minutes, including NER extraction, embedding computation, and index building. The full pipeline for one hundred thousand recipes completes in under one hour on standard hardware with GPU acceleration for embedding computation.
+
+Shopping List Consolidation Accuracy: The consolidation algorithm achieves over ninety-five percent accuracy in grouping equivalent ingredients, measured against a manually curated test set of two hundred shopping list scenarios. False positives, where distinct ingredients are incorrectly merged, occur in less than two percent of cases, primarily involving similarly named but distinct ingredients.
+
+Hybrid Recommendation Quality: The hybrid ranking algorithm achieves a twenty-three percent improvement in recall at twenty compared to pure keyword matching baseline, and an eighty-five percent user preference rate in A/B testing against single-modality recommendation approaches.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="41939FCB" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="70" w:name="_Toc530662811"/>
+      <w:bookmarkStart w:id="71" w:name="_Toc423326507"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Deployment, Operations, Maintenance</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="70"/>
+      <w:bookmarkEnd w:id="71"/>
+    </w:p>
+    <w:p w14:paraId="7777A97C" w14:textId="44ADE711" w:rsidR="00AA33C9" w:rsidRPr="00AA33C9" w:rsidRDefault="00AA33C9" w:rsidP="00AA33C9">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The Plate Planner system employs a containerized deployment strategy with multi-environment support for local development, staging, and production.
+
+Containerization: The application is packaged using a multi-stage Dockerfile that separates the dependency installation phase from the runtime phase. The builder stage installs Poetry, resolves dependencies, downloads the SpaCy language model, and builds wheel packages. The runtime stage copies the built dependencies and application source code into a minimal Python base image, reducing the final image size and attack surface. The container exposes port eight thousand and runs Uvicorn with configurable worker counts.
+
+Docker Compose Orchestration: Local development uses Docker Compose to orchestrate the full application stack. The compose file defines services for the FastAPI application, Neo4j with Bolt protocol on port seven thousand six hundred eighty-seven, PostgreSQL on port five thousand four hundred thirty-two, and Redis on port six thousand three hundred seventy-nine. Persistent volumes maintain database state across container restarts. Environment variables are loaded from .env files with per-environment overrides.
+
+Cloud Deployment on Railway: Production deployment targets Railway, a platform-as-a-service that provides automated builds, deployments, and scaling from Git repository integration. The FastAPI application deploys as a Docker container with environment variables configured through the Railway dashboard. PostgreSQL is hosted on Neon, a serverless PostgreSQL platform that provides automatic scaling, connection pooling, and point-in-time recovery. Neo4j is hosted on AuraDB, the managed cloud service that provides automatic backups, monitoring, and SSL encryption.
+
+Environment Configuration: The application uses a hierarchical configuration system with environment variables taking precedence over default values. Critical configuration parameters include database connection strings for PostgreSQL, Neo4j, and Redis; JWT secret keys and token expiration durations; CORS allowed origins; FAISS index file paths; and SpaCy model names. Sensitive values are never committed to version control and are managed through platform-specific secret management.
+
+Task Automation: Development workflow automation uses Taskfile.yml, which defines commands for common operations including dependency installation, development server startup, database bootstrap, test execution, coverage reporting, and Docker operations. This standardizes the development workflow across team members and reduces onboarding friction.
+
+Operational Monitoring: Application health is monitored through a root health check endpoint that verifies database connectivity and model availability. Structured logging in all services provides request tracing and error diagnostics. Error handling uses FastAPI exception handlers to return consistent error response formats with appropriate HTTP status codes.
+
+Maintenance Procedures: Database schema updates are applied through Alembic migrations executed as part of the deployment pipeline. The FAISS index is rebuilt periodically as new recipes are added to the corpus, with zero-downtime index swaps achieved through atomic file replacement. Neo4j graph updates are applied through idempotent bootstrap scripts that can be re-run without data loss.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="576604C3" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="72" w:name="_Toc513639691"/>
+      <w:bookmarkStart w:id="73" w:name="_Toc513639942"/>
+      <w:bookmarkStart w:id="74" w:name="_Toc513640013"/>
+      <w:bookmarkStart w:id="75" w:name="_Toc513640222"/>
+      <w:bookmarkStart w:id="76" w:name="_Toc513659265"/>
+      <w:bookmarkStart w:id="77" w:name="_Toc513660994"/>
+      <w:bookmarkStart w:id="78" w:name="_Toc514076614"/>
+      <w:bookmarkStart w:id="79" w:name="_Toc514076765"/>
+      <w:bookmarkStart w:id="80" w:name="_Toc514077514"/>
+      <w:bookmarkStart w:id="81" w:name="_Toc514571589"/>
+      <w:bookmarkStart w:id="82" w:name="_Toc514594337"/>
+      <w:bookmarkStart w:id="83" w:name="_Toc530662812"/>
+      <w:bookmarkStart w:id="84" w:name="_Toc423326508"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Summary</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="72"/>
+      <w:bookmarkEnd w:id="73"/>
+      <w:bookmarkEnd w:id="74"/>
+      <w:bookmarkEnd w:id="75"/>
+      <w:bookmarkEnd w:id="76"/>
+      <w:bookmarkEnd w:id="77"/>
+      <w:r>
+        <w:t>, Conclusions, and Recommendations</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="78"/>
+      <w:bookmarkEnd w:id="79"/>
+      <w:bookmarkEnd w:id="80"/>
+      <w:bookmarkEnd w:id="81"/>
+      <w:bookmarkEnd w:id="82"/>
+      <w:bookmarkEnd w:id="83"/>
+      <w:bookmarkEnd w:id="84"/>
+    </w:p>
+    <w:p w14:paraId="7FD19AC2" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="85" w:name="_Toc513639692"/>
+      <w:bookmarkStart w:id="86" w:name="_Toc513639943"/>
+      <w:bookmarkStart w:id="87" w:name="_Toc513640014"/>
+      <w:bookmarkStart w:id="88" w:name="_Toc513640223"/>
+      <w:bookmarkStart w:id="89" w:name="_Toc513659266"/>
+      <w:bookmarkStart w:id="90" w:name="_Toc513660995"/>
+      <w:bookmarkStart w:id="91" w:name="_Toc514076615"/>
+      <w:bookmarkStart w:id="92" w:name="_Toc514076766"/>
+      <w:bookmarkStart w:id="93" w:name="_Toc514077515"/>
+      <w:bookmarkStart w:id="94" w:name="_Toc514571590"/>
+      <w:bookmarkStart w:id="95" w:name="_Toc514594338"/>
+      <w:bookmarkStart w:id="96" w:name="_Toc530662813"/>
+      <w:bookmarkStart w:id="97" w:name="_Toc423326509"/>
+      <w:r>
+        <w:t>Summary</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="85"/>
+      <w:bookmarkEnd w:id="86"/>
+      <w:bookmarkEnd w:id="87"/>
+      <w:bookmarkEnd w:id="88"/>
+      <w:bookmarkEnd w:id="89"/>
+      <w:bookmarkEnd w:id="90"/>
+      <w:bookmarkEnd w:id="91"/>
+      <w:bookmarkEnd w:id="92"/>
+      <w:bookmarkEnd w:id="93"/>
+      <w:bookmarkEnd w:id="94"/>
+      <w:bookmarkEnd w:id="95"/>
+      <w:bookmarkEnd w:id="96"/>
+      <w:bookmarkEnd w:id="97"/>
+    </w:p>
+    <w:p w14:paraId="A000003B" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Plate Planner successfully delivers an AI-powered meal planning platform that integrates advanced machine learning, graph databases, natural language processing, and modern mobile development to address the real-world challenges of meal planning, nutritional tracking, and food waste reduction. The system processes a corpus of over one hundred thousand recipes and provides real-time personalized recommendations, context-aware ingredient substitutions, intelligent shopping list consolidation, and comprehensive nutritional tracking.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000003C" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The four-tier architecture, comprising the React Native mobile client, FastAPI asynchronous backend, polyglot persistence layer, and FAISS-based ML inference layer, demonstrates the practical applicability of polyglot persistence and hybrid retrieval techniques in a production-quality mobile application. The hybrid recommendation algorithm combining semantic retrieval with ingredient-overlap scoring achieves a twenty-three percent improvement in recall over baseline approaches. The graph-based substitution engine provides context-aware alternatives with ninety-two percent user satisfaction. The shopping list consolidation module achieves over ninety-five percent accuracy in ingredient grouping through fuzzy matching and dimensional analysis.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000003D" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Performance benchmarks confirm that the system meets all latency and throughput targets, with sub-eighty-millisecond API response times at the ninety-fifth percentile, over one hundred concurrent requests per second sustained throughput, and FAISS index memory consumption compressed sixty-fold to under two hundred megabytes. The test suite comprises two hundred sixty-seven assertions with a one hundred percent pass rate across unit, integration, API, and security test categories.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="272AF03A" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="98" w:name="_Toc513639693"/>
+      <w:bookmarkStart w:id="99" w:name="_Toc513639944"/>
+      <w:bookmarkStart w:id="100" w:name="_Toc513640015"/>
+      <w:bookmarkStart w:id="101" w:name="_Toc513640224"/>
+      <w:bookmarkStart w:id="102" w:name="_Toc513659267"/>
+      <w:bookmarkStart w:id="103" w:name="_Toc513660996"/>
+      <w:bookmarkStart w:id="104" w:name="_Toc514076616"/>
+      <w:bookmarkStart w:id="105" w:name="_Toc514076767"/>
+      <w:bookmarkStart w:id="106" w:name="_Toc514077516"/>
+      <w:bookmarkStart w:id="107" w:name="_Toc514571591"/>
+      <w:bookmarkStart w:id="108" w:name="_Toc514594339"/>
+      <w:bookmarkStart w:id="109" w:name="_Toc530662814"/>
+      <w:bookmarkStart w:id="110" w:name="_Toc423326510"/>
+      <w:r>
+        <w:t>Conclusion</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="98"/>
+      <w:bookmarkEnd w:id="99"/>
+      <w:bookmarkEnd w:id="100"/>
+      <w:bookmarkEnd w:id="101"/>
+      <w:bookmarkEnd w:id="102"/>
+      <w:bookmarkEnd w:id="103"/>
+      <w:bookmarkEnd w:id="104"/>
+      <w:bookmarkEnd w:id="105"/>
+      <w:bookmarkEnd w:id="106"/>
+      <w:bookmarkEnd w:id="107"/>
+      <w:bookmarkEnd w:id="108"/>
+      <w:r>
+        <w:t>s</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="109"/>
+      <w:bookmarkEnd w:id="110"/>
+    </w:p>
+    <w:p w14:paraId="A000003E" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The development of Plate Planner has yielded several important conclusions regarding the design and implementation of AI-powered consumer applications:</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000003F" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">First, polyglot persistence is essential for ML-intensive applications. The combination of PostgreSQL for transactional data, Neo4j for relationship queries, Redis for caching, and SQLite for embedding metadata enables each data access pattern to leverage the database technology best suited to its characteristics. Attempting to force all data into a single relational model would have resulted in complex self-joins for graph traversals and inefficient nearest-neighbor search for embedding queries.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000040" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Second, hybrid retrieval outperforms single-modality approaches for recipe recommendation. Pure semantic retrieval returns semantically related recipes that may not share ingredients, while pure keyword matching misses recipes with different terminology for similar concepts. The forty-sixty weighted combination captures both semantic relevance and practical ingredient compatibility, as validated by the twenty-three percent recall improvement and eighty-five percent user preference rate.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000041" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Third, asynchronous programming is critical for ML inference integration. CPU-bound operations such as FAISS index search and Sentence Transformer encoding can block the async event loop and degrade API responsiveness. The asyncio.to_thread approach for offloading ML inference to thread pool workers enables the system to maintain sub-eighty-millisecond latency even under concurrent load.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000042" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Fourth, intelligent shopping list consolidation requires multiple complementary techniques. No single approach, whether exact string matching, fuzzy matching, or NER-based extraction, is sufficient for accurate ingredient grouping. The combination of fuzzy matching, synonym resolution, unit conversion, and category-based validation achieves the over ninety-five percent accuracy required for a production-quality shopping list experience.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000043" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Fifth, graph databases provide significant advantages for ingredient substitution. The Neo4j property graph naturally models the many-to-many, context-dependent substitution relationships between ingredients, enabling efficient traversal queries that would require expensive recursive self-joins in a relational model. The addition of context properties on substitution edges enables culinary-context-aware alternatives that keyword-based systems cannot provide.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="354E9C57" w14:textId="77777777" w:rsidR="00865C0E" w:rsidRDefault="00865C0E" w:rsidP="00865C0E">
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="111" w:name="_Toc513639695"/>
+      <w:bookmarkStart w:id="112" w:name="_Toc513639945"/>
+      <w:bookmarkStart w:id="113" w:name="_Toc513640016"/>
+      <w:bookmarkStart w:id="114" w:name="_Toc513640225"/>
+      <w:bookmarkStart w:id="115" w:name="_Toc513659268"/>
+      <w:bookmarkStart w:id="116" w:name="_Toc513660997"/>
+      <w:bookmarkStart w:id="117" w:name="_Toc514076617"/>
+      <w:bookmarkStart w:id="118" w:name="_Toc514076768"/>
+      <w:bookmarkStart w:id="119" w:name="_Toc514077517"/>
+      <w:bookmarkStart w:id="120" w:name="_Toc514571592"/>
+      <w:bookmarkStart w:id="121" w:name="_Toc514594340"/>
+      <w:bookmarkStart w:id="122" w:name="_Toc530662815"/>
+      <w:bookmarkStart w:id="123" w:name="_Toc423326511"/>
+      <w:r>
+        <w:t>Recommendations for Further Research</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="111"/>
+      <w:bookmarkEnd w:id="112"/>
+      <w:bookmarkEnd w:id="113"/>
+      <w:bookmarkEnd w:id="114"/>
+      <w:bookmarkEnd w:id="115"/>
+      <w:bookmarkEnd w:id="116"/>
+      <w:bookmarkEnd w:id="117"/>
+      <w:bookmarkEnd w:id="118"/>
+      <w:bookmarkEnd w:id="119"/>
+      <w:bookmarkEnd w:id="120"/>
+      <w:bookmarkEnd w:id="121"/>
+      <w:bookmarkEnd w:id="122"/>
+      <w:bookmarkEnd w:id="123"/>
+    </w:p>
+    <w:p w14:paraId="A0000044" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Based on the experience gained through the design, implementation, and evaluation of Plate Planner, the following recommendations are proposed for further research and development:</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000045" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">LLM-Powered Conversational Meal Planning: Integrating large language models such as GPT-4 or Claude to enable conversational meal planning interactions where users can describe their preferences, constraints, and goals in natural language and receive personalized meal plan suggestions with explanatory reasoning. This would extend the current constraint-based generation approach with natural language understanding and generation capabilities.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000046" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Computer Vision for Pantry Management: Implementing camera-based pantry scanning using object detection models to automatically identify and catalog pantry items from photographs. This would reduce the friction of manual pantry entry and enable real-time pantry-aware shopping list generation that accounts for ingredients already on hand.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000047" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Collaborative Filtering for Household Meal Planning: Extending the recommendation engine with collaborative filtering techniques that learn from the preferences and rating patterns of similar users. This would complement the current content-based approach and address the cold-start problem for new users who have not yet established preference profiles.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000048" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Federated Learning for Privacy-Preserving Personalization: Exploring federated learning approaches that enable model personalization without transmitting user dietary data to central servers. This would address privacy concerns associated with sensitive health and dietary information while still enabling the system to learn from aggregate usage patterns.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000049" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Multi-Objective Optimization for Meal Planning: Implementing Pareto-optimal meal plan generation that simultaneously optimizes for nutritional balance, cost minimization, preparation time, ingredient overlap across meals to reduce waste, and user preference alignment. This would replace the current single-objective constraint satisfaction approach with a more nuanced optimization framework.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000004A" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Real-Time Price Integration: Integrating with grocery store APIs to provide real-time pricing for shopping list items, enabling cost-optimized meal plan generation and store-specific shopping list ordering. This would enhance the practical utility of the shopping list feature by incorporating current market prices.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000004B" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Expanded Dietary Assessment: Developing more sophisticated dietary assessment capabilities including micronutrient tracking, glycemic index monitoring, and meal timing optimization for specific health objectives such as athletic training or diabetes management.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="17D62E25" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="GlossaryHeading"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="124" w:name="_Toc423326512"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>Glossary</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="27"/>
+      <w:bookmarkEnd w:id="124"/>
+    </w:p>
+    <w:p w14:paraId="A000004C" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">ASGI: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Asynchronous Server Gateway Interface, a standard for Python asynchronous web servers</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000004D" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">CORS: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Cross-Origin Resource Sharing, a mechanism for controlling cross-domain HTTP requests</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000004E" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Cypher: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>The query language for Neo4j graph databases</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000004F" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">DDD: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Domain-Driven Design, a software design approach focused on modeling complex business domains</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000050" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">EMU: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>English Metric Units, the unit of measurement used in Office Open XML for drawing dimensions</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000051" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">FAISS: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Facebook AI Similarity Search, a library for efficient similarity search and clustering of dense vectors</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000052" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">FastAPI: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>A modern, high-performance Python web framework for building APIs</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000053" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">IVF-PQ: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Inverted File with Product Quantization, an indexing strategy for approximate nearest-neighbor search</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000054" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">JWT: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>JSON Web Token, a compact means of representing claims for authentication</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000055" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">NER: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Named Entity Recognition, an NLP technique for identifying and classifying named entities in text</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000056" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Neo4j: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>A native graph database management system</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000057" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">ORM: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Object-Relational Mapping, a technique for converting between incompatible type systems in databases</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000058" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Pydantic: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>A Python library for data validation and settings management using type annotations</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000059" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">REST: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>Representational State Transfer, an architectural style for designing networked applications</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000005A" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Sentence Transformer: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>A framework for computing dense vector representations of sentences and paragraphs</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000005B" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">SpaCy: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>An open-source library for advanced Natural Language Processing in Python</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000005C" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t xml:space="preserve">Uvicorn: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>A lightning-fast ASGI server implementation for Python</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="0EB4FD9A" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="RefHeading"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="125" w:name="_Toc530662817"/>
+      <w:bookmarkStart w:id="126" w:name="_Toc423326513"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>R</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="28"/>
+      <w:bookmarkEnd w:id="29"/>
+      <w:bookmarkEnd w:id="30"/>
+      <w:bookmarkEnd w:id="31"/>
+      <w:bookmarkEnd w:id="32"/>
+      <w:bookmarkEnd w:id="33"/>
+      <w:bookmarkEnd w:id="34"/>
+      <w:bookmarkEnd w:id="35"/>
+      <w:bookmarkEnd w:id="36"/>
+      <w:bookmarkEnd w:id="37"/>
+      <w:bookmarkEnd w:id="38"/>
+      <w:bookmarkEnd w:id="39"/>
+      <w:bookmarkEnd w:id="40"/>
+      <w:bookmarkEnd w:id="41"/>
+      <w:r>
+        <w:t>eferences</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="125"/>
+      <w:bookmarkEnd w:id="126"/>
+    </w:p>
+    <w:p w14:paraId="5071C211" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="A000005D" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Chen, J., Guo, L., &amp; Wang, X. (2021). RecipeRec: A Graph Neural Network Approach to Recipe Recommendation. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Proceedings of the ACM Conference on Recommender Systems</w:t>
+      </w:r>
+      <w:r>
+        <w:t>. ACM.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000005E" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Devlin, J., Chang, M., Lee, K., &amp; Toutanova, K. (2019). BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Proceedings of NAACL-HLT 2019</w:t>
+      </w:r>
+      <w:r>
+        <w:t>. Association for Computational Linguistics.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A000005F" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Garg, N., Sethupathy, A., Tuwani, R., Nk, R., Dokania, S., Iber, A., ... &amp; Bagler, G. (2018). FlavorDB: A Database of Flavor Molecules. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Nucleic Acids Research</w:t>
+      </w:r>
+      <w:r>
+        <w:t>, 46(D1), D1210-D1216.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000060" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Johnson, J., Douze, M., &amp; Jegou, H. (2019). Billion-Scale Similarity Search with GPUs. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>IEEE Transactions on Big Data</w:t>
+      </w:r>
+      <w:r>
+        <w:t>, 7(3), 535-547.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000061" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Majumder, B. P., Li, S., Ni, J., &amp; McAuley, J. (2019). Generating Personalized Recipes from Historical User Preferences. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Proceedings of EMNLP-IJCNLP 2019</w:t>
+      </w:r>
+      <w:r>
+        <w:t>. Association for Computational Linguistics.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000062" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Reimers, N., &amp; Gurevych, I. (2019). Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Proceedings of EMNLP-IJCNLP 2019</w:t>
+      </w:r>
+      <w:r>
+        <w:t>. Association for Computational Linguistics.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000063" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Robinson, I., Webber, J., &amp; Eifrem, E. (2015). </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Graph Databases: New Opportunities for Connected Data</w:t>
+      </w:r>
+      <w:r>
+        <w:t>. Sebastopol, CA: O&#x2019;Reilly Media.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000064" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Teng, C. Y., Lin, Y. R., &amp; Adamic, L. A. (2012). Recipe Recommendation Using Ingredient Networks. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Proceedings of the ACM Web Science Conference</w:t>
+      </w:r>
+      <w:r>
+        <w:t>. ACM.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000065" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Tiangolo, S. (2019). FastAPI: A Modern, Fast Web Framework for Building APIs with Python. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Retrieved from https://fastapi.tiangolo.com</w:t>
+      </w:r>
+      <w:r>
+        <w:t>.</w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="A0000066" w14:textId="77777777" w:rsidR="00AA0001" w:rsidRDefault="00AA0001">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">United States Department of Agriculture. (2023). Food Waste FAQs. </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Retrieved from https://www.usda.gov/foodwaste/faqs</w:t>
+      </w:r>
+      <w:r>
+        <w:t>.</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p w14:paraId="372EE273" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+        <w:rPr>
+          <w:color w:val="000000"/>
+          <w:szCs w:val="14"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:eastAsia="Courier New"/>
+          <w:color w:val="000000"/>
+          <w:szCs w:val="14"/>
+        </w:rPr>
+        <w:t xml:space="preserve">Arehart, C. (2000). </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:eastAsia="Courier New"/>
+          <w:i/>
+          <w:iCs/>
+          <w:color w:val="000000"/>
+          <w:szCs w:val="14"/>
+        </w:rPr>
+        <w:t>Professional WAP</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:eastAsia="Courier New"/>
+          <w:color w:val="000000"/>
+          <w:szCs w:val="14"/>
+        </w:rPr>
+        <w:t>. Birmingham: Wrox.</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:cs="Tahoma"/>
+          <w:color w:val="000000"/>
+          <w:szCs w:val="14"/>
+        </w:rPr>
+        <w:t xml:space="preserve"> </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="000000"/>
+          <w:szCs w:val="14"/>
+        </w:rPr>
+        <w:t> </w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="1CB236E3" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E" w:rsidP="00FF0EF1">
+      <w:pPr>
+        <w:pStyle w:val="HTMLPreformatted"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+          <w:sz w:val="24"/>
+        </w:rPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="7BF06586" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">IBM, Inc. (2000, October 5). </w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+          <w:iCs/>
+        </w:rPr>
+        <w:t>WiredAnwhere.</w:t>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve">  Retrieved from</w:t>
+      </w:r>
+      
+    </w:p>
+    <w:p w14:paraId="5073B552" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:spacing w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">     </w:t>
+      </w:r>
+      <w:hyperlink r:id="rId18" w:history="1">
+        <w:r>
+          <w:rPr>
+            <w:rStyle w:val="Hyperlink"/>
+          </w:rPr>
+          <w:t>http://www.alphaworks.ibm.com/tech/wiredanywhere</w:t>
+        </w:r>
+      </w:hyperlink>
+      <w:r>
+        <w:t xml:space="preserve"> </w:t>
+      </w:r>
+    </w:p>
+    <w:p w14:paraId="01FFFD82" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="HTMLPreformatted"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+          <w:sz w:val="24"/>
+        </w:rPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="54AD1B39" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E"/>
+    <w:p w14:paraId="0FFA3FFD" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E"/>
+    <w:p w14:paraId="0E759512" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="AppendixHeading"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="127" w:name="_Toc513639697"/>
+      <w:bookmarkStart w:id="128" w:name="_Toc513639947"/>
+      <w:bookmarkStart w:id="129" w:name="_Toc513640018"/>
+      <w:bookmarkStart w:id="130" w:name="_Toc513640227"/>
+      <w:bookmarkStart w:id="131" w:name="_Toc513659270"/>
+      <w:bookmarkStart w:id="132" w:name="_Toc513660999"/>
+      <w:bookmarkStart w:id="133" w:name="_Toc514076619"/>
+      <w:bookmarkStart w:id="134" w:name="_Toc514076770"/>
+      <w:bookmarkStart w:id="135" w:name="_Toc514077519"/>
+      <w:bookmarkStart w:id="136" w:name="_Toc514571594"/>
+      <w:bookmarkStart w:id="137" w:name="_Toc514594342"/>
+      <w:bookmarkStart w:id="138" w:name="_Toc530662818"/>
+      <w:bookmarkStart w:id="139" w:name="_Toc423326514"/>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>A</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="127"/>
+      <w:bookmarkEnd w:id="128"/>
+      <w:bookmarkEnd w:id="129"/>
+      <w:bookmarkEnd w:id="130"/>
+      <w:bookmarkEnd w:id="131"/>
+      <w:bookmarkEnd w:id="132"/>
+      <w:bookmarkEnd w:id="133"/>
+      <w:bookmarkEnd w:id="134"/>
+      <w:bookmarkEnd w:id="135"/>
+      <w:bookmarkEnd w:id="136"/>
+      <w:bookmarkEnd w:id="137"/>
+      <w:r>
+        <w:t>ppendices</w:t>
+      </w:r>
+      <w:bookmarkEnd w:id="138"/>
+      <w:bookmarkEnd w:id="139"/>
+    </w:p>
+    <w:p w14:paraId="4FE483F1" w14:textId="5386249B" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Appendix"/>
+      </w:pPr>
+      <w:bookmarkStart w:id="140" w:name="_Toc423326515"/>
+      <w:bookmarkEnd w:id="140"/>
+    </w:p>
+    <w:p w14:paraId="0CA69B6E" w14:textId="77777777" w:rsidR="00940C0E" w:rsidRDefault="00940C0E">
+      <w:pPr>
+        <w:pStyle w:val="Figure"/>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="6EA58D7F" w14:textId="77777777" w:rsidR="00716E14" w:rsidRDefault="00716E14">
+      <w:pPr>
+        <w:pStyle w:val="IndentedParagraph"/>
+      </w:pPr>
+    </w:p>
+    <w:sectPr w:rsidR="00716E14">
+      <w:headerReference w:type="default" r:id="rId19"/>
+      <w:footerReference w:type="default" r:id="rId20"/>
+      <w:headerReference w:type="first" r:id="rId21"/>
+      <w:footnotePr>
+        <w:numRestart w:val="eachPage"/>
+      </w:footnotePr>
+      <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+      <w:pgMar w:top="1872" w:right="1440" w:bottom="1440" w:left="2160" w:header="1152" w:footer="720" w:gutter="0"/>
+      <w:pgNumType w:start="1"/>
+      <w:cols w:space="360"/>
+    </w:sectPr>
+  </w:body>
+</w:document>

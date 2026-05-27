@@ -215,7 +215,15 @@ class SpoonacularService:
 
         results = []
         for recipe in data.get("results", []):
-            # Compute overlap from extendedIngredients
+            if is_vegan and not recipe.get("vegan", False):
+                continue
+            if is_vegetarian and not recipe.get("vegetarian", False):
+                continue
+            if is_gluten_free and not recipe.get("glutenFree", False):
+                continue
+            if is_dairy_free and not recipe.get("dairyFree", False):
+                continue
+
             ext_ings = [i.get("name", "") for i in recipe.get("extendedIngredients", [])]
             used_ings = _compute_overlap(ingredients, ext_ings)
             all_ings = ext_ings if ext_ings else ingredients
