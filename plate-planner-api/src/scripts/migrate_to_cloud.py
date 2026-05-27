@@ -184,7 +184,7 @@ approach is to re-run them pointing at AuraDB:
   1. EXPORT from local Neo4j (Docker must be running):
 
      # Export all nodes
-     docker exec neo4j cypher-shell -u neo4j -p 12345678 \\
+     docker exec neo4j cypher-shell -u neo4j -p $NEO4J_PASSWORD \\
        "CALL apoc.export.json.all('/export/full_export.json', {useTypes: true})"
 
      # Copy from container

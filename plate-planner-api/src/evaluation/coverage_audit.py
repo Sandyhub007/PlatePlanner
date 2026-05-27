@@ -1,13 +1,13 @@
-
+import os
 from datetime import datetime
 
 from evaluation import normalize_ingredient
 from neo4j import GraphDatabase
 
 # --- Configuration ---
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "12345678"
+NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "")
 OUTPUT_FILE = "ingredients_no_substitutes_normalized.txt"
 
 # --- Neo4j Access ---
